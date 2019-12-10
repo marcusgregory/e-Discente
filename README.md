@@ -1,4 +1,4 @@
-# unidiscente
+# UniDiscente
 
 A new Flutter project.
 
