@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:unidiscente/models/noticias.model.dart';
+import 'package:uni_discente/models/noticias.model.dart';
 
 class Noticia extends StatelessWidget{
 

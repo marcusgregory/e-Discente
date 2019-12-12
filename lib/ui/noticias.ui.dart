@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:unidiscente/blocs/noticias.bloc.dart';
-import 'package:unidiscente/models/noticias.model.dart';
-import 'package:unidiscente/ui/widgets/noticia.widget.dart';
-import 'package:unidiscente/util/toast.util.dart';
+import 'package:uni_discente/blocs/noticias.bloc.dart';
+import 'package:uni_discente/models/noticias.model.dart';
+import 'package:uni_discente/ui/widgets/noticia.widget.dart';
+import 'package:uni_discente/util/toast.util.dart';
 
 class NoticiasPage extends StatefulWidget {
   @override

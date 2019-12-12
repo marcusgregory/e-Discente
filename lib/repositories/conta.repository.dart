@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:unidiscente/models/autenticacao.model.dart';
-import 'package:unidiscente/models/usuario.model.dart';
-import 'package:unidiscente/settings.dart';
+import 'package:uni_discente/models/autenticacao.model.dart';
+import 'package:uni_discente/models/usuario.model.dart';
+import 'package:uni_discente/settings.dart';
 
 class ContaRepository{
   Future<UsuarioModel> autenticar(AutenticacaoModel autenticacao) async{

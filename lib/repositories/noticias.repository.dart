@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:unidiscente/models/noticias.model.dart';
+import 'package:uni_discente/models/noticias.model.dart';
 import 'package:http/http.dart' as http;
-import 'package:unidiscente/settings.dart';
+import 'package:uni_discente/settings.dart';
 
 class NoticiasRepository{
   Future<List<NoticiaModel>> getAll() async{

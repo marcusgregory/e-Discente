@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unidiscente/ui/login.ui.dart';
+import 'package:uni_discente/ui/login.ui.dart';
 
 void main() => runApp(MyApp());
 

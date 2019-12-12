@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/widgets.dart';
-import 'package:unidiscente/models/noticias.model.dart';
-import 'package:unidiscente/repositories/noticias.repository.dart';
+import 'package:uni_discente/models/noticias.model.dart';
+import 'package:uni_discente/repositories/noticias.repository.dart';
 
 class NoticiasBloc extends ChangeNotifier {
   List<NoticiaModel> noticias = new List<NoticiaModel>();

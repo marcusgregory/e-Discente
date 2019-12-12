@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:unidiscente/blocs/usuario.bloc.dart';
-import 'package:unidiscente/models/autenticacao.model.dart';
-import 'package:unidiscente/models/usuario.model.dart';
-import 'package:unidiscente/ui/noticias.ui.dart';
-import 'package:unidiscente/util/toast.util.dart';
+import 'package:uni_discente/blocs/usuario.bloc.dart';
+import 'package:uni_discente/models/autenticacao.model.dart';
+import 'package:uni_discente/models/usuario.model.dart';
+import 'package:uni_discente/ui/noticias.ui.dart';
+import 'package:uni_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {

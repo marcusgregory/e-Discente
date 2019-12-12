@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/widgets.dart';
-import 'package:unidiscente/models/autenticacao.model.dart';
-import 'package:unidiscente/models/usuario.model.dart';
-import 'package:unidiscente/repositories/conta.repository.dart';
-import 'package:unidiscente/settings.dart';
+import 'package:uni_discente/models/autenticacao.model.dart';
+import 'package:uni_discente/models/usuario.model.dart';
+import 'package:uni_discente/repositories/conta.repository.dart';
+import 'package:uni_discente/settings.dart';
 
 class UsuarioBloc extends ChangeNotifier {
   UsuarioModel usuario = new UsuarioModel();
