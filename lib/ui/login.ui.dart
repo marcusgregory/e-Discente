@@ -16,10 +16,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   ScrollController _scrollController = new ScrollController();
+  
   TextEditingController _txtController = TextEditingController(text: "marcus_gregory");
   TextEditingController _senhaController = TextEditingController(text: "87383256");
   bool _isLogging = false;
   UsuarioBloc bloc = new UsuarioBloc();
+
   _nextPage() {
     Navigator.pushReplacement(
       context,
@@ -51,16 +53,18 @@ class _LoginPageState extends State<LoginPage> {
           //Navigator.of(context).pushNamed(HomePage.tag);
         },
         padding: EdgeInsets.all(13),
-        color: Colors.lightBlueAccent,
+        color: Color(0xff1a4972),
         child: progressIndicator
             ? SizedBox(
-                height: 15.0,
-                width: 15.0,
+                height: 20.0,
+                width: 20.0,
                 child: CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
                   strokeWidth: 3.0,
                 ))
-            : Text('Entrar', style: TextStyle(color: Colors.white)),
+            : Text('Entrar', style: TextStyle(
+              fontSize: 18,
+              color: Colors.white)),
       ),
     );
   }
@@ -90,15 +94,21 @@ class _LoginPageState extends State<LoginPage> {
 
     final email = TextFormField(
       controller: _txtController,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.text,
       autofocus: true,
       //  initialValue: '',
       decoration: InputDecoration(
         hintText: 'Usuário',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        prefixIcon: Padding(
+                        padding: EdgeInsets.all(0.0),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                        ),
       ),
-    );
+    ));
 
     final password = TextFormField(
       controller: _senhaController,
@@ -109,7 +119,14 @@ class _LoginPageState extends State<LoginPage> {
         hintText: 'Senha',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+        prefixIcon: Padding(
+                        padding: EdgeInsets.all(0.0),
+                        child: Icon(
+                          Icons.vpn_key,
+                          color: Colors.grey,
+                        ),
       ),
+    )
     );
 
     var forgotLabel = FlatButton(
@@ -122,67 +139,74 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
     _scrollController = ScrollController(initialScrollOffset: 100.0);
+  
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        child: Center(
-          child: ListView(
-            controller: _scrollController,
-            padding: EdgeInsets.only(left: 30.0, right: 30.0),
-            children: <Widget>[
-              SizedBox(height: 100.0),
-              logo,
-              SizedBox(height: 48.0),
-              email,
-              SizedBox(height: 8.0),
-              password,
-              SizedBox(height: 24.0),
-              _isLogging
-                  ? new FutureBuilder<UsuarioModel>(
-                      future: bloc.autenticar(new AutenticacaoModel(
-                          usuario: email.controller.text,
-                          senha: password.controller.text)),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<UsuarioModel> snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.none:
-                            return loginButton(false);
-                            break;
-                          case ConnectionState.waiting:
-                            return loginButton(true);
-                            break;
-                          case ConnectionState.active:
-                            break;
-                          case ConnectionState.done:
-                            if (snapshot.hasError) {
-                              print('Erro: ${snapshot.error}');
-                              ToastUtil.showToast('${snapshot.error}');
+          body: Container(
+            color: Colors.white,
+            child: Center(
+              child: ListView(
+                controller: _scrollController,
+                padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                children: <Widget>[
+                  SizedBox(height: 100.0),
+                  logo,
+                  SizedBox(height: 48.0),
+                  email,
+                  SizedBox(height: 8.0),
+                  password,
+                  SizedBox(height: 24.0),
+                  Container(
+                    height: 80,
+                    child: _isLogging
+                        ? new FutureBuilder<UsuarioModel>(
+                            future: bloc.autenticar(new AutenticacaoModel(
+                                usuario: email.controller.text,
+                                senha: password.controller.text)),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<UsuarioModel> snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                  return loginButton(false);
+                                  break;
+                                case ConnectionState.waiting:
+                                  return loginButton(true);
+                                  break;
+                                case ConnectionState.active:
+                                  break;
+                                case ConnectionState.done:
+                                  if (snapshot.hasError) {
+                                    print('Erro: ${snapshot.error}');
+                                    ToastUtil.showToast('${snapshot.error}');
 
-                              _isLogging = false;
+                                    _isLogging = false;
 
-                              return loginButton(false);
-                            } else {
+                                    return loginButton(false);
+                                  } else {
 
-                              print(snapshot.data.nome);
-                              ToastUtil.showToast('${snapshot.data.nome}');
-                              
-                              _isLogging = false;
-                             _onWidgetDidBuild((){
-                               _nextPage();
-                             });
-                              return loginButton(false);
-                            }
+                                    print(snapshot.data.nome);
+                                    ToastUtil.showToast('${snapshot.data.nome}');
+                                    
+                                    _isLogging = false;
+                                   _onWidgetDidBuild((){
+                                     _nextPage();
+                                   });
+                                    return loginButton(false);
+                                  }
 
-                            break;
-                        }
-                        return null;
-                      })
-                  : loginButton(false),
-              forgotLabel
-            ],
+                                  break;
+                              }
+                              return null;
+                            })
+                        : loginButton(false),
+                  ),
+                  forgotLabel
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        
+     
     );
   }
 }

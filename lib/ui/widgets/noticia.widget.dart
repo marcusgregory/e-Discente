@@ -16,65 +16,70 @@ class Noticia extends StatelessWidget{
     this._context = context;
 
     //Foi adicionado dentro de Container para adicionar margem no item
-    return  Container(
-      child: Card(
+    return  Card(
         clipBehavior: Clip.antiAlias,
-        margin: const EdgeInsets.only(left: 10.0, right: 10.0,bottom: 10.0,top: 5.0),
+        margin: const EdgeInsets.only(left: 20.0, right: 20.0,bottom: 10.0,top: 10.0),
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6.0)),
-          elevation: 2.0,
+          elevation: 5.0,
           child: _getListTile(),
-        ),
+        
     );
   }
 
   Widget _getListTile(){
 
     // Foi adicionado dentro de Container para adicionar altura fixa.
-    return new Container(
-      
-      height: 95.0,
-      child: new Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          
           _loadImage(),          
           _getColumText(this.noticia.titulo,this.noticia.data,this.noticia.resumo),
       ],
 
-    ),
+    
     );
 
   }
 
   Widget _getColumText(title,date, description){
 
-    return new Expanded(
-        child: new Container(
-          margin: new EdgeInsets.all(10.0),
-          child: new Column(
-            crossAxisAlignment:CrossAxisAlignment.start,
+    return  new Column(
+            crossAxisAlignment:CrossAxisAlignment.stretch,
             children: <Widget>[
               _getTitleWidget(title),
-              _getDateWidget(date),
-              _getDescriptionWidget(description)],
-          ),
-        )
+              _getDescriptionWidget(description),]
+
+          
+        
     );
   }
 
   Widget _getTitleWidget(String curencyName){
-    return new Text(
-      curencyName,
-      maxLines: 1,
-      style: new TextStyle(fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.only(left: 16,right: 16,bottom: 5,top: 16),
+      child: Text(
+        curencyName,
+        maxLines: 4,
+        style: new TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w400),
+      ),
     );
   }
 
   Widget _getDescriptionWidget(String description){
-    return new Container(
-      margin: new EdgeInsets.only(top: 5.0),
-      child: new Text(description,maxLines: 2,),
+    return Padding(
+      padding: const EdgeInsets.only(left: 16,right: 16,bottom: 10),
+      child: Text(description,maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: new TextStyle(
+          color: Colors.grey[600]
+        ),
+        
+      ),
     );
   }
 
@@ -83,10 +88,9 @@ class Noticia extends StatelessWidget{
       style: new TextStyle(color: Colors.grey,fontSize: 10.0),);
   }
 Widget _loadImage(){
-  return Container(
-    child: new FadeInImage( 
-      image:Image.network(this.noticia.imagem).image, fit: BoxFit.cover,width: 95.0,height: 95.0, placeholder: Image.memory(kTransparentImage).image,),
-  );
+  
+    return new FadeInImage( 
+      image:Image.network(this.noticia.imagem).image, fit: BoxFit.cover,width: 185.0,height: 185.0, placeholder: Image.memory(kTransparentImage).image,);
  
 }
 }
