@@ -14,9 +14,10 @@ class ContaRepository{
    print(json.toString());
    return UsuarioModel.fromJson(usuario);
   }else if(response.statusCode==401){
-    throw new Exception('Usuario ou senha incorretos');
+    Map<String,dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
+    return Future.error(json['message']);
   }else{
-    throw new Exception('Ocorreu um erro desconhecido');
+    return Future.error('Ocorreu um erro desconhecido');
   }
   
   }

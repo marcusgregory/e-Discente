@@ -2,30 +2,84 @@ import 'package:flutter/material.dart';
 import 'package:unidiscente/blocs/usuario.bloc.dart';
 import 'package:unidiscente/models/autenticacao.model.dart';
 import 'package:unidiscente/models/usuario.model.dart';
-
+import 'package:unidiscente/ui/noticias.ui.dart';
+import 'package:unidiscente/util/toast.util.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
   final String title;
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-ScrollController _scrollController;
-TextEditingController _txtController;
-TextEditingController _senhaController;
+  ScrollController _scrollController = new ScrollController();
+  TextEditingController _txtController = TextEditingController(text: "marcus_gregory");
+  TextEditingController _senhaController = TextEditingController(text: "87383256");
+  bool _isLogging = false;
+  UsuarioBloc bloc = new UsuarioBloc();
+  _nextPage() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => NoticiasPage()),
+    );
+  }
 
+  _launchURL() async {
+    const url =
+        'https://sigadmin.unilab.edu.br/admin/public/recuperar_senha.jsf';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      ToastUtil.showToast('Não foi possível abrir a url: $url');
+    }
+  }
+
+  Padding loginButton(bool progressIndicator) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: () {
+          setState(() {
+            _isLogging = true;
+          });
+          //Navigator.of(context).pushNamed(HomePage.tag);
+        },
+        padding: EdgeInsets.all(13),
+        color: Colors.lightBlueAccent,
+        child: progressIndicator
+            ? SizedBox(
+                height: 15.0,
+                width: 15.0,
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 3.0,
+                ))
+            : Text('Entrar', style: TextStyle(color: Colors.white)),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    _scrollController = new ScrollController();
-    _txtController = TextEditingController(text: "");
-    _senhaController = TextEditingController(text: "");
-    _txtController.addListener((){
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent, curve: Curves.easeOut, duration: const Duration(milliseconds: 500),);
-   })
-;   final logo = Hero(
+    void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
+    _txtController.addListener(() {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 500),
+      );
+    });
+    final logo = Hero(
       tag: 'hero',
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
@@ -34,13 +88,13 @@ TextEditingController _senhaController;
       ),
     );
 
-    final email =TextFormField(
+    final email = TextFormField(
       controller: _txtController,
       keyboardType: TextInputType.emailAddress,
       autofocus: true,
-    //  initialValue: '',
+      //  initialValue: '',
       decoration: InputDecoration(
-        hintText: 'Usuário' ,
+        hintText: 'Usuário',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
@@ -58,37 +112,17 @@ TextEditingController _senhaController;
       ),
     );
 
-    final loginButton = Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        onPressed: () async {  
-          try{      
-        UsuarioBloc bloc = new UsuarioBloc();
-        UsuarioModel autenticar = await bloc.autenticar(new AutenticacaoModel(usuario:email.controller.text,senha: password.controller.text));
-        print(autenticar.nome);
-          }catch(ex){
-            print(ex.toString());
-          }
-         //Navigator.of(context).pushNamed(HomePage.tag);
-        },
-        padding: EdgeInsets.all(13),
-        color: Colors.lightBlueAccent,
-        child: Text('Entrar', style: TextStyle(color: Colors.white)),
-      ),
-    );
-
-    final forgotLabel = FlatButton(
+    var forgotLabel = FlatButton(
       child: Text(
         'Esqueceu sua senha?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {
+        _launchURL();
+      },
     );
- _scrollController = ScrollController(initialScrollOffset: 100.0);
-     return Scaffold(
+    _scrollController = ScrollController(initialScrollOffset: 100.0);
+    return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
         child: Center(
@@ -103,7 +137,47 @@ TextEditingController _senhaController;
               SizedBox(height: 8.0),
               password,
               SizedBox(height: 24.0),
-              loginButton,
+              _isLogging
+                  ? new FutureBuilder<UsuarioModel>(
+                      future: bloc.autenticar(new AutenticacaoModel(
+                          usuario: email.controller.text,
+                          senha: password.controller.text)),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<UsuarioModel> snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                            return loginButton(false);
+                            break;
+                          case ConnectionState.waiting:
+                            return loginButton(true);
+                            break;
+                          case ConnectionState.active:
+                            break;
+                          case ConnectionState.done:
+                            if (snapshot.hasError) {
+                              print('Erro: ${snapshot.error}');
+                              ToastUtil.showToast('${snapshot.error}');
+
+                              _isLogging = false;
+
+                              return loginButton(false);
+                            } else {
+
+                              print(snapshot.data.nome);
+                              ToastUtil.showToast('${snapshot.data.nome}');
+                              
+                              _isLogging = false;
+                             _onWidgetDidBuild((){
+                               _nextPage();
+                             });
+                              return loginButton(false);
+                            }
+
+                            break;
+                        }
+                        return null;
+                      })
+                  : loginButton(false),
               forgotLabel
             ],
           ),
