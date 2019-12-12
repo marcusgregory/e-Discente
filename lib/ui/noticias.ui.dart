@@ -13,9 +13,10 @@ class _NoticiasPageState extends State<NoticiasPage> {
   @override
   Widget build(BuildContext context) {
     NoticiasBloc noticiasBloc = new NoticiasBloc();
-    return MaterialApp(
-          home: Material(
-        child: Container(
+    return Scaffold(
+      appBar: AppBar(title: Text('Notícias'),elevation: 1.0,),
+           body: 
+        Container(
           child: FutureBuilder<List<NoticiaModel>>(
             future: noticiasBloc.getAll(),
             builder: (BuildContext context,
@@ -49,7 +50,7 @@ class _NoticiasPageState extends State<NoticiasPage> {
             },
           ),
         ),
-      ),
-    );
+      );
+    
   }
 }
