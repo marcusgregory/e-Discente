@@ -10,9 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'UniDiscente',
       theme: ThemeData(
-       accentColor: Color(0xff1a4972),
-     primaryColor: Color(0xff1a4972),
-     primarySwatch: Colors.blue
+           accentColor: Color(0x00396A),
       ),
       home: LoginPage(title: 'Login'),
     );

@@ -141,9 +141,8 @@ class _LoginPageState extends State<LoginPage> {
     _scrollController = ScrollController(initialScrollOffset: 100.0);
   
     return Scaffold(
-      backgroundColor: Colors.white,
+       backgroundColor: Colors.white,
           body: Container(
-            color: Colors.white,
             child: Center(
               child: ListView(
                 controller: _scrollController,
