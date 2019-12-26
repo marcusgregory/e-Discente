@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/util/toast.util.dart';
@@ -21,7 +23,7 @@ class Noticia extends StatelessWidget {
       margin: const EdgeInsets.only(
           left: 20.0, right: 20.0, bottom: 10.0, top: 10.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
-      elevation: 5.0,
+      elevation: 4.0,
       child: InkWell(
           onTap: () async {
             String url = noticia.url;
@@ -58,8 +60,33 @@ class Noticia extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: Align(
-                    child: PopupMenuButton(
-                      itemBuilder: (BuildContext context) {},
+                    child: PopupMenuButton<int>(
+                      onSelected: (value) {
+                        switch (value) {
+                          case 1:
+                            Share.share(
+                                'Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}');
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 1,
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.share,
+                                size: 20.0,
+                                color: Colors.grey[600],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Compartilhar"),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                       icon: Icon(
                         Icons.more_vert,
                         color: Colors.grey[600],

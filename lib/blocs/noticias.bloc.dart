@@ -13,7 +13,6 @@ class NoticiasBloc extends ChangeNotifier {
       var repository = new NoticiasRepository();
       var res = await repository.getAll();
       noticias = res;
-     print(noticias[0].titulo);
       return noticias;
     }catch (ex) {
        noticias = null;

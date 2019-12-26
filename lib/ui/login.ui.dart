@@ -16,9 +16,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   ScrollController _scrollController = new ScrollController();
-  
-  TextEditingController _txtController = TextEditingController(text: "marcus_gregory");
-  TextEditingController _senhaController = TextEditingController(text: "87383256");
+
+  TextEditingController _txtController =
+      TextEditingController(text: "marcus_gregory");
+  TextEditingController _senhaController =
+      TextEditingController(text: "87383256");
   bool _isLogging = false;
   UsuarioBloc bloc = new UsuarioBloc();
 
@@ -62,9 +64,8 @@ class _LoginPageState extends State<LoginPage> {
                   valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
                   strokeWidth: 3.0,
                 ))
-            : Text('Entrar', style: TextStyle(
-              fontSize: 18,
-              color: Colors.white)),
+            : Text('Entrar',
+                style: TextStyle(fontSize: 18, color: Colors.white)),
       ),
     );
   }
@@ -72,10 +73,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     void _onWidgetDidBuild(Function callback) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      callback();
-    });
-  }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        callback();
+      });
+    }
+
     _txtController.addListener(() {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
@@ -93,41 +95,40 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
-      controller: _txtController,
-      keyboardType: TextInputType.text,
-      autofocus: true,
-      //  initialValue: '',
-      decoration: InputDecoration(
-        hintText: 'Usuário',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-        prefixIcon: Padding(
-                        padding: EdgeInsets.all(0.0),
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                        ),
-      ),
-    ));
+        controller: _txtController,
+        keyboardType: TextInputType.text,
+        autofocus: true,
+        //  initialValue: '',
+        decoration: InputDecoration(
+          hintText: 'Usuário',
+          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          prefixIcon: Padding(
+            padding: EdgeInsets.all(0.0),
+            child: Icon(
+              Icons.person,
+              color: Colors.grey,
+            ),
+          ),
+        ));
 
     final password = TextFormField(
-      controller: _senhaController,
-      autofocus: false,
-      //initialValue: '',
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: 'Senha',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-        prefixIcon: Padding(
-                        padding: EdgeInsets.all(0.0),
-                        child: Icon(
-                          Icons.vpn_key,
-                          color: Colors.grey,
-                        ),
-      ),
-    )
-    );
+        controller: _senhaController,
+        autofocus: false,
+        //initialValue: '',
+        obscureText: true,
+        decoration: InputDecoration(
+          hintText: 'Senha',
+          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          prefixIcon: Padding(
+            padding: EdgeInsets.all(0.0),
+            child: Icon(
+              Icons.vpn_key,
+              color: Colors.grey,
+            ),
+          ),
+        ));
 
     var forgotLabel = FlatButton(
       child: Text(
@@ -139,73 +140,69 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
     _scrollController = ScrollController(initialScrollOffset: 100.0);
-  
+
     return Scaffold(
-       backgroundColor: Colors.white,
-          body: Container(
-            child: Center(
-              child: ListView(
-                controller: _scrollController,
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                children: <Widget>[
-                  SizedBox(height: 100.0),
-                  logo,
-                  SizedBox(height: 48.0),
-                  email,
-                  SizedBox(height: 8.0),
-                  password,
-                  SizedBox(height: 24.0),
-                  Container(
-                    height: 80,
-                    child: _isLogging
-                        ? new FutureBuilder<UsuarioModel>(
-                            future: bloc.autenticar(new AutenticacaoModel(
-                                usuario: email.controller.text,
-                                senha: password.controller.text)),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<UsuarioModel> snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                  return loginButton(false);
-                                  break;
-                                case ConnectionState.waiting:
-                                  return loginButton(true);
-                                  break;
-                                case ConnectionState.active:
-                                  break;
-                                case ConnectionState.done:
-                                  if (snapshot.hasError) {
-                                    print('Erro: ${snapshot.error}');
-                                    ToastUtil.showToast('${snapshot.error}');
+      backgroundColor: Colors.white,
+      body: Container(
+        child: Center(
+          child: ListView(
+            controller: _scrollController,
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            children: <Widget>[
+              SizedBox(height: 100.0),
+              logo,
+              SizedBox(height: 48.0),
+              email,
+              SizedBox(height: 8.0),
+              password,
+              SizedBox(height: 24.0),
+              Container(
+                height: 80,
+                child: _isLogging
+                    ? new FutureBuilder<UsuarioModel>(
+                        future: bloc.autenticar(new AutenticacaoModel(
+                            usuario: email.controller.text,
+                            senha: password.controller.text)),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<UsuarioModel> snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                              return loginButton(false);
+                              break;
+                            case ConnectionState.waiting:
+                              return loginButton(true);
+                              break;
+                            case ConnectionState.active:
+                              break;
+                            case ConnectionState.done:
+                              if (snapshot.hasError) {
+                                print('Erro: ${snapshot.error}');
+                                ToastUtil.showToast('${snapshot.error}');
 
-                                    _isLogging = false;
+                                _isLogging = false;
 
-                                    return loginButton(false);
-                                  } else {
+                                return loginButton(false);
+                              } else {
+                                ToastUtil.showToast('${snapshot.data.nome}');
 
-                                    print(snapshot.data.nome);
-                                    ToastUtil.showToast('${snapshot.data.nome}');
-                                    
-                                    _isLogging = false;
-                                   _onWidgetDidBuild((){
-                                     _nextPage();
-                                   });
-                                    return loginButton(false);
-                                  }
-
-                                  break;
+                                _isLogging = false;
+                                _onWidgetDidBuild(() {
+                                  _nextPage();
+                                });
+                                return loginButton(false);
                               }
-                              return null;
-                            })
-                        : loginButton(false),
-                  ),
-                  forgotLabel
-                ],
+
+                              break;
+                          }
+                          return null;
+                        })
+                    : loginButton(false),
               ),
-            ),
+              forgotLabel
+            ],
           ),
-        
-     
+        ),
+      ),
     );
   }
 }

@@ -11,7 +11,6 @@ class ContaRepository{
   if(response.statusCode==200){
    Map<String,dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
    Map<String,dynamic> usuario = json['data'];
-   print(json.toString());
    return UsuarioModel.fromJson(usuario);
   }else if(response.statusCode==401){
     Map<String,dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
