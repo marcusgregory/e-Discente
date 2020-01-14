@@ -7,7 +7,7 @@ import 'package:uni_discente/settings.dart';
 class NoticiasRepository{
   Future<List<NoticiaModel>> getAll() async{
     var url= '${Settings.apiURL}/unilab/noticias';
-    http.Response response = await http.get(url);
+    http.Response response = await http.get(url).timeout(Duration(seconds: 30));
     if(response.statusCode==200){
       Map<String,dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
       Iterable noticias = json['data'];

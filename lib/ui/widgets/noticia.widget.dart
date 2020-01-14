@@ -4,6 +4,7 @@ import 'package:share/share.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/util/toast.util.dart';
+import 'package:uni_discente/util/date.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Noticia extends StatelessWidget {
@@ -17,7 +18,7 @@ class Noticia extends StatelessWidget {
   Widget build(BuildContext context) {
     this._context = context;
 
-    //Foi adicionado dentro de Container para adicionar margem no item
+    
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(
@@ -58,43 +59,42 @@ class Noticia extends StatelessWidget {
           _getDescriptionWidget(description),
           Row(
             children: <Widget>[
+              
+                      Align(
+                        alignment: Alignment.centerLeft,
+                                              child: SizedBox(
+                          height: 25,
+                          width: 30,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Image.asset('assets/logo_unilab.png'),
+                          )
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text('Unilab  •  ${DateUtil.getTimeElapsedByDate(date)}',style: TextStyle(fontSize: 11,color: Colors.grey[700]),)  
+               ,
               Expanded(
                 child: Align(
-                    child: PopupMenuButton<int>(
-                      onSelected: (value) {
-                        switch (value) {
-                          case 1:
-                            Share.share(
-                                'Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}');
-                            break;
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 1,
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.share,
-                                size: 20.0,
-                                color: Colors.grey[600],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Compartilhar"),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                      icon: Icon(
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: FlatButton(
+                      child: Icon(
                         Icons.more_vert,
                         color: Colors.grey[600],
                         size: 20,
                       ),
+                      onPressed: () {
+                        _showModalBottomSheet(this._context);
+                      },
                     ),
-                    alignment: Alignment.centerRight),
-              )
+                  ),
+                ),
+              ),
             ],
           )
         ]);
@@ -129,6 +129,72 @@ class Noticia extends StatelessWidget {
       date,
       style: new TextStyle(color: Colors.grey, fontSize: 10.0),
     );
+  }
+
+  void _showModalBottomSheet(context) {
+    showModalBottomSheet(
+      elevation: 10,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+        context: context,
+        builder: (BuildContext bc) {
+          return Container(
+            child: Wrap(
+              children: <Widget>[
+              
+                 Padding(
+                   padding: const EdgeInsets.only(top: 5),
+                   child: ListTile(
+                      leading: Icon(Icons.share,size: 20,
+                      color: Colors.grey[600],
+                      ),
+                      title: Align(
+                        alignment: Alignment(-1.2, 0),
+                        child: Text('Compartilhar',style: TextStyle(fontSize: 14),
+                        )),
+                      onTap: () => {
+                            Share.share(
+                                'Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}')
+                          }),
+                 ),
+                 ListTile(
+                      leading: Icon(Icons.open_in_browser,size: 20,
+                      color: Colors.grey[600],
+                      ),
+                      title: Align(
+                        alignment: Alignment(-1.25, 0),
+                        child: Text('Abrir no Navegador',style: TextStyle(fontSize: 14),
+                        )),
+                      onTap: () async {
+                            String url = noticia.url;
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              ToastUtil.showToast('Não foi possível abrir a url: $url');
+            }
+                          }),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Container(color: Colors.grey[300], height: 1),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: FlatButton(
+                    padding: const EdgeInsets.all(0),
+                    child: Text(
+                      "Fechar",
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _loadImage() {

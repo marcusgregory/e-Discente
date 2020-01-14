@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/models/autenticacao.model.dart';
 import 'package:uni_discente/models/usuario.model.dart';
-import 'package:uni_discente/ui/noticias.ui.dart';
 import 'package:uni_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'inicio.ui.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   _nextPage() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => NoticiasPage()),
+      MaterialPageRoute(builder: (context) => InicioPage()),
     );
   }
 

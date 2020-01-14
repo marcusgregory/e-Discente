@@ -16,7 +16,7 @@ class ContaRepository{
     Map<String,dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
     return Future.error(json['message']);
   }else{
-    return Future.error('Ocorreu um erro desconhecido');
+    return Future.error('Ocorreu um erro no servidor\nVerifique se o SIGAA está funcionando.');
   }
   
   }

@@ -5,9 +5,7 @@ import 'package:uni_discente/repositories/noticias.repository.dart';
 
 class NoticiasBloc extends ChangeNotifier {
   List<NoticiaModel> noticias = new List<NoticiaModel>();
-  Noticias() {
-    noticias = null;
-  }
+  Noticias() => noticias = null;
   Future<List<NoticiaModel>> getAll() async {
     try {
       var repository = new NoticiasRepository();
