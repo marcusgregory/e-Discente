@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/noticias.bloc.dart';
@@ -14,38 +13,27 @@ class NoticiasPage extends StatefulWidget {
 
 class _NoticiasPageState extends State<NoticiasPage>
     with AutomaticKeepAliveClientMixin {
-   StreamController<List<NoticiaModel>> streamController;
+  NoticiasBloc _noticiasBloc;
 
   @override
   void initState() {
-    streamController= StreamController();
-    load();
+    _noticiasBloc = new NoticiasBloc();
     super.initState();
   }
 
-  load() async {
-    try{
-    List<NoticiaModel> list = await NoticiasBloc().getAll();
-
-    streamController.sink.add(list);
-    }catch(e){
-      streamController.addError(e);
-    }
-  }
-
-
   @override
-    void dispose() {
-      streamController.close();
-      super.dispose();
-    }
+  void dispose() {
+    _noticiasBloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: StreamBuilder<List<NoticiaModel>>(
-      stream: streamController.stream,
-      builder: (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
+        child: StreamBuilder<List<NoticiaModel>>(
+      stream: _noticiasBloc.noticiaStream,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
             break;
@@ -66,7 +54,7 @@ class _NoticiasPageState extends State<NoticiasPage>
                   },
                 ),
                 onRefresh: () {
-                  return load();
+                  return _noticiasBloc.load();
                 },
               );
             } else if (snapshot.hasError) {
@@ -75,7 +63,7 @@ class _NoticiasPageState extends State<NoticiasPage>
                 child: FlatButton(
                   child: Text("Tentar novamente"),
                   onPressed: () {
-                    load();
+                    _noticiasBloc.load();
                   },
                 ),
               );
@@ -88,8 +76,7 @@ class _NoticiasPageState extends State<NoticiasPage>
         }
         return Container();
       },
-    )
-    );
+    ));
   }
 
   @override

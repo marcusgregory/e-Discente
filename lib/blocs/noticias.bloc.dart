@@ -1,23 +1,26 @@
-import 'dart:io';
-import 'package:flutter/widgets.dart';
+import 'dart:async';
 import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/repositories/noticias.repository.dart';
 
-class NoticiasBloc extends ChangeNotifier {
-  List<NoticiaModel> noticias = new List<NoticiaModel>();
-  Noticias() => noticias = null;
-  Future<List<NoticiaModel>> getAll() async {
+class NoticiasBloc {
+  NoticiasBloc() {
+    load();
+  }
+
+  StreamController<List<NoticiaModel>> _streamController = StreamController();
+
+  Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
+
+  load() async {
     try {
-      var repository = new NoticiasRepository();
-      var res = await repository.getAll();
-      noticias = res;
-      return noticias;
-    }catch (ex) {
-       noticias = null;
-       if (ex is SocketException) {
-        return Future.error('Ocorreu um erro na conexão com a internet');
+      List<NoticiaModel> list = await NoticiasRepository().getAll();
+      _streamController.sink.add(list);
+    } catch (e) {
+      _streamController.addError(e);
     }
-      return Future.error(ex);
-    }
+  }
+
+  dispose() {
+    _streamController.close();
   }
 }
