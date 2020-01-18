@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:uni_discente/blocs/usuario.bloc.dart';
+import 'package:uni_discente/models/usuario.model.dart';
+import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
 
+import '../settings.dart';
 
 class InicioPage extends StatefulWidget {
   @override
@@ -72,6 +78,7 @@ class _InicioPageState extends State<InicioPage> {
               icon: Icon(Icons.filter_4), title: Text('Página 4'))
         ],
       );
+
   @override
   void initState() {
     _title = "Notícias";
@@ -84,6 +91,27 @@ class _InicioPageState extends State<InicioPage> {
         appBar: AppBar(
           title: Text(_title),
           elevation: 1.0,
+          actions: <Widget>[
+            IconButton(
+              icon: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: AdvancedNetworkImage(Settings.usuario.urlImagemPerfil,
+                fallbackAssetImage:'assets/round_account_circle.png',
+                useDiskCache: true,
+                cacheRule: CacheRule(maxAge: const Duration(days: 7))
+                ),
+                radius: 15,
+              ),
+              onPressed: () async {
+                print("Tocou na foto de Perfil");
+               await UsuarioBloc().deslogar();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => LoginPage()));
+              },
+            )
+          ],
         ),
         body: PageView(
           controller: pageController,

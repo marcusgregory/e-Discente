@@ -24,7 +24,11 @@ class _LoginPageState extends State<LoginPage> {
       TextEditingController(text: "87383256");
   bool _isLogging = false;
   UsuarioBloc bloc = new UsuarioBloc();
-
+  
+ @override
+  initState() {
+    super.initState();
+  }
   _nextPage() {
     Navigator.pushReplacement(
       context,
@@ -184,8 +188,6 @@ class _LoginPageState extends State<LoginPage> {
 
                                 return loginButton(false);
                               } else {
-                                ToastUtil.showToast('${snapshot.data.nome}');
-
                                 _isLogging = false;
                                 _onWidgetDidBuild(() {
                                   _nextPage();

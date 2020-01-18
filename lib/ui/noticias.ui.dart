@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/noticias.bloc.dart';
 import 'package:uni_discente/models/noticias.model.dart';
@@ -36,14 +35,18 @@ class _NoticiasPageState extends State<NoticiasPage>
           (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
+            print('none');
             break;
           case ConnectionState.waiting:
+            print('waiting');
             return Center(
               child: CircularProgressIndicator(),
             );
             break;
           case ConnectionState.active:
+            print('active');
             if (snapshot.hasData) {
+              print('hasDada');
               return RefreshIndicator(
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
@@ -54,27 +57,37 @@ class _NoticiasPageState extends State<NoticiasPage>
                   },
                 ),
                 onRefresh: () {
-                  return _noticiasBloc.load();
+                  return _noticiasBloc.load(isRefreshIndicator: true);
                 },
               );
             } else if (snapshot.hasError) {
+              print('hasError');
               ToastUtil.showToast('${snapshot.error}');
-              return Center(
-                child: FlatButton(
-                  child: Text("Tentar novamente"),
-                  onPressed: () {
-                    _noticiasBloc.load();
-                  },
-                ),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      _noticiasBloc.load();
+                    },
+                    
+                    icon: Icon(Icons.refresh),
+                  ),
+                  Text('Tentar novamente')
+                ],
               );
             } else {
-              return new Text("Nothing");
+              print('else');
             }
             break;
           case ConnectionState.done:
+            print('done');
             break;
         }
-        return Container();
+        return Center(
+          child: CircularProgressIndicator(),
+        );
       },
     ));
   }
