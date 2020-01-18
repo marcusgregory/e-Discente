@@ -5,6 +5,7 @@ import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/models/usuario.model.dart';
 import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
+import 'package:uni_discente/ui/widgets/turma.widget.dart';
 
 import '../settings.dart';
 
@@ -18,7 +19,7 @@ class _InicioPageState extends State<InicioPage> {
   String _title;
   final List<Widget> _children = [
     NoticiasPage(),
-    Center(child: Text("Página 2")),
+    Turma(),
     Center(child: Text("Página 3")),
     Center(child: Text("Página 4")),
   ];
@@ -38,7 +39,7 @@ class _InicioPageState extends State<InicioPage> {
           break;
         case 1:
           {
-            _title = 'Página 2';
+            _title = 'Turmas';
           }
           break;
         case 2:
@@ -67,8 +68,8 @@ class _InicioPageState extends State<InicioPage> {
             title: Text('Notícias'),
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.filter_2),
-            title: Text('Página 2'),
+            icon: Icon(Icons.school),
+            title: Text('Turmas'),
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.filter_3),

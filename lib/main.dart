@@ -32,8 +32,7 @@ class MyApp extends StatelessWidget {
                 return InicioPage();
               } else {
                 return LoginPage();
-              } // this is your user instance
-              /// is because there is user already logged
+              } 
             }
             return LoginPage();
           }),
