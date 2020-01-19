@@ -4,7 +4,6 @@ import 'package:uni_discente/repositories/noticias.repository.dart';
 
 class NoticiasBloc {
   NoticiasBloc() {
-    load();
   }
 
   StreamController<List<NoticiaModel>> _streamController = StreamController();

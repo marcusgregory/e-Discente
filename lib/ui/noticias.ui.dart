@@ -13,10 +13,11 @@ class NoticiasPage extends StatefulWidget {
 class _NoticiasPageState extends State<NoticiasPage>
     with AutomaticKeepAliveClientMixin {
   NoticiasBloc _noticiasBloc;
-
+  Stream<List<NoticiaModel>> _noticiaStream;
   @override
   void initState() {
     _noticiasBloc = new NoticiasBloc();
+   _noticiasBloc.load();
     super.initState();
   }
 
@@ -29,7 +30,8 @@ class _NoticiasPageState extends State<NoticiasPage>
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: StreamBuilder<List<NoticiaModel>>(
+      
+      child: StreamBuilder<List<NoticiaModel>>(
       stream: _noticiasBloc.noticiaStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {

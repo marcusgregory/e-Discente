@@ -13,10 +13,14 @@ class TurmasRepository {
       http.Response response = await http.get(url, headers: {
         'jwt': Settings.usuario.token
       }).timeout(Duration(seconds: 30));
+
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable turmas = json['data'];
         return turmas.map((model) => TurmaModel.fromJson(model)).toList();
+      } else if (response.statusCode == 400) {
+        Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
+        return Future.error(json['message']);
       } else {
         return Future.error('Ocorreu um erro ao obter as turmas');
       }
