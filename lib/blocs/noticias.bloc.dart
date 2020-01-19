@@ -8,9 +8,6 @@ class NoticiasBloc {
   }
 
   StreamController<List<NoticiaModel>> _streamController = StreamController();
-  bool _isLoading = false;
-
-  toggleLoading() => _isLoading = !_isLoading;
 
   Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
 

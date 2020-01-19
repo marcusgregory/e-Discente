@@ -1,39 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:uni_discente/blocs/noticias.bloc.dart';
-import 'package:uni_discente/models/noticias.model.dart';
-import 'package:uni_discente/ui/widgets/noticia.widget.dart';
+import 'package:uni_discente/blocs/turmas.bloc.dart';
+import 'package:uni_discente/models/turma.model.dart';
 import 'package:uni_discente/util/toast.util.dart';
 
-class NoticiasPage extends StatefulWidget {
-  NoticiasPage({Key key}) : super(key: key);
+import 'widgets/turma.widget.dart';
+
+class TurmasPage extends StatefulWidget {
   @override
-  _NoticiasPageState createState() => _NoticiasPageState();
+  _TurmasPageState createState() => _TurmasPageState();
 }
 
-class _NoticiasPageState extends State<NoticiasPage>
+class _TurmasPageState extends State<TurmasPage>
     with AutomaticKeepAliveClientMixin {
-  NoticiasBloc _noticiasBloc;
-
+  TurmasBloc _turmasBloc;
   @override
   void initState() {
-    _noticiasBloc = new NoticiasBloc();
+    _turmasBloc = TurmasBloc();
     super.initState();
   }
 
   @override
   void dispose() {
-    _noticiasBloc.dispose();
+    _turmasBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: StreamBuilder<List<NoticiaModel>>(
-      stream: _noticiasBloc.noticiaStream,
-      builder:
-          (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
-        switch (snapshot.connectionState) {
+      child: StreamBuilder<List<TurmaModel>>(
+        stream: _turmasBloc.turmaStream,
+        builder: (BuildContext context, AsyncSnapshot<List<TurmaModel>> snapshot) {
+          switch (snapshot.connectionState) {
           case ConnectionState.none:
             print('none');
             break;
@@ -53,11 +51,11 @@ class _NoticiasPageState extends State<NoticiasPage>
                   shrinkWrap: true,
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Noticia(snapshot.data[index]);
+                    return Turma(snapshot.data[index]);
                   },
                 ),
                 onRefresh: () {
-                  return _noticiasBloc.load(isRefreshIndicator: true);
+                  return _turmasBloc.load(isRefreshIndicator: true);
                 },
               );
             } else if (snapshot.hasError) {
@@ -69,7 +67,7 @@ class _NoticiasPageState extends State<NoticiasPage>
                 children: <Widget>[
                   IconButton(
                     onPressed: () {
-                      _noticiasBloc.load();
+                      _turmasBloc.load();
                     },
                     icon: Icon(Icons.refresh),
                   ),
@@ -87,8 +85,9 @@ class _NoticiasPageState extends State<NoticiasPage>
         return Center(
           child: CircularProgressIndicator(),
         );
-      },
-    ));
+        },
+      ),
+    );
   }
 
   @override

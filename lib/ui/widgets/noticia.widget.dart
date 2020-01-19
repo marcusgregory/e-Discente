@@ -18,7 +18,6 @@ class Noticia extends StatelessWidget {
   Widget build(BuildContext context) {
     this._context = context;
 
-    
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(
@@ -59,23 +58,23 @@ class Noticia extends StatelessWidget {
           _getDescriptionWidget(description),
           Row(
             children: <Widget>[
-              
-                      Align(
-                        alignment: Alignment.centerLeft,
-                                              child: SizedBox(
-                          height: 25,
-                          width: 30,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Image.asset('assets/logo_unilab.png'),
-                          )
-                        ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('Unilab  •  ${DateUtil.getTimeElapsedByDate(date)}',style: TextStyle(fontSize: 11,color: Colors.grey[700]),)  
-               ,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                    height: 25,
+                    width: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Image.asset('assets/logo_unilab.png'),
+                    )),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Text(
+                'Unilab  •  ${DateUtil.getTimeElapsedByDate(date)}',
+                style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+              ),
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -133,7 +132,7 @@ class Noticia extends StatelessWidget {
 
   void _showModalBottomSheet(context) {
     showModalBottomSheet(
-      elevation: 10,
+        elevation: 10,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
@@ -142,38 +141,46 @@ class Noticia extends StatelessWidget {
           return Container(
             child: Wrap(
               children: <Widget>[
-              
-                 Padding(
-                   padding: const EdgeInsets.only(top: 5),
-                   child: ListTile(
-                      leading: Icon(Icons.share,size: 20,
-                      color: Colors.grey[600],
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: ListTile(
+                      leading: Icon(
+                        Icons.share,
+                        size: 20,
+                        color: Colors.grey[600],
                       ),
                       title: Align(
-                        alignment: Alignment(-1.2, 0),
-                        child: Text('Compartilhar',style: TextStyle(fontSize: 14),
-                        )),
+                          alignment: Alignment(-1.2, 0),
+                          child: Text(
+                            'Compartilhar',
+                            style: TextStyle(fontSize: 14),
+                          )),
                       onTap: () => {
                             Share.share(
                                 'Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}')
                           }),
-                 ),
-                 ListTile(
-                      leading: Icon(Icons.open_in_browser,size: 20,
+                ),
+                ListTile(
+                    leading: Icon(
+                      Icons.open_in_browser,
+                      size: 20,
                       color: Colors.grey[600],
-                      ),
-                      title: Align(
+                    ),
+                    title: Align(
                         alignment: Alignment(-1.25, 0),
-                        child: Text('Abrir no Navegador',style: TextStyle(fontSize: 14),
+                        child: Text(
+                          'Abrir no Navegador',
+                          style: TextStyle(fontSize: 14),
                         )),
-                      onTap: () async {
-                            String url = noticia.url;
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              ToastUtil.showToast('Não foi possível abrir a url: $url');
-            }
-                          }),
+                    onTap: () async {
+                      String url = noticia.url;
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        ToastUtil.showToast(
+                            'Não foi possível abrir a url: $url');
+                      }
+                    }),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Container(color: Colors.grey[300], height: 1),

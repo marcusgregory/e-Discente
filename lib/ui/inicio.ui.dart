@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
-import 'package:uni_discente/models/usuario.model.dart';
 import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
+import 'package:uni_discente/ui/turmas.ui.dart';
 import 'package:uni_discente/ui/widgets/turma.widget.dart';
 
 import '../settings.dart';
@@ -19,7 +18,7 @@ class _InicioPageState extends State<InicioPage> {
   String _title;
   final List<Widget> _children = [
     NoticiasPage(),
-    Turma(),
+    TurmasPage(),
     Center(child: Text("Página 3")),
     Center(child: Text("Página 4")),
   ];

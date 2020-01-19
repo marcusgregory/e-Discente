@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:uni_discente/models/turma.model.dart';
 
 class Turma extends StatelessWidget {
+  TurmaModel turma;
+
+  Turma(this.turma);
+
+  BuildContext _context;
+
   @override
   Widget build(BuildContext context) {
+    this._context = context;
     return Card(
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.only(
-            left: 20.0, right: 20.0, bottom: 10.0, top: 10.0),
+            left: 15.0, right: 15.0, bottom: 5.0, top: 5.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
-        elevation: 4.0,
+        elevation: 2.0,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -18,8 +26,8 @@ class Turma extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: Image.asset(
                 'assets/turma_item_list.png',
-                width: 60,
-                height: 60,
+                width: 50,
+                height: 50,
               ),
             ),
             Expanded(
@@ -30,7 +38,7 @@ class Turma extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'ADMINISTRAÇÃO E GESTÃO DE PROJETOS',
+                      this.turma.nomeTurma,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                       style: TextStyle(
@@ -38,42 +46,58 @@ class Turma extends StatelessWidget {
                           color: Colors.black,
                           fontWeight: FontWeight.w700),
                     ),
-                    SizedBox(height: 2.5),
+                    SizedBox(height: 5),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.assignment_ind),
+                        Icon(
+                          Icons.assignment_ind,
+                          color: Colors.grey[600],
+                        ),
                         SizedBox(width: 5),
                         Expanded(
-                          child: Text('LUIZ DE ARAÚJO JÚNIOR',
+                          child: Text(this.turma.docente,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: new TextStyle(color: Colors.grey[600])),
+                              style: new TextStyle(
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ],
                     ),
                     SizedBox(height: 2.5),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.account_balance),
+                        Icon(
+                          Icons.account_balance,
+                          color: Colors.grey[600],
+                        ),
                         SizedBox(width: 5),
                         Expanded(
-                          child: Text('Palmares II - Sala 212',
+                          child: Text(this.turma.local,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: new TextStyle(color: Colors.grey[600])),
+                              style: new TextStyle(
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ],
                     ),
                     SizedBox(height: 2.5),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.date_range),
+                        Icon(
+                          Icons.date_range,
+                          color: Colors.grey[600],
+                        ),
                         SizedBox(width: 5),
                         Expanded(
-                          child: Text('2M1234',
-                              maxLines: 2,
+                          child: Text(this.turma.horario,
+                              maxLines: 5,
                               overflow: TextOverflow.ellipsis,
-                              style: new TextStyle(color: Colors.grey[600])),
+                              style: new TextStyle(
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ],
                     ),
