@@ -4,7 +4,6 @@ import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
 import 'package:uni_discente/ui/turmas.ui.dart';
-import 'package:uni_discente/ui/widgets/turma.widget.dart';
 
 import '../settings.dart';
 

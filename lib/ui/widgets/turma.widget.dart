@@ -3,15 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:uni_discente/models/turma.model.dart';
 
 class Turma extends StatelessWidget {
-  TurmaModel turma;
+ final TurmaModel turma;
 
   Turma(this.turma);
 
-  BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
-    this._context = context;
     return Card(
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.only(
@@ -19,10 +17,8 @@ class Turma extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
         elevation: 2.0,
         child: InkWell(
-          onTap: (){
-
-          },
-                  child: Row(
+          onTap: () {},
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -52,7 +48,7 @@ class Turma extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       Row(
-                         crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Icon(
                             Icons.assignment_ind,
@@ -72,13 +68,10 @@ class Turma extends StatelessWidget {
                       ),
                       SizedBox(height: 2.5),
                       Row(
-                         crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
-                            Icons.account_balance,
-                            color: Colors.grey[600],
-                            size: 18
-                          ),
+                          Icon(Icons.account_balance,
+                              color: Colors.grey[600], size: 18),
                           SizedBox(width: 5),
                           Expanded(
                             child: Text(this.turma.local,
@@ -92,13 +85,10 @@ class Turma extends StatelessWidget {
                       ),
                       SizedBox(height: 2.5),
                       Row(
-                         crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
-                            Icons.date_range,
-                            color: Colors.grey[600],
-                            size: 18
-                          ),
+                          Icon(Icons.date_range,
+                              color: Colors.grey[600], size: 18),
                           SizedBox(width: 5),
                           Expanded(
                             child: Text(this.turma.horario,

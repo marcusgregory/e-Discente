@@ -7,8 +7,10 @@ import 'package:uni_discente/util/toast.util.dart';
 import 'package:uni_discente/util/date.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../detalhes_screen.ui.dart';
+
 class Noticia extends StatelessWidget {
-  NoticiaModel noticia;
+  final NoticiaModel noticia;
 
   Noticia(this.noticia);
 
@@ -25,13 +27,16 @@ class Noticia extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 4.0,
       child: InkWell(
-          onTap: () async {
-            String url = noticia.url;
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              ToastUtil.showToast('Não foi possível abrir a url: $url');
-            }
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Detalhe(
+                        noticia.imagem,
+                        noticia.titulo,
+                        DateUtil.getTimeElapsedByDate(noticia.data),
+                        noticia.conteudo,
+                        noticia.url)));
           },
           child: _getListTile()),
     );
@@ -155,10 +160,8 @@ class Noticia extends StatelessWidget {
                             'Compartilhar',
                             style: TextStyle(fontSize: 14),
                           )),
-                      onTap: () => {
-                            Share.share(
-                                'Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}')
-                          }),
+                      onTap: () => Share.share(
+                          'Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}')),
                 ),
                 ListTile(
                     leading: Icon(
@@ -205,12 +208,15 @@ class Noticia extends StatelessWidget {
   }
 
   Widget _loadImage() {
-    return new FadeInImage(
-      image: Image.network(this.noticia.imagem).image,
-      fit: BoxFit.cover,
-      width: 185.0,
-      height: 185.0,
-      placeholder: Image.memory(kTransparentImage).image,
+    return Hero(
+      child: new FadeInImage(
+        image: Image.network(this.noticia.imagem).image,
+        fit: BoxFit.cover,
+        width: 185.0,
+        height: 185.0,
+        placeholder: Image.memory(kTransparentImage).image,
+      ),
+      tag: noticia.url,
     );
   }
 }

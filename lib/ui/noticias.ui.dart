@@ -4,6 +4,8 @@ import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/ui/widgets/noticia.widget.dart';
 import 'package:uni_discente/util/toast.util.dart';
 
+import '../settings.dart';
+
 class NoticiasPage extends StatefulWidget {
   NoticiasPage({Key key}) : super(key: key);
   @override
@@ -14,10 +16,12 @@ class _NoticiasPageState extends State<NoticiasPage>
     with AutomaticKeepAliveClientMixin {
   NoticiasBloc _noticiasBloc;
   Stream<List<NoticiaModel>> _noticiaStream;
+
   @override
   void initState() {
     _noticiasBloc = new NoticiasBloc();
-   _noticiasBloc.load();
+    _noticiaStream = _noticiasBloc.noticiaStream;
+    _noticiasBloc.load();
     super.initState();
   }
 
@@ -29,12 +33,15 @@ class _NoticiasPageState extends State<NoticiasPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
-      
-      child: StreamBuilder<List<NoticiaModel>>(
-      stream: _noticiasBloc.noticiaStream,
+        child: StreamBuilder<List<NoticiaModel>>(
+      stream: _noticiaStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
+        if (Settings.noticias != null) {
+          return getListView(Settings.noticias);
+        }
         switch (snapshot.connectionState) {
           case ConnectionState.none:
             print('none');
@@ -49,19 +56,8 @@ class _NoticiasPageState extends State<NoticiasPage>
             print('active');
             if (snapshot.hasData) {
               print('hasDada');
-              return RefreshIndicator(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Noticia(snapshot.data[index]);
-                  },
-                ),
-                onRefresh: () {
-                  return _noticiasBloc.load(isRefreshIndicator: true);
-                },
-              );
+              Settings.noticias = snapshot.data;
+              return getListView(snapshot.data);
             } else if (snapshot.hasError) {
               print('hasError');
               ToastUtil.showToast('${snapshot.error}');
@@ -95,4 +91,21 @@ class _NoticiasPageState extends State<NoticiasPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  Widget getListView(List<NoticiaModel> noticias) {
+    return RefreshIndicator(
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemCount: noticias.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Noticia(noticias[index]);
+        },
+      ),
+      onRefresh: () {
+        Settings.noticias=null;
+        return _noticiasBloc.load(isRefreshIndicator: true);
+      },
+    );
+  }
 }
