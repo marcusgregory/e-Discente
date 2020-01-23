@@ -4,7 +4,6 @@ import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/ui/widgets/noticia.widget.dart';
 import 'package:uni_discente/util/toast.util.dart';
 
-import '../settings.dart';
 
 class NoticiasPage extends StatefulWidget {
   NoticiasPage({Key key}) : super(key: key);
@@ -39,9 +38,6 @@ class _NoticiasPageState extends State<NoticiasPage>
       stream: _noticiaStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
-        if (Settings.noticias != null) {
-          return getListView(Settings.noticias);
-        }
         switch (snapshot.connectionState) {
           case ConnectionState.none:
             print('none');
@@ -56,7 +52,6 @@ class _NoticiasPageState extends State<NoticiasPage>
             print('active');
             if (snapshot.hasData) {
               print('hasDada');
-              Settings.noticias = snapshot.data;
               return getListView(snapshot.data);
             } else if (snapshot.hasError) {
               print('hasError');
@@ -103,7 +98,6 @@ class _NoticiasPageState extends State<NoticiasPage>
         },
       ),
       onRefresh: () {
-        Settings.noticias=null;
         return _noticiasBloc.load(isRefreshIndicator: true);
       },
     );

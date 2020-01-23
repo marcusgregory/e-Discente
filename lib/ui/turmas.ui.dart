@@ -52,7 +52,6 @@ class _TurmasPageState extends State<TurmasPage>
             print('active');
             if (snapshot.hasData) {
               print('hasDada');
-              Settings.turmas=snapshot.data;
               return getListView(snapshot.data);
             } else if (snapshot.hasError) {
               print('hasError');

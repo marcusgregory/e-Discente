@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
@@ -93,22 +94,26 @@ class _InicioPageState extends State<InicioPage> {
           actions: <Widget>[
             IconButton(
               icon: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: AdvancedNetworkImage(Settings.usuario.urlImagemPerfil,
-                fallbackAssetImage:'assets/round_account_circle.png',
-                useDiskCache: true,
-                cacheRule: CacheRule(maxAge: const Duration(days: 7))
-                ),
                 radius: 15,
+                backgroundColor: Colors.transparent,
+                child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: CachedNetworkImage(
+              imageUrl: Settings.usuario.urlImagemPerfil,
+              placeholder: (context, url) => Icon(Icons.account_circle,color: Colors.grey[200],),
+              errorWidget: (context, url ,error) => Icon(Icons.account_circle,color: Colors.grey[200]),
+            ),
+                
+            
               ),
-              onPressed: () async {
-                print("Tocou na foto de Perfil");
+            ), onPressed: () async {
+               print("Tocou na foto de Perfil");
                await UsuarioBloc().deslogar();
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => LoginPage()));
-              },
+            },
             )
           ],
         ),

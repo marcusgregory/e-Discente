@@ -33,6 +33,7 @@ class UsuarioBloc {
 
   Future<UsuarioModel> loadUsuario() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await Future.delayed(Duration(milliseconds: 1500));
     String usuarioPref = prefs.getString('usuario');
     if (usuarioPref != null) {
       UsuarioModel usuarioM = UsuarioModel.fromJson(jsonDecode(usuarioPref));
