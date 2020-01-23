@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/turmas.bloc.dart';
 import 'package:uni_discente/models/turma.model.dart';
 import 'package:uni_discente/util/toast.util.dart';
-
-import '../settings.dart';
 import 'widgets/turma.widget.dart';
 
 class TurmasPage extends StatefulWidget {

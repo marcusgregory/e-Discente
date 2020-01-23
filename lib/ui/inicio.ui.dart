@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
 import 'package:uni_discente/ui/turmas.ui.dart';
-
 import '../settings.dart';
 
 class InicioPage extends StatefulWidget {
