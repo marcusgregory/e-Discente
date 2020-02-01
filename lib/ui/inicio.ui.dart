@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
+import 'package:uni_discente/ui/perfil.ui.dart';
 import 'package:uni_discente/ui/turmas.ui.dart';
 import '../settings.dart';
 
@@ -13,14 +14,16 @@ class InicioPage extends StatefulWidget {
 
 class _InicioPageState extends State<InicioPage> {
   int _currentIndex = 0;
+  
   String _title;
   final List<Widget> _children = [
     NoticiasPage(),
     TurmasPage(),
-    Center(child: Text("Página 3")),
-    Center(child: Text("Página 4")),
+    PerfilScreen(),
+    //Center(child: Text("Página 4")),
   ];
   PageController pageController = PageController();
+  
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
   }
@@ -41,7 +44,7 @@ class _InicioPageState extends State<InicioPage> {
           break;
         case 2:
           {
-            _title = 'Página 3';
+            _title = 'Perfil';
           }
           break;
         case 3:
@@ -61,19 +64,22 @@ class _InicioPageState extends State<InicioPage> {
         type: BottomNavigationBarType.fixed,
         items: [
           new BottomNavigationBarItem(
-            icon: Icon(Icons.web),
-            title: Text('Notícias'),
-          ),
+              icon: Icon(Icons.web),
+              title: Text('Notícias'),
+              backgroundColor: Colors.green),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            title: Text('Turmas'),
-          ),
+              icon: Icon(Icons.school),
+              title: Text('Turmas'),
+              backgroundColor: Colors.blue),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.filter_3),
-            title: Text('Página 3'),
-          ),
-          new BottomNavigationBarItem(
-              icon: Icon(Icons.filter_4), title: Text('Página 4'))
+              icon: Icon(Icons.account_circle),
+              title: Text('Perfil'),
+              backgroundColor: Colors.red),
+         /* new BottomNavigationBarItem(
+              icon: Icon(Icons.filter_4),
+              title: Text('Página 4'),
+              backgroundColor: Colors.orange)
+              */
         ],
       );
 
@@ -85,6 +91,8 @@ class _InicioPageState extends State<InicioPage> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
         appBar: AppBar(
           title: Text(_title),
@@ -92,26 +100,33 @@ class _InicioPageState extends State<InicioPage> {
           actions: <Widget>[
             IconButton(
               icon: CircleAvatar(
-                radius: 15,
+                radius: 13,
                 backgroundColor: Colors.transparent,
-                child: ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: CachedNetworkImage(
-              imageUrl: Settings.usuario.urlImagemPerfil,
-              placeholder: (context, url) => Icon(Icons.account_circle,color: Colors.grey[200],),
-              errorWidget: (context, url ,error) => Icon(Icons.account_circle,color: Colors.grey[200]),
-            ),
-                
-            
+                child: CachedNetworkImage(
+                  imageUrl: Settings.usuario.urlImagemPerfil,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+                  placeholder: (context, url) => Icon(
+                    Icons.account_circle,
+                    color: Colors.grey[200],
+                  ),
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.account_circle, color: Colors.grey[200]),
+                ),
               ),
-            ), onPressed: () async {
-               print("Tocou na foto de Perfil");
-               await UsuarioBloc().deslogar();
+              onPressed: () async {
+                print("Tocou na foto de Perfil");
+                await UsuarioBloc().deslogar();
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => LoginPage()));
-            },
+              },
             )
           ],
         ),
@@ -123,5 +138,7 @@ class _InicioPageState extends State<InicioPage> {
         ),
         bottomNavigationBar:
             _bottomNavigationBar(_currentIndex, _onItemTapped));
+            
   }
+  
 }

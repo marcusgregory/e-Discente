@@ -57,7 +57,7 @@ class Turma extends StatelessWidget {
                           ),
                           SizedBox(width: 5),
                           Expanded(
-                            child: Text(this.turma.docente,
+                            child: Text(this.turma.docente != null ? this.turma.docente : 'O docente fechou esta turma',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: new TextStyle(

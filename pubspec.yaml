@@ -32,10 +32,14 @@ dependencies:
   flutter_advanced_networkimage: any
   flutter_html: ^0.11.1
   cached_network_image: ^2.0.0
+  mobx: ^1.0.1
+  flutter_mobx: ^1.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mobx_codegen: ^1.0.1
+  build_runner: ^1.7.2  
 
 
 # For information on the generic Dart part of this file, see the

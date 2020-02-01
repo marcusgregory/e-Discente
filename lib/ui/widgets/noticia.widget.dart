@@ -27,6 +27,7 @@ class Noticia extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 4.0,
       child: InkWell(
+    
           onTap: () {
             Navigator.push(
                 context,
@@ -128,13 +129,13 @@ class Noticia extends StatelessWidget {
     );
   }
 
-  Widget _getDateWidget(String date) {
+ /* Widget _getDateWidget(String date) {
     return new Text(
       date,
       style: new TextStyle(color: Colors.grey, fontSize: 10.0),
     );
   }
-
+*/
   void _showModalBottomSheet(context) {
     showModalBottomSheet(
         elevation: 10,

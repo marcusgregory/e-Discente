@@ -1,28 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/models/turma.model.dart';
+import 'package:uni_discente/models/perfil.model.dart';
 import 'package:uni_discente/settings.dart';
 
-class TurmasRepository {
-  Future<List<TurmaModel>> getTurmas() async {
+class PerfilRepository {
+  Future<PerfilModel> getPerfil() async {
     try {
-      var url = '${Settings.apiURL}/sigaa/turmas';
+      var url = '${Settings.apiURL}/sigaa/discente';
       http.Response response = await http.get(url, headers: {
         'jwt': Settings.usuario.token
       }).timeout(Duration(seconds: 50));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
-        Iterable turmas = json['data'];
-        return turmas.map((model) => TurmaModel.fromJson(model)).toList();
+        return PerfilModel.fromJson(json['data']);
       } else if (response.statusCode == 400) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         return Future.error(json['message']);
       } else {
-        return Future.error('Ocorreu um erro ao obter as turmas');
+        return Future.error('Ocorreu um erro ao obter o perfil do discente');
       }
     } catch (ex) {
       if (ex is SocketException) {
