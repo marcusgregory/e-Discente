@@ -7,20 +7,17 @@ part 'perfil.store.g.dart';
 class PerfilStore = _PerfilStore with _$PerfilStore;
 
 abstract class _PerfilStore with Store {
-  PerfilRepository perfil = new PerfilRepository();
+  PerfilRepository _perfil = new PerfilRepository();
 
   @observable
   ObservableFuture<PerfilModel> perfilDiscente;
 
   @action
-  Future getPerfil() {
-    return perfilDiscente = ObservableFuture(
-        perfil.getPerfil().then((PerfilModel perfilModel) => perfilModel));
+  Future getPerfil(){
+    return perfilDiscente = ObservableFuture(_perfil.getPerfil());
   }
 
-  void loadPerfil(){
-    
-      getPerfil();
-    
+  void loadPerfil() {
+    getPerfil();
   }
 }

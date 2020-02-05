@@ -19,9 +19,9 @@ class _LoginPageState extends State<LoginPage> {
   ScrollController _scrollController = new ScrollController();
 
   TextEditingController _txtController =
-      TextEditingController(text: "marcus_gregory");
+      TextEditingController();
   TextEditingController _senhaController =
-      TextEditingController(text: "87383256");
+      TextEditingController();
   bool _isLogging = false;
   UsuarioBloc bloc = new UsuarioBloc();
   

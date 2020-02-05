@@ -26,39 +26,46 @@ class _PerfilScreenState extends State<PerfilScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
-      child: Observer(builder: (BuildContext context) {
-        final future = store.perfilDiscente;
+      child: Column(
+        children: <Widget>[
+          getHeaderProfile(),
+          Observer(builder: (BuildContext context) {
+            final future = store.perfilDiscente;
 
-        switch (future.status) {
-          case FutureStatus.pending:
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(
-                  height: 10,
-                ),
-                Text('Carregando perfil...'),
-              ],
-            );
-          case FutureStatus.rejected:
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    store.loadPerfil();
-                  },
-                  icon: Icon(Icons.refresh),
-                ),
-                Text('Tentar novamente')
-              ],
-            );
-          case FutureStatus.fulfilled:
-            return widgetPerfil(future.result);
-        }
-      }),
+            switch (future.status) {
+              case FutureStatus.pending:
+                return Center(
+                  child: Column(
+                    children: const [
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text('Carregando mais informações...'),
+                    ],
+                  ),
+                );
+              case FutureStatus.rejected:
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        store.loadPerfil();
+                      },
+                      icon: Icon(Icons.refresh),
+                    ),
+                    Text('Tentar novamente')
+                  ],
+                );
+              case FutureStatus.fulfilled:
+                return widgetPerfil(future.result);
+            }
+            return Container();
+          }),
+        ],
+      ),
     );
   }
 
@@ -88,7 +95,7 @@ class _PerfilScreenState extends State<PerfilScreen>
     );
   }
 
-  Widget widgetPerfil(PerfilModel perfilModel) {
+  Widget getHeaderProfile() {
     return Column(
       children: <Widget>[
         SizedBox(
@@ -96,7 +103,30 @@ class _PerfilScreenState extends State<PerfilScreen>
         ),
         getProfilePic(Settings.usuario.urlImagemPerfil),
         SizedBox(
-          height: 30,
+          height: 15,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+          child: Text(
+            Settings.usuario.nome,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        ),
+         SizedBox(
+          height: 8,
+        ),
+         Padding(
+          padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+          child: Text(
+            Settings.usuario.curso,
+            style: TextStyle(fontSize: 14,
+            color: Colors.grey[600]),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(
+          height: 18,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
@@ -105,32 +135,25 @@ class _PerfilScreenState extends State<PerfilScreen>
         SizedBox(
           height: 15,
         ),
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
+      ],
+    );
+  }
+
+  Widget widgetPerfil(PerfilModel perfilModel) {
+    return Expanded(
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              scrollDirection: Axis.vertical,
               children: <Widget>[
-                ListTile(
-                  title: Text(
-                    'Nome',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.person),
-                  subtitle: Text(Settings.usuario.nome),
-                  onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: Settings.usuario.nome));
-                    ToastUtil.showToast(
-                        'Nome copiado para área de transferência.');
-                  },
-                ),
                 ListTile(
                   title: Text(
                     'Curso',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   leading: Icon(Icons.school),
-                  subtitle: Text(Settings.usuario.curso),
+                  subtitle: Text(perfilModel.curso),
                   onTap: () {
                     Clipboard.setData(
                         ClipboardData(text: Settings.usuario.curso));
@@ -215,8 +238,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                   leading: Icon(Icons.timeline),
                   subtitle: Text(perfilModel.iDE),
                   onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: perfilModel.iDE));
+                    Clipboard.setData(ClipboardData(text: perfilModel.iDE));
                     ToastUtil.showToast(
                         'IDE copiado para área de transferência.');
                   },
@@ -224,8 +246,8 @@ class _PerfilScreenState extends State<PerfilScreen>
               ],
             ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }
