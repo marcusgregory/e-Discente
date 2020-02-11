@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     });
     final logo = Hero(
-      tag: 'hero',
+      tag: 'icon_book',
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         radius: 55.0,
@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
     final email = TextFormField(
         controller: _txtController,
         keyboardType: TextInputType.text,
-        autofocus: true,
+        autofocus: false,
         //  initialValue: '',
         decoration: InputDecoration(
           hintText: 'Usuário',

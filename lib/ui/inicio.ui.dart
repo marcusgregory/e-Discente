@@ -94,6 +94,7 @@ class _InicioPageState extends State<InicioPage> {
 
 
     return Scaffold(
+    
         appBar: AppBar(
           title: Text(_title),
           elevation: 1.0,
@@ -134,7 +135,7 @@ class _InicioPageState extends State<InicioPage> {
           controller: pageController,
           onPageChanged: _onPageChanged,
           children: _children,
-          physics: NeverScrollableScrollPhysics(),
+          physics: AlwaysScrollableScrollPhysics(),
         ),
         bottomNavigationBar:
             _bottomNavigationBar(_currentIndex, _onItemTapped));

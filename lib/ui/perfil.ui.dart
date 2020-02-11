@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uni_discente/models/perfil.model.dart';
 import 'package:uni_discente/stores/perfil.store.dart';
 import 'package:uni_discente/util/toast.util.dart';
@@ -25,47 +26,49 @@ class _PerfilScreenState extends State<PerfilScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      child: Column(
-        children: <Widget>[
-          getHeaderProfile(),
-          Observer(builder: (BuildContext context) {
-            final future = store.perfilDiscente;
-
-            switch (future.status) {
-              case FutureStatus.pending:
-                return Center(
-                  child: Column(
-                    children: const [
-                      CircularProgressIndicator(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text('Carregando mais informações...'),
-                    ],
-                  ),
-                );
-              case FutureStatus.rejected:
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        store.loadPerfil();
-                      },
-                      icon: Icon(Icons.refresh),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        getHeaderProfile(),
+        Observer(builder: (BuildContext context) {
+          final future = store.perfilDiscente;
+          switch (future.status) {
+            case FutureStatus.pending:
+              return Container(
+                child: Column(
+                  children: const [
+                    SizedBox(
+                      height: 20,
                     ),
-                    Text('Tentar novamente')
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text('Carregando mais informações...'),
                   ],
-                );
-              case FutureStatus.fulfilled:
-                return widgetPerfil(future.result);
-            }
-            return Container();
-          }),
-        ],
-      ),
+                ),
+              );
+            case FutureStatus.rejected:
+              return Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 20,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      store.loadPerfil();
+                    },
+                    icon: Icon(Icons.refresh),
+                  ),
+                  Text('Tentar novamente')
+                ],
+              );
+            case FutureStatus.fulfilled:
+              return widgetPerfil(future.result);
+          }
+          return Container();
+        }),
+      ],
     );
   }
 
@@ -99,29 +102,63 @@ class _PerfilScreenState extends State<PerfilScreen>
     return Column(
       children: <Widget>[
         SizedBox(
-          height: 30,
+          height: 15,
         ),
-        getProfilePic(Settings.usuario.urlImagemPerfil),
+        Observer(builder: (BuildContext context) {
+          final future = store.perfilDiscente;
+          switch (future.status) {
+            case FutureStatus.pending:
+              return CircularPercentIndicator(
+                radius: 131,
+                lineWidth: 5.0,
+                center: getProfilePic(Settings.usuario.urlImagemPerfil),
+                percent: 0.0,
+                animation: true,
+                animationDuration: 500,
+                progressColor: Theme.of(context).accentColor,
+                circularStrokeCap: CircularStrokeCap.round,
+                backgroundColor: Colors.transparent,
+              );
+              break;
+            case FutureStatus.fulfilled:
+              return CircularPercentIndicator(
+                radius: 131,
+                lineWidth: 5.0,
+                center: getProfilePic(Settings.usuario.urlImagemPerfil),
+                percent: int.parse(future.result.integralizacao) / 100,
+                animation: true,
+                animationDuration: 800,
+                progressColor: Theme.of(context).accentColor,
+                circularStrokeCap: CircularStrokeCap.round,
+                backgroundColor: Colors.transparent,
+              );
+              break;
+            case FutureStatus.rejected:
+              return getProfilePic(Settings.usuario.urlImagemPerfil);
+              break;
+          }
+          return getProfilePic(Settings.usuario.urlImagemPerfil);
+        }),
+        //getProfilePic(Settings.usuario.urlImagemPerfil),
         SizedBox(
           height: 15,
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Text(
             Settings.usuario.nome,
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ),
-         SizedBox(
+        SizedBox(
           height: 8,
         ),
-         Padding(
-          padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Text(
             Settings.usuario.curso,
-            style: TextStyle(fontSize: 14,
-            color: Colors.grey[600]),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
         ),
@@ -130,7 +167,10 @@ class _PerfilScreenState extends State<PerfilScreen>
         ),
         Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Container(color: Colors.grey[300], height: 1),
+          child: Container(
+            color: Colors.grey[300],
+            height: 1,
+          ),
         ),
         SizedBox(
           height: 15,
@@ -142,6 +182,7 @@ class _PerfilScreenState extends State<PerfilScreen>
   Widget widgetPerfil(PerfilModel perfilModel) {
     return Expanded(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Expanded(
             child: ListView(
