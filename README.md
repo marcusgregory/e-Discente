@@ -1,4 +1,4 @@
-[![Codemagic build status](https://api.codemagic.io/apps/5e3704d6cb1395d320ce9823/5e3704d6cb1395d320ce9822/status_badge.svg)](https://codemagic.io/apps/5e3704d6cb1395d320ce9823/5e3704d6cb1395d320ce9822/latest_build)
+[![Codemagic build status](https://api.codemagic.io/apps/5e43085335303b6530234d80/5e43085335303b6530234d7f/status_badge.svg)](https://codemagic.io/apps/5e43085335303b6530234d80/5e43085335303b6530234d7f/latest_build)
 # uni_discente 
 
 A new Flutter project.

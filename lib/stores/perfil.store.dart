@@ -13,7 +13,7 @@ abstract class _PerfilStore with Store {
   ObservableFuture<PerfilModel> perfilDiscente;
 
   @action
-  Future getPerfil(){
+  Future getPerfil() {
     return perfilDiscente = ObservableFuture(_perfil.getPerfil());
   }
 

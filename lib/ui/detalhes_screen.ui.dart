@@ -35,14 +35,21 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
       ),
       body: new Container(
         margin: new EdgeInsets.all(5.0),
-        child: new Material(
-          elevation: 2.0,
-          borderRadius: new BorderRadius.circular(6.0),
-          child: new ListView(
-            children: <Widget>[
-              _getImageNetwork(widget._img),
-              _getBody(widget._title, widget._date, widget._description),
-            ],
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0)),
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _getImageNetwork(widget._img),
+                  _getBody(widget._title, widget._date, widget._description),
+                ],
+              ),
+            ),
           ),
         ),
       ),

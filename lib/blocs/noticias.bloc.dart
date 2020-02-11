@@ -3,8 +3,6 @@ import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/repositories/noticias.repository.dart';
 
 class NoticiasBloc {
-
-
   StreamController<List<NoticiaModel>> _streamController = StreamController();
 
   Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;

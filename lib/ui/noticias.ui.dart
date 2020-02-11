@@ -4,7 +4,6 @@ import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/ui/widgets/noticia.widget.dart';
 import 'package:uni_discente/util/toast.util.dart';
 
-
 class NoticiasPage extends StatefulWidget {
   NoticiasPage({Key key}) : super(key: key);
   @override
@@ -89,13 +88,15 @@ class _NoticiasPageState extends State<NoticiasPage>
 
   Widget getListView(List<NoticiaModel> noticias) {
     return RefreshIndicator(
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: noticias.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Noticia(noticias[index]);
-        },
+      child: Scrollbar(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: noticias.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Noticia(noticias[index]);
+          },
+        ),
       ),
       onRefresh: () {
         return _noticiasBloc.load(isRefreshIndicator: true);

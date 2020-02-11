@@ -52,6 +52,5 @@ class UsuarioBloc {
     await prefs.setString('usuario', null);
     usuario = null;
     Settings.usuario = null;
-    
   }
 }

@@ -26,49 +26,51 @@ class _PerfilScreenState extends State<PerfilScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        getHeaderProfile(),
-        Observer(builder: (BuildContext context) {
-          final future = store.perfilDiscente;
-          switch (future.status) {
-            case FutureStatus.pending:
-              return Container(
-                child: Column(
-                  children: const [
+    return Scrollbar(
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          getHeaderProfile(),
+          Observer(builder: (BuildContext context) {
+            final future = store.perfilDiscente;
+            switch (future.status) {
+              case FutureStatus.pending:
+                return Container(
+                  child: Column(
+                    children: const [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text('Carregando mais informações...'),
+                    ],
+                  ),
+                );
+              case FutureStatus.rejected:
+                return Column(
+                  children: <Widget>[
                     SizedBox(
                       height: 20,
                     ),
-                    CircularProgressIndicator(),
-                    SizedBox(
-                      height: 10,
+                    IconButton(
+                      onPressed: () {
+                        store.loadPerfil();
+                      },
+                      icon: Icon(Icons.refresh),
                     ),
-                    Text('Carregando mais informações...'),
+                    Text('Tentar novamente')
                   ],
-                ),
-              );
-            case FutureStatus.rejected:
-              return Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 20,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      store.loadPerfil();
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
-                  Text('Tentar novamente')
-                ],
-              );
-            case FutureStatus.fulfilled:
-              return widgetPerfil(future.result);
-          }
-          return Container();
-        }),
-      ],
+                );
+              case FutureStatus.fulfilled:
+                return widgetPerfil(future.result);
+            }
+            return Container();
+          }),
+        ],
+      ),
     );
   }
 
@@ -180,115 +182,107 @@ class _PerfilScreenState extends State<PerfilScreen>
   }
 
   Widget widgetPerfil(PerfilModel perfilModel) {
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Expanded(
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    'Curso',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.school),
-                  subtitle: Text(perfilModel.curso),
-                  onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: Settings.usuario.curso));
-                    ToastUtil.showToast(
-                        'Curso copiado para área de transferência.');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Matrícula',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.offline_pin),
-                  subtitle: Text(Settings.usuario.numMatricula),
-                  onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: Settings.usuario.numMatricula));
-                    ToastUtil.showToast(
-                        'Matrícula copiada para área de transferência.');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Integralização',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.insert_chart),
-                  subtitle: Text(perfilModel.integralizacao + '%'),
-                  onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: perfilModel.integralizacao));
-                    ToastUtil.showToast(
-                        'Integralização copiado para área de transferência.');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Nível',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.assistant),
-                  subtitle: Text(perfilModel.nivel),
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: perfilModel.nivel));
-                    ToastUtil.showToast(
-                        'Nível copiado para área de transferência.');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Situação',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.assignment),
-                  subtitle: Text(perfilModel.situacao),
-                  onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: perfilModel.situacao));
-                    ToastUtil.showToast(
-                        'Situação copiada para área de transferência.');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Semestre de Entrada',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.event_available),
-                  subtitle: Text(perfilModel.semestreEntrada),
-                  onTap: () {
-                    Clipboard.setData(
-                        ClipboardData(text: perfilModel.semestreEntrada));
-                    ToastUtil.showToast(
-                        'Semestre copiado para área de transferência.');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'IDE',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  leading: Icon(Icons.timeline),
-                  subtitle: Text(perfilModel.iDE),
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: perfilModel.iDE));
-                    ToastUtil.showToast(
-                        'IDE copiado para área de transferência.');
-                  },
-                )
-              ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            ListTile(
+              title: Text(
+                'Curso',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.school),
+              subtitle: Text(perfilModel.curso),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: Settings.usuario.curso));
+                ToastUtil.showToast(
+                    'Curso copiado para área de transferência.');
+              },
             ),
-          ),
-        ],
-      ),
+            ListTile(
+              title: Text(
+                'Matrícula',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.offline_pin),
+              subtitle: Text(Settings.usuario.numMatricula),
+              onTap: () {
+                Clipboard.setData(
+                    ClipboardData(text: Settings.usuario.numMatricula));
+                ToastUtil.showToast(
+                    'Matrícula copiada para área de transferência.');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Integralização',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.insert_chart),
+              subtitle: Text(perfilModel.integralizacao + '%'),
+              onTap: () {
+                Clipboard.setData(
+                    ClipboardData(text: perfilModel.integralizacao));
+                ToastUtil.showToast(
+                    'Integralização copiado para área de transferência.');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Nível',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.assistant),
+              subtitle: Text(perfilModel.nivel),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: perfilModel.nivel));
+                ToastUtil.showToast(
+                    'Nível copiado para área de transferência.');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Situação',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.assignment),
+              subtitle: Text(perfilModel.situacao),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: perfilModel.situacao));
+                ToastUtil.showToast(
+                    'Situação copiada para área de transferência.');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Semestre de Entrada',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.event_available),
+              subtitle: Text(perfilModel.semestreEntrada),
+              onTap: () {
+                Clipboard.setData(
+                    ClipboardData(text: perfilModel.semestreEntrada));
+                ToastUtil.showToast(
+                    'Semestre copiado para área de transferência.');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'IDE',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              leading: Icon(Icons.timeline),
+              subtitle: Text(perfilModel.iDE),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: perfilModel.iDE));
+                ToastUtil.showToast('IDE copiado para área de transferência.');
+              },
+            )
+          ],
+        ),
+      ],
     );
   }
 }

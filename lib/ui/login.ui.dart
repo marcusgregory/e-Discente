@@ -18,17 +18,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   ScrollController _scrollController = new ScrollController();
 
-  TextEditingController _txtController =
-      TextEditingController();
-  TextEditingController _senhaController =
-      TextEditingController();
+  TextEditingController _txtController = TextEditingController();
+  TextEditingController _senhaController = TextEditingController();
   bool _isLogging = false;
   UsuarioBloc bloc = new UsuarioBloc();
-  
- @override
+
+  @override
   initState() {
     super.initState();
   }
+
   _nextPage() {
     Navigator.pushReplacement(
       context,

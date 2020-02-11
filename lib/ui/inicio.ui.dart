@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
+import 'package:uni_discente/repositories/notas.repository.dart';
+import 'package:uni_discente/ui/boletim.ui.dart';
 import 'package:uni_discente/ui/login.ui.dart';
 import 'package:uni_discente/ui/noticias.ui.dart';
 import 'package:uni_discente/ui/perfil.ui.dart';
@@ -14,16 +16,16 @@ class InicioPage extends StatefulWidget {
 
 class _InicioPageState extends State<InicioPage> {
   int _currentIndex = 0;
-  
+
   String _title;
   final List<Widget> _children = [
     NoticiasPage(),
     TurmasPage(),
+    BoletimPage(),
     PerfilScreen(),
-    //Center(child: Text("Página 4")),
   ];
   PageController pageController = PageController();
-  
+
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
   }
@@ -44,12 +46,12 @@ class _InicioPageState extends State<InicioPage> {
           break;
         case 2:
           {
-            _title = 'Perfil';
+            _title = 'Boletim';
           }
           break;
         case 3:
           {
-            _title = 'Página 4';
+            _title = 'Perfil';
           }
           break;
       }
@@ -72,14 +74,13 @@ class _InicioPageState extends State<InicioPage> {
               title: Text('Turmas'),
               backgroundColor: Colors.blue),
           new BottomNavigationBarItem(
+              icon: Icon(Icons.timeline),
+              title: Text('Boletim'),
+              backgroundColor: Colors.orange),
+          new BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),
               title: Text('Perfil'),
-              backgroundColor: Colors.red),
-         /* new BottomNavigationBarItem(
-              icon: Icon(Icons.filter_4),
-              title: Text('Página 4'),
-              backgroundColor: Colors.orange)
-              */
+              backgroundColor: Colors.red)
         ],
       );
 
@@ -91,10 +92,7 @@ class _InicioPageState extends State<InicioPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-    
         appBar: AppBar(
           title: Text(_title),
           elevation: 1.0,
@@ -135,11 +133,9 @@ class _InicioPageState extends State<InicioPage> {
           controller: pageController,
           onPageChanged: _onPageChanged,
           children: _children,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
         ),
         bottomNavigationBar:
             _bottomNavigationBar(_currentIndex, _onItemTapped));
-            
   }
-  
 }

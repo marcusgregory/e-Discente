@@ -16,7 +16,7 @@ class _TurmasPageState extends State<TurmasPage>
   @override
   void initState() {
     _turmasBloc = TurmasBloc();
-    _turmasStream=_turmasBloc.turmaStream;
+    _turmasStream = _turmasBloc.turmaStream;
     super.initState();
   }
 
@@ -32,76 +32,77 @@ class _TurmasPageState extends State<TurmasPage>
     return Container(
       child: StreamBuilder<List<TurmaModel>>(
         stream: _turmasStream,
-        builder: (BuildContext context, AsyncSnapshot<List<TurmaModel>> snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<List<TurmaModel>> snapshot) {
           /*if(Settings.turmas!=null){
             return getListView(Settings.turmas);
           }*/
           switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            print('none');
-            break;
-          case ConnectionState.waiting:
-            print('waiting');
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-            break;
-          case ConnectionState.active:
-            print('active');
-            if (snapshot.hasData) {
-              print('hasDada');
-              return getListView(snapshot.data);
-            } else if (snapshot.hasError) {
-              print('hasError');
-              ToastUtil.showToast('${snapshot.error}');
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      _turmasBloc.load();
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
-                  Text('Tentar novamente')
-                ],
+            case ConnectionState.none:
+              print('none');
+              break;
+            case ConnectionState.waiting:
+              print('waiting');
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            } else {
-              print('else');
-            }
-            break;
-          case ConnectionState.done:
-            print('done');
-            break;
-        }
-        return Center(
-          child: CircularProgressIndicator(),
-        );
+              break;
+            case ConnectionState.active:
+              print('active');
+              if (snapshot.hasData) {
+                print('hasDada');
+                return getListView(snapshot.data);
+              } else if (snapshot.hasError) {
+                print('hasError');
+                ToastUtil.showToast('${snapshot.error}');
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        _turmasBloc.load();
+                      },
+                      icon: Icon(Icons.refresh),
+                    ),
+                    Text('Tentar novamente')
+                  ],
+                );
+              } else {
+                print('else');
+              }
+              break;
+            case ConnectionState.done:
+              print('done');
+              break;
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         },
       ),
     );
   }
 
-Widget getListView(List<TurmaModel> turmas){
-  return RefreshIndicator(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: turmas.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Turma(turmas[index]);
-                  },
-                ),
-                onRefresh: () {
-                  /*Settings.turmas=null;*/
-                  return _turmasBloc.load(isRefreshIndicator: true);
-                },
-              );
-}
+  Widget getListView(List<TurmaModel> turmas) {
+    return RefreshIndicator(
+      child: Scrollbar(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: turmas.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Turma(turmas[index]);
+          },
+        ),
+      ),
+      onRefresh: () {
+        /*Settings.turmas=null;*/
+        return _turmasBloc.load(isRefreshIndicator: true);
+      },
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;
-
-
 }

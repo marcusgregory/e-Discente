@@ -39,7 +39,10 @@ class _SplashPageState extends State<SplashPage> {
             ),
             Text(
               'UniDiscente',
-              style: TextStyle(color: Colors.white, fontSize: 22.5,fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.5,
+                  fontWeight: FontWeight.bold),
             )
           ],
         ),
@@ -59,6 +62,5 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     }
-    
   }
 }
