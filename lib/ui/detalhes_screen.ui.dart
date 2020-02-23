@@ -104,7 +104,7 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
           if (await canLaunch(url)) {
             await launch(url);
           } else {
-            ToastUtil.showToast('Não foi possível abrir a url: $url');
+            ToastUtil.showShortToast('Não foi possível abrir a url: $url');
           }
         },
       ),

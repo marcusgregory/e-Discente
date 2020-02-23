@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      ToastUtil.showToast('Não foi possível abrir a url: $url');
+      ToastUtil.showShortToast('Não foi possível abrir a url: $url');
     }
   }
 
@@ -181,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                             case ConnectionState.done:
                               if (snapshot.hasError) {
                                 print('Erro: ${snapshot.error}');
-                                ToastUtil.showToast('${snapshot.error}');
+                                ToastUtil.showShortToast('${snapshot.error}');
 
                                 _isLogging = false;
 

@@ -40,7 +40,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mobx_codegen: ^1.0.1
-  build_runner: ^1.7.2  
+  build_runner: ^1.7.2
 
 
 # For information on the generic Dart part of this file, see the
@@ -53,6 +53,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  fonts:
+   - family:  CustomIcons
+     fonts:
+      - asset: assets/fonts/CustomIcons.ttf
 
   # To add assets to your application, add an assets section, like this:
   assets:

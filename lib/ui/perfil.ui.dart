@@ -196,7 +196,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               subtitle: Text(perfilModel.curso),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: Settings.usuario.curso));
-                ToastUtil.showToast(
+                ToastUtil.showShortToast(
                     'Curso copiado para área de transferência.');
               },
             ),
@@ -210,7 +210,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: Settings.usuario.numMatricula));
-                ToastUtil.showToast(
+                ToastUtil.showShortToast(
                     'Matrícula copiada para área de transferência.');
               },
             ),
@@ -224,7 +224,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: perfilModel.integralizacao));
-                ToastUtil.showToast(
+                ToastUtil.showShortToast(
                     'Integralização copiado para área de transferência.');
               },
             ),
@@ -237,7 +237,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               subtitle: Text(perfilModel.nivel),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.nivel));
-                ToastUtil.showToast(
+                ToastUtil.showShortToast(
                     'Nível copiado para área de transferência.');
               },
             ),
@@ -250,7 +250,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               subtitle: Text(perfilModel.situacao),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.situacao));
-                ToastUtil.showToast(
+                ToastUtil.showShortToast(
                     'Situação copiada para área de transferência.');
               },
             ),
@@ -264,7 +264,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: perfilModel.semestreEntrada));
-                ToastUtil.showToast(
+                ToastUtil.showShortToast(
                     'Semestre copiado para área de transferência.');
               },
             ),
@@ -277,7 +277,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               subtitle: Text(perfilModel.iDE),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.iDE));
-                ToastUtil.showToast('IDE copiado para área de transferência.');
+                ToastUtil.showShortToast('IDE copiado para área de transferência.');
               },
             )
           ],

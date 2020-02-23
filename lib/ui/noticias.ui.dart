@@ -54,7 +54,7 @@ class _NoticiasPageState extends State<NoticiasPage>
               return getListView(snapshot.data);
             } else if (snapshot.hasError) {
               print('hasError');
-              ToastUtil.showToast('${snapshot.error}');
+              ToastUtil.showShortToast('${snapshot.error}');
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
