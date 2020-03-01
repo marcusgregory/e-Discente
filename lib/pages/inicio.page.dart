@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
-import 'package:uni_discente/repositories/notas.repository.dart';
-import 'package:uni_discente/ui/boletim.ui.dart';
-import 'package:uni_discente/ui/login.ui.dart';
-import 'package:uni_discente/ui/noticias.ui.dart';
-import 'package:uni_discente/ui/perfil.ui.dart';
-import 'package:uni_discente/ui/turmas.ui.dart';
+import 'package:uni_discente/pages/boletim.page.dart';
+import 'package:uni_discente/pages/login.page.dart';
+import 'package:uni_discente/pages/noticias.page.dart';
+import 'package:uni_discente/pages/perfil.page.dart';
+import 'package:uni_discente/pages/turmas.page.dart';
 import '../settings.dart';
 
 class InicioPage extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/noticias.bloc.dart';
 import 'package:uni_discente/models/noticias.model.dart';
-import 'package:uni_discente/ui/widgets/noticia.widget.dart';
+import 'package:uni_discente/pages/widgets/noticia.widget.dart';
 import 'package:uni_discente/util/toast.util.dart';
 
 class NoticiasPage extends StatefulWidget {

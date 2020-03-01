@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uni_discente/ui/splash_screen.ui.dart';
+import 'pages/splash_screen.page.dart';
+
 
 Future<void> main() async => runApp(MyApp());
 

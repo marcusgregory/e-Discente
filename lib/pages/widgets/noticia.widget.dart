@@ -8,7 +8,7 @@ import 'package:uni_discente/util/toast.util.dart';
 import 'package:uni_discente/util/date.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../detalhes_screen.ui.dart';
+import '../detalhes_screen.page.dart';
 
 class Noticia extends StatelessWidget {
   final NoticiaModel noticia;

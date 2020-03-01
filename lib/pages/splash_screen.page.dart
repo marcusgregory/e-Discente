@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/models/usuario.model.dart';
 
-import 'inicio.ui.dart';
-import 'login.ui.dart';
+import 'inicio.page.dart';
+import 'login.page.dart';
 
 class SplashPage extends StatefulWidget {
   @override

@@ -73,6 +73,7 @@ class _BoletimPageState extends State<BoletimPage>
               ],
             );
         }
+        return Container();
       }),
     );
   }

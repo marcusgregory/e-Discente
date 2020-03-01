@@ -5,7 +5,7 @@ import 'package:uni_discente/models/usuario.model.dart';
 import 'package:uni_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'inicio.ui.dart';
+import 'inicio.page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
