@@ -26,7 +26,7 @@ class Turma extends StatelessWidget {
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -110,6 +110,8 @@ class Turma extends StatelessWidget {
                   ),
                 ),
               ),
+               Icon(Icons.arrow_forward_ios,color: Colors.grey[600],size: 15,),
+               SizedBox(width: 12,) 
             ],
           ),
         ));

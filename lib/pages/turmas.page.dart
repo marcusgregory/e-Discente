@@ -85,21 +85,25 @@ class _TurmasPageState extends State<TurmasPage>
   }
 
   Widget getListView(List<TurmaModel> turmas) {
-    return RefreshIndicator(
-      child: Scrollbar(
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: turmas.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Turma(turmas[index]);
-          },
+    return Padding(
+      padding: const EdgeInsets.only(top: 5),
+      child: RefreshIndicator(
+        child: Scrollbar(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: turmas.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Turma(turmas[index]);
+            },
+          ),
         ),
+        onRefresh: () {
+          /*Settings.turmas=null;*/
+
+          return _turmasBloc.load(isRefreshIndicator: true);
+        },
       ),
-      onRefresh: () {
-        /*Settings.turmas=null;*/
-        return _turmasBloc.load(isRefreshIndicator: true);
-      },
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -153,21 +155,20 @@ class Noticia extends StatelessWidget {
                     height: 50,
                     child: InkWell(
                       onTap: () => Share.share(
-                            'Veja esta notícia:\n${this.noticia.titulo}\n${this.noticia.url}'),
+                          'Veja esta notícia:\n${this.noticia.titulo}\n${this.noticia.url}'),
                       child: Row(
                         children: <Widget>[
                           SizedBox(
                             width: 17,
                           ),
-                          Icon(Icons.share,
-                              size: 20, color: Colors.grey[600]),
+                          Icon(Icons.share, size: 20, color: Colors.grey[600]),
                           SizedBox(
                             width: 15,
                           ),
                           Text(
-                              'Compartilhar',
-                              style: TextStyle(fontSize: 14),
-                            ),
+                            'Compartilhar',
+                            style: TextStyle(fontSize: 14),
+                          ),
                         ],
                       ),
                     ),
@@ -177,10 +178,20 @@ class Noticia extends StatelessWidget {
                   height: 50,
                   child: InkWell(
                     onTap: () async {
-                      String url =
-                          'https://wa.me/?text=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
-                      if (await canLaunch(url)) {
-                        await launch(url);
+                      if (Platform.isIOS) {
+                        String url =
+                            'whatsapp://send?message=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        }else{
+                          ToastUtil.showShortToast("Não foi possível abrir o WhatsApp\nEstá instalado no seu IOS?");
+                        }
+                      } else {
+                        String url =
+                            'https://wa.me/?text=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        }
                       }
                     },
                     child: Row(
