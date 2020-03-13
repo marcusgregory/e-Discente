@@ -180,7 +180,8 @@ class Noticia extends StatelessWidget {
                     onTap: () async {
                       if (Platform.isIOS) {
                         String url =
-                            'whatsapp://send?message=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
+                            'https://wa.me/?text=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
+                            url=Uri.encodeFull(url);
                         if (await canLaunch(url)) {
                           await launch(url);
                         }else{
