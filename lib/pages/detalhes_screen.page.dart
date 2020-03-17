@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:uni_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -10,8 +12,9 @@ class Detalhe extends StatefulWidget {
   final String _date;
   final String _description;
   final String _url;
+  final int _id;
 
-  Detalhe(this._img, this._title, this._date, this._description, this._url);
+  Detalhe(this._img, this._title, this._date, this._description, this._url, this._id);
 
   @override
   _DetalheState createState() => _DetalheState();
@@ -58,9 +61,20 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
 
   Widget _getImageNetwork(url) {
     return Hero(
-      child: new Container(
-          height: 200.0, child: new Image.network(url, fit: BoxFit.cover)),
-      tag: widget._url,
+      child: CachedNetworkImage(
+        height: 200,
+          imageUrl: url,
+          imageBuilder: (context, imageProvider) => Container(
+            height: 200,
+                decoration: BoxDecoration(
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+          placeholder: (context, url) => Container(
+            height: 200,
+            child: Image.memory(kTransparentImage))),
+      tag: widget._id,
     );
   }
 

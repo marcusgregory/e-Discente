@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -13,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../detalhes_screen.page.dart';
 
 class Noticia extends StatelessWidget {
-  final NoticiaModel noticia;
+  NoticiaModel noticia;
 
   Noticia(this.noticia);
 
@@ -22,13 +23,12 @@ class Noticia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this._context = context;
-
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(
           left: 20.0, right: 20.0, bottom: 10.0, top: 10.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
-      elevation: 4.0,
+      elevation: 2.0,
       child: InkWell(
           onTap: () {
             Navigator.push(
@@ -39,7 +39,8 @@ class Noticia extends StatelessWidget {
                         noticia.titulo,
                         DateUtil.getTimeElapsedByDate(noticia.data),
                         noticia.conteudo,
-                        noticia.url)));
+                        noticia.url,
+                        noticia.id)));
           },
           child: _getListTile()),
     );
@@ -181,11 +182,12 @@ class Noticia extends StatelessWidget {
                       if (Platform.isIOS) {
                         String url =
                             'https://wa.me/?text=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
-                            url=Uri.encodeFull(url);
+                        url = Uri.encodeFull(url);
                         if (await canLaunch(url)) {
                           await launch(url);
-                        }else{
-                          ToastUtil.showShortToast("Não foi possível abrir o WhatsApp\nEstá instalado no seu IOS?");
+                        } else {
+                          ToastUtil.showShortToast(
+                              "Não foi possível abrir o WhatsApp\nEstá instalado no seu IOS?");
                         }
                       } else {
                         String url =
@@ -268,14 +270,32 @@ class Noticia extends StatelessWidget {
 
   Widget _loadImage() {
     return Hero(
-      child: new FadeInImage(
+      tag: noticia.id,
+      child: CachedNetworkImage(
+        height: 185,
+        width: 185,
+          imageUrl: this.noticia.imagem,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 185,
+            height: 185,
+                decoration: BoxDecoration(
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+          placeholder: (context, url) => Container(
+            height: 185,
+        width: 185,
+            child: Image.memory(kTransparentImage))),
+    );
+
+    /*new FadeInImage(
         image: Image.network(this.noticia.imagem).image,
         fit: BoxFit.cover,
         width: 185.0,
         height: 185.0,
         placeholder: Image.memory(kTransparentImage).image,
       ),
-      tag: noticia.url,
-    );
+      */
   }
 }

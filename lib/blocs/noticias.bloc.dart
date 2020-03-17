@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/repositories/noticias.repository.dart';
 
@@ -9,14 +12,33 @@ class NoticiasBloc {
 
   load({bool isRefreshIndicator = false}) async {
     if (!_streamController.isClosed) {
-      try {
-        if (!isRefreshIndicator) {
-          _streamController.sink.add(null);
+      bool result = await DataConnectionChecker().hasConnection;
+      if (result == true) {
+        try {
+          if (!isRefreshIndicator) {
+            _streamController.sink.add(null);
+          }
+          List<NoticiaModel> list = await NoticiasRepository().getAll();
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('noticias', jsonEncode(list));
+          _streamController.sink.add(list);
+        } catch (e) {
+          _streamController.addError(e);
         }
-        List<NoticiaModel> list = await NoticiasRepository().getAll();
-        _streamController.sink.add(list);
-      } catch (e) {
-        _streamController.addError(e);
+      }else{
+        try {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String noticiasPref = prefs.getString('noticias');
+        if (noticiasPref != null) {
+        Iterable noticias =jsonDecode(noticiasPref);
+        List<NoticiaModel> noticiasList = noticias.map((model) => NoticiaModel.fromJson(model)).toList();
+        _streamController.sink.add(noticiasList);
+        }else{
+          throw Exception('Não foi possível obter as noticias offline');
+        }
+       } catch (e) {
+          _streamController.addError(e);
+        }
       }
     }
   }
