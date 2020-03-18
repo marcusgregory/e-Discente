@@ -6,6 +6,7 @@ const myTask = "syncWithTheBackEnd";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
   await Workmanager.initialize(callbackDispatcher,isInDebugMode: true);
   print('init work manager');
   await Workmanager.registerPeriodicTask(
@@ -13,7 +14,6 @@ void main() async {
     myTask, //This is the value that will be returned in the callbackDispatcher
     frequency: Duration(minutes: 15),
   );
- runApp(MyApp());
 }
 void callbackDispatcher() {
   Workmanager.executeTask((task,inputdata) {
