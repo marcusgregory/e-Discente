@@ -3,6 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
+	
+	SystemCapabilities = {
+	com.apple.BackgroundModes = {
+		enabled = 1;
+	};
+};
 	objectVersion = 46;
 	objects = {
 
