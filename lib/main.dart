@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
 import 'pages/splash_screen.page.dart';
@@ -7,16 +9,19 @@ const myTask = "syncWithTheBackEnd";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
-  await Workmanager.initialize(callbackDispatcher,isInDebugMode: true);
-  print('init work manager');
-  await Workmanager.registerPeriodicTask(
-    "1",
-    myTask, //This is the value that will be returned in the callbackDispatcher
-    frequency: Duration(minutes: 15),
-  );
+  if (Platform.isAndroid) {
+    await Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+    print('init work manager');
+    await Workmanager.registerPeriodicTask(
+      "1",
+      myTask, //This is the value that will be returned in the callbackDispatcher
+      frequency: Duration(minutes: 15),
+    );
+  }
 }
+
 void callbackDispatcher() {
-  Workmanager.executeTask((task,inputdata) {
+  Workmanager.executeTask((task, inputdata) {
     switch (task) {
       case myTask:
         print("this method was called from native!");
@@ -31,7 +36,6 @@ void callbackDispatcher() {
   });
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -45,4 +49,3 @@ class MyApp extends StatelessWidget {
         home: SplashPage());
   }
 }
-
