@@ -34,7 +34,7 @@ class NoticiasBloc {
         List<NoticiaModel> noticiasList = noticias.map((model) => NoticiaModel.fromJson(model)).toList();
         _streamController.sink.add(noticiasList);
         }else{
-          throw Exception('Não foi possível obter as noticias offline');
+          _streamController.addError('Não foi possível obter as noticias offline');
         }
        } catch (e) {
           _streamController.addError(e);
