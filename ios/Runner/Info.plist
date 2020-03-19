@@ -35,6 +35,7 @@
 	<key>UIBackgroundModes</key>
     <array>
 	    <string>fetch</string>
+		<string>processing</string>
     </array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -45,5 +46,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>Permitted background task scheduler identifiers</key>
+	<array>
+		<string>com.transistorsoft.fetch</string>
+		<string>com.transistorsoft.customtask</string>
+	</array>
 </dict>
 </plist>

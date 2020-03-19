@@ -123,6 +123,5 @@ class _ParticipantesPageState extends State<ParticipantesPage> with AutomaticKee
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

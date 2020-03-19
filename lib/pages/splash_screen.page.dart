@@ -51,7 +51,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void _loadUser() async {
     UsuarioModel usuario = await UsuarioBloc().loadUsuario();
-    await Future.delayed(Duration(milliseconds: 1500));
+    await Future.delayed(Duration(milliseconds: 1000));
     if (usuario != null) {
       Navigator.pushReplacement(
         context,
