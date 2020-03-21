@@ -17,7 +17,7 @@ class _NoticiasPageState extends State<NoticiasPage>
 
   @override
   void initState() {
-    _noticiasBloc = new NoticiasBloc();
+    _noticiasBloc = NoticiasBloc.instance;
     _noticiaStream = _noticiasBloc.noticiaStream;
     _noticiasBloc.load();
     super.initState();

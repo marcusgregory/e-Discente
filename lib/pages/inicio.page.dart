@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +23,10 @@ class _InicioPageState extends State<InicioPage> {
     BoletimPage(),
     PerfilScreen(),
   ];
+  int onlineFlag = 0;
   PageController pageController = PageController();
-  var listenConnection;
+  StreamSubscription<DataConnectionStatus> listenConnection;
+  final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
 
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
@@ -56,23 +60,78 @@ class _InicioPageState extends State<InicioPage> {
 
   @override
   void initState() {
+    listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
+      switch (status) {
+        case DataConnectionStatus.connected:
+          scaffoldStateKey.currentState
+              .removeCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+          if (onlineFlag > 0) {
+            scaffoldStateKey.currentState.showSnackBar(
+              SnackBar(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                          color: Colors.green, shape: BoxShape.circle),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('Agora você está online.'),
+                  ],
+                ),
+              ),
+              // SnackBar
+            );
+          }
+          break;
+        case DataConnectionStatus.disconnected:
+          onlineFlag++;
+          scaffoldStateKey.currentState.showSnackBar(
+            SnackBar(
+              duration: Duration(minutes: 5),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                        color: Colors.red, shape: BoxShape.circle),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text('Você está offline.'),
+                ],
+              ),
+            ), // SnackBar
+          );
+          break;
+      }
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    listenConnection.stop();
+    listenConnection.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: scaffoldStateKey,
         appBar: AppBar(
           title: AnimatedBuilder(
             animation: pageController,
             builder: (context, widget) {
-              int indexPage = pageController.page!=null ? pageController.page.round() : 0;
+              int indexPage =
+                  pageController.page != null ? pageController.page.round() : 0;
               return Text(
                   ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]);
             },
@@ -114,36 +173,17 @@ class _InicioPageState extends State<InicioPage> {
             )
           ],
         ),
-        body: Builder(builder: (BuildContext context) {
-          listenConnection =
-              DataConnectionChecker().onStatusChange.forEach((status) {
-            switch (status) {
-              case DataConnectionStatus.connected:
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Você está online.'),
-                  ), // SnackBar
-                );
-                break;
-              case DataConnectionStatus.disconnected:
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Você está offline.'),
-                  ), // SnackBar
-                );
-                break;
-            }
-          });
-          return PageView(
-            controller: pageController,
-            children: _children,
-            physics: NeverScrollableScrollPhysics(),
-          );
-        }),
+        body: PageView(
+          controller: pageController,
+          children: _children,
+          physics: NeverScrollableScrollPhysics(),
+        ),
         bottomNavigationBar: AnimatedBuilder(
           animation: pageController,
           builder: (context, widget) {
-            return _bottomNavigationBar(pageController.page!=null ? pageController.page.round() : 0, _onItemTapped);
+            return _bottomNavigationBar(
+                pageController.page != null ? pageController.page.round() : 0,
+                _onItemTapped);
           },
         ));
   }

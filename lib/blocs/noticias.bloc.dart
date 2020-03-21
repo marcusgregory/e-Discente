@@ -6,6 +6,14 @@ import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/repositories/noticias.repository.dart';
 
 class NoticiasBloc {
+  NoticiasBloc._();
+  
+  static NoticiasBloc _instance;
+
+  static NoticiasBloc get instance {
+    return _instance ??= NoticiasBloc._();
+  }
+
   StreamController<List<NoticiaModel>> _streamController = StreamController();
 
   Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
@@ -25,18 +33,20 @@ class NoticiasBloc {
         } catch (e) {
           _streamController.addError(e);
         }
-      }else{
+      } else {
         try {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String noticiasPref = prefs.getString('noticias');
-        if (noticiasPref != null) {
-        Iterable noticias =jsonDecode(noticiasPref);
-        List<NoticiaModel> noticiasList = noticias.map((model) => NoticiaModel.fromJson(model)).toList();
-        _streamController.sink.add(noticiasList);
-        }else{
-          _streamController.addError('Não foi possível obter as noticias offline');
-        }
-       } catch (e) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String noticiasPref = prefs.getString('noticias');
+          if (noticiasPref != null) {
+            Iterable noticias = jsonDecode(noticiasPref);
+            List<NoticiaModel> noticiasList =
+                noticias.map((model) => NoticiaModel.fromJson(model)).toList();
+            _streamController.sink.add(noticiasList);
+          } else {
+            _streamController
+                .addError('Não foi possível obter as noticias offline');
+          }
+        } catch (e) {
           _streamController.addError(e);
         }
       }

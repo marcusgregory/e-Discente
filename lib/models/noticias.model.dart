@@ -16,6 +16,16 @@ class NoticiaModel {
       this.resumo,
       this.imagem});
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NoticiaModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          url == other.url;
+  @override
+  int get hashCode => id+url.hashCode;
+
   NoticiaModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     url = json['url'];
