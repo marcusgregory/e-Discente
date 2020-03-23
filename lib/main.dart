@@ -10,32 +10,29 @@ import 'repositories/noticias.repository.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+var initializationSettingsIOS = IOSInitializationSettings();
+var initializationSettings = InitializationSettings(
+    initializationSettingsAndroid, initializationSettingsIOS);
+    
 
- Future<void> _showNotification(int numNoticias) async {
+Future<void> showNotification(int numNoticias) async {
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'event_new_notice', 'Noticias', '',
+      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+      0,
+      'Notícias',
+      numNoticias <= 1
+          ? '$numNoticias nova notícia foi postada no portal Unilab'
+          : '$numNoticias novas notícias foram postadas no portal Unilab',
+      platformChannelSpecifics,
+      payload: '');
+}
 
-  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-  var initializationSettingsIOS = IOSInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,);
-  var initializationSettings = InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-  });
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'event_new_notice', 'Noticias','',
-        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'Notícias', numNoticias<=1? '$numNoticias nova notícia foi postada no portal Unilab':'$numNoticias novas notícias foram postadas no portal Unilab', platformChannelSpecifics,
-        payload: '');
-  }
 void backgroundFetchHeadlessTask(String taskId) async {
   print('[BackgroundFetch] evento recebido.');
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -46,13 +43,13 @@ void backgroundFetchHeadlessTask(String taskId) async {
     Iterable noticias = jsonDecode(noticiasPref);
     List<NoticiaModel> noticiasAntigas =
         noticias.map((model) => NoticiaModel.fromJson(model)).toList();
-    noticiasAntigas.forEach((i) => noticiasAtuais.remove(i));
+    noticiasAntigas.forEach(noticiasAtuais.remove);
     noticiasNovas = noticiasAtuais;
   }
   print(noticiasNovas.length);
   if (noticiasNovas.length > 0) {
     print('[BackgroundFetch] novas noticias.');
-    _showNotification(noticiasNovas.length);
+    showNotification(noticiasNovas.length);
   }
 
   BackgroundFetch.finish(taskId);
@@ -61,6 +58,12 @@ void backgroundFetchHeadlessTask(String taskId) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
+   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+  });
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   BackgroundFetch.configure(
       BackgroundFetchConfig(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/pages/boletim.page.dart';
 import 'package:uni_discente/pages/login.page.dart';
@@ -57,7 +58,22 @@ class _InicioPageState extends State<InicioPage> {
               backgroundColor: Colors.red)
         ],
       );
+Future<void> showNotification() async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'event_teste', 'Teste', '',
+      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+      0,
+      'Teste','Notificação de teste',
+      platformChannelSpecifics,
+      payload: '');
+}
   @override
   void initState() {
     listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
@@ -132,8 +148,13 @@ class _InicioPageState extends State<InicioPage> {
             builder: (context, widget) {
               int indexPage =
                   pageController.page != null ? pageController.page.round() : 0;
-              return Text(
-                  ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]);
+              return GestureDetector(
+                              child: Text(
+                    ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]),
+                    onLongPress: (){
+                      showNotification();
+                    },
+              );
             },
           ),
           elevation: 1.0,
@@ -170,6 +191,7 @@ class _InicioPageState extends State<InicioPage> {
                     MaterialPageRoute(
                         builder: (BuildContext context) => LoginPage()));
               },
+              
             )
           ],
         ),
