@@ -59,6 +59,7 @@ class _InicioPageState extends State<InicioPage> {
         ],
       );
 Future<void> showNotification() async {
+  await Future.delayed(Duration(seconds: 10));
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
@@ -154,6 +155,7 @@ Future<void> showNotification() async {
                     onLongPress: (){
                       showNotification();
                     },
+                    
               );
             },
           ),
