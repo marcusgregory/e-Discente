@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
@@ -25,12 +24,36 @@ class _InicioPageState extends State<InicioPage> {
     PerfilScreen(),
   ];
   int onlineFlag = 0;
+   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'event_teste', 'Teste', '',
+        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  
   PageController pageController = PageController();
   StreamSubscription<DataConnectionStatus> listenConnection;
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
 
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
+  }
+
+  Future<void> showNotification() async {
+     var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Teste', 'Notificação de teste', platformChannelSpecifics,
+        payload: '');
+        var scheduledNotificationDateTime =
+        DateTime.now().add(Duration(seconds: 10));
+        await flutterLocalNotificationsPlugin.schedule(
+    0,
+    'scheduled titulo',
+    'scheduled corpo',
+    scheduledNotificationDateTime,
+    platformChannelSpecifics);
   }
 
   Widget _bottomNavigationBar(int currentIndex, Function onTap) =>
@@ -58,23 +81,7 @@ class _InicioPageState extends State<InicioPage> {
               backgroundColor: Colors.red)
         ],
       );
-Future<void> showNotification() async {
-  await Future.delayed(Duration(seconds: 10));
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'event_teste', 'Teste', '',
-      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(
-      0,
-      'Teste','Notificação de teste',
-      platformChannelSpecifics,
-      payload: '');
-}
   @override
   void initState() {
     listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
@@ -85,6 +92,7 @@ Future<void> showNotification() async {
           if (onlineFlag > 0) {
             scaffoldStateKey.currentState.showSnackBar(
               SnackBar(
+                backgroundColor: Colors.green,
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -97,7 +105,7 @@ Future<void> showNotification() async {
                     SizedBox(
                       width: 5,
                     ),
-                    Text('Agora você está online.'),
+                    Text('Agora está online.'),
                   ],
                 ),
               ),
@@ -122,7 +130,7 @@ Future<void> showNotification() async {
                   SizedBox(
                     width: 5,
                   ),
-                  Text('Você está offline.'),
+                  Text('UniDiscente está offline.'),
                 ],
               ),
             ), // SnackBar
@@ -149,13 +157,12 @@ Future<void> showNotification() async {
             builder: (context, widget) {
               int indexPage =
                   pageController.page != null ? pageController.page.round() : 0;
-              return GestureDetector(
+             return GestureDetector(
                               child: Text(
                     ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]),
-                    onLongPress: (){
+                    onDoubleTap: (){
                       showNotification();
                     },
-                    
               );
             },
           ),
@@ -193,7 +200,6 @@ Future<void> showNotification() async {
                     MaterialPageRoute(
                         builder: (BuildContext context) => LoginPage()));
               },
-              
             )
           ],
         ),

@@ -25,7 +25,9 @@ Future<void> showNotification(int numNoticias) async {
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
       0,
-      'Notícias',
+      numNoticias <= 1
+          ? 'Nova Notícia'
+          : 'Novas Notícias',
       numNoticias <= 1
           ? '$numNoticias nova notícia foi postada no portal Unilab'
           : '$numNoticias novas notícias foram postadas no portal Unilab',
@@ -64,7 +66,7 @@ void main() async {
       debugPrint('notification payload: ' + payload);
     }
   });
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  
   BackgroundFetch.configure(
       BackgroundFetchConfig(
           minimumFetchInterval: 15,
@@ -77,6 +79,7 @@ void main() async {
           requiresDeviceIdle: false,
           requiredNetworkType: NetworkType.ANY),
       backgroundFetchHeadlessTask);
+    BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class MyApp extends StatelessWidget {

@@ -6,13 +6,13 @@ import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/repositories/noticias.repository.dart';
 
 class NoticiasBloc {
-  NoticiasBloc._();
+  // NoticiasBloc._();
   
-  static NoticiasBloc _instance;
+  // static NoticiasBloc _instance;
 
-  static NoticiasBloc get instance {
-    return _instance ??= NoticiasBloc._();
-  }
+  // static NoticiasBloc get instance {
+  //   return _instance ??= NoticiasBloc._();
+  // }
 
   StreamController<List<NoticiaModel>> _streamController = StreamController();
 
