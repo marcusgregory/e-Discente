@@ -68,6 +68,8 @@ flutter:
    - assets/logo_unilab.png
    - assets/round_account_circle.png
    - assets/turma_item_list.png
+   - assets/profile_pic.png
+   - assets/profile_pic_large.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

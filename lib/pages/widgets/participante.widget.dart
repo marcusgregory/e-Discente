@@ -14,7 +14,7 @@ class ParticipanteWidget extends StatelessWidget {
     if (participante is DocenteModel) {
       DocenteModel docente = participante;
       return ListTile(
-        leading: imagemPerfil(docente.urlFoto),
+        leading: imagemPerfil(docente.urlFoto, 25),
         title: Text(
           docente.nome,
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -27,39 +27,67 @@ class ParticipanteWidget extends StatelessWidget {
     } else {
       DiscenteModel discente = participante;
       return ListTile(
-        leading: imagemPerfil(discente.urlFoto),
+        leading: imagemPerfil(discente.urlFoto, 20),
         title: Text(
           discente.nome,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14.8,
+          ),
         ),
         subtitle: Text(
-          discente.curso,
+          discente.email,
           style: TextStyle(fontSize: 13.5),
         ),
       );
     }
   }
 
-  Widget imagemPerfil(String url) {
-    return CircleAvatar(
-      radius: 25,
-      backgroundColor: Colors.transparent,
-      child: CachedNetworkImage(
-        imageUrl:
-            url,
-        imageBuilder: (context, imageProvider) => Container(
+  Widget imagemPerfil(String url, double radius) {
+    if (url.contains('no_picture')) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: Colors.grey[200],
+        child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            image: DecorationImage(
+                image: Image.asset('assets/profile_pic.png').image,
+                fit: BoxFit.cover),
           ),
         ),
-        placeholder: (context, url) => Icon(
-          Icons.account_circle,
-          color: Colors.grey[200],
-        ),
-        errorWidget: (context, url, error) =>
-            Icon(Icons.account_circle, color: Colors.grey[200]),
-      ),
-    );
+      );
+    } else {
+      return Stack(
+        children: <Widget>[
+          CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.grey[200],
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: Image.asset('assets/profile_pic.png').image,
+                    fit: BoxFit.cover),
+              ),
+            ),
+          ),
+          CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.transparent,
+            child: CachedNetworkImage(
+              imageUrl: url,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
   }
 }

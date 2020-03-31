@@ -78,25 +78,39 @@ class _PerfilScreenState extends State<PerfilScreen>
   bool get wantKeepAlive => true;
 
   Widget getProfilePic(String url) {
-    return CircleAvatar(
-      radius: 60,
-      backgroundColor: Colors.transparent,
-      child: CachedNetworkImage(
-        imageUrl: url,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+    return Stack(
+      children: <Widget>[
+        Center(
+          child: CircleAvatar(
+          radius: 58,
+          backgroundColor: Colors.grey[200],
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  image: Image.asset('assets/profile_pic.png').image,
+                  fit: BoxFit.cover),
+            ),
+          ),
+      ),
+        ),
+        Center(
+          child: CircleAvatar(
+            radius: 58,
+            backgroundColor: Colors.transparent,
+            child: CachedNetworkImage(
+              imageUrl: url,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+            ),
           ),
         ),
-        placeholder: (context, url) => Icon(
-          Icons.account_circle,
-          color: Colors.grey[300],
-          size: 120,
-        ),
-        errorWidget: (context, url, error) =>
-            Icon(Icons.account_circle, color: Colors.grey[300], size: 120),
-      ),
+      ],
     );
   }
 
@@ -106,41 +120,43 @@ class _PerfilScreenState extends State<PerfilScreen>
         SizedBox(
           height: 15,
         ),
-        Observer(builder: (BuildContext context) {
-          final future = store.perfilDiscente;
-          switch (future.status) {
-            case FutureStatus.pending:
-              return CircularPercentIndicator(
-                radius: 131,
-                lineWidth: 5.0,
-                center: getProfilePic(Settings.usuario.urlImagemPerfil),
-                percent: 0.0,
-                animation: true,
-                animationDuration: 500,
-                progressColor: Theme.of(context).accentColor,
-                circularStrokeCap: CircularStrokeCap.round,
-                backgroundColor: Colors.transparent,
-              );
-              break;
-            case FutureStatus.fulfilled:
-              return CircularPercentIndicator(
-                radius: 131,
-                lineWidth: 5.0,
-                center: getProfilePic(Settings.usuario.urlImagemPerfil),
-                percent: int.parse(future.result.integralizacao) / 100,
-                animation: true,
-                animationDuration: 800,
-                progressColor: Theme.of(context).accentColor,
-                circularStrokeCap: CircularStrokeCap.round,
-                backgroundColor: Colors.transparent,
-              );
-              break;
-            case FutureStatus.rejected:
-              return getProfilePic(Settings.usuario.urlImagemPerfil);
-              break;
-          }
-          return getProfilePic(Settings.usuario.urlImagemPerfil);
-        }),
+        Center(
+          child: Observer(builder: (BuildContext context) {
+            final future = store.perfilDiscente;
+            switch (future.status) {
+              case FutureStatus.pending:
+                return CircularPercentIndicator(
+                  radius: 130,
+                  lineWidth: 5.0,
+                  center: getProfilePic(Settings.usuario.urlImagemPerfil),
+                  percent: 0.0,
+                  animation: true,
+                  animationDuration: 500,
+                  progressColor: Theme.of(context).accentColor,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  backgroundColor: Colors.transparent,
+                );
+                break;
+              case FutureStatus.fulfilled:
+                return CircularPercentIndicator(
+                  radius: 130,
+                  lineWidth: 5.0,
+                  center: getProfilePic(Settings.usuario.urlImagemPerfil),
+                  percent: int.parse(future.result.integralizacao) / 100,
+                  animation: true,
+                  animationDuration: 800,
+                  progressColor: Theme.of(context).accentColor,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  backgroundColor: Colors.transparent,
+                );
+                break;
+              case FutureStatus.rejected:
+                return getProfilePic(Settings.usuario.urlImagemPerfil);
+                break;
+            }
+            return getProfilePic(Settings.usuario.urlImagemPerfil);
+          }),
+        ),
         //getProfilePic(Settings.usuario.urlImagemPerfil),
         SizedBox(
           height: 15,
@@ -277,7 +293,8 @@ class _PerfilScreenState extends State<PerfilScreen>
               subtitle: Text(perfilModel.iDE),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.iDE));
-                ToastUtil.showShortToast('IDE copiado para área de transferência.');
+                ToastUtil.showShortToast(
+                    'IDE copiado para área de transferência.');
               },
             )
           ],
