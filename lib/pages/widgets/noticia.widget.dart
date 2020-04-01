@@ -25,8 +25,8 @@ class Noticia extends StatelessWidget {
     this._context = context;
     return Card(
       clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(
-          left: 20.0, right: 20.0, bottom: 10.0, top: 10.0),
+      margin: EdgeInsets.only(
+          left:20, right: 20, bottom: 10.0, top: 10.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 2.0,
       child: InkWell(
@@ -48,7 +48,7 @@ class Noticia extends StatelessWidget {
 
   Widget _getListTile() {
     // Foi adicionado dentro de Container para adicionar altura fixa.
-    return new Column(
+    return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[

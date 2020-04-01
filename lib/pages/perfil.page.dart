@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uni_discente/models/perfil.model.dart';
+import 'package:uni_discente/pages/widgets/photo_view.widget.dart';
 import 'package:uni_discente/stores/perfil.store.dart';
 import 'package:uni_discente/util/toast.util.dart';
 import '../settings.dart';
@@ -82,29 +83,42 @@ class _PerfilScreenState extends State<PerfilScreen>
       children: <Widget>[
         Center(
           child: CircleAvatar(
-          radius: 58,
-          backgroundColor: Colors.grey[200],
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  image: Image.asset('assets/profile_pic.png').image,
-                  fit: BoxFit.cover),
+            radius: 58,
+            backgroundColor: Colors.grey[200],
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: Image.asset('assets/profile_pic.png').image,
+                    fit: BoxFit.cover),
+              ),
             ),
           ),
-      ),
         ),
         Center(
           child: CircleAvatar(
             radius: 58,
             backgroundColor: Colors.transparent,
-            child: CachedNetworkImage(
-              imageUrl: url,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            child: Hero(
+                tag: url,
+              child: CachedNetworkImage(
+                imageUrl: url,
+                imageBuilder: (context, imageProvider) => Material(
+                  shape: CircleBorder(),
+                  clipBehavior: Clip.hardEdge,
+                  color: Colors.transparent,
+                  child: Ink.image(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PhotoViewWidget(url)));
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),

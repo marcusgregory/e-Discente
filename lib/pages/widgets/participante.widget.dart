@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uni_discente/models/discente.model.dart';
 import 'package:uni_discente/models/docente.model.dart';
 import 'package:uni_discente/models/participante.model.dart';
+import 'package:uni_discente/pages/widgets/photo_view.widget.dart';
 
 class ParticipanteWidget extends StatelessWidget {
   final ParticipanteModel participante;
@@ -75,13 +76,26 @@ class ParticipanteWidget extends StatelessWidget {
           CircleAvatar(
             radius: radius,
             backgroundColor: Colors.transparent,
-            child: CachedNetworkImage(
-              imageUrl: url,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            child: Hero(
+              tag: url,
+              child: CachedNetworkImage(
+                imageUrl: url,
+                imageBuilder: (context, imageProvider) => Material(
+                  shape: CircleBorder(),
+                  clipBehavior: Clip.hardEdge,
+                  color: Colors.transparent,
+                  child: Ink.image(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PhotoViewWidget(url)));
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -42,117 +42,115 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                 case ConnectionState.done:
                   if (snapshot.hasData) {
                     ParticipantesModel participantes = snapshot.data;
-                    return ListView.builder(
-                      itemCount: 1,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 10,
+                    return CustomScrollView(
+                      slivers: <Widget>[
+                        SliverList(
+                          delegate: SliverChildListDelegate([
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Card(
+                              clipBehavior: Clip.antiAlias,
+                              margin: const EdgeInsets.only(
+                                left: 10.0,
+                                right: 10.0,
+                                bottom: 10.0,
                               ),
-                              Card(
-                                clipBehavior: Clip.antiAlias,
-                                margin: const EdgeInsets.only(
-                                  left: 10.0,
-                                  right: 10.0,
-                                  bottom: 10.0,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0)),
-                                elevation: 2.0,
-                                child: Column(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      height: 10,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              elevation: 2.0,
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    participantes.docentes.length == 1
+                                        ? 'Docente'
+                                        : 'Docentes',
+                                    style: Theme.of(context).textTheme.body2,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    child: Divider(
+                                      color: Colors.black26,
                                     ),
-                                    Text(participantes.docentes.length==1 ?
-                                      'Docente' : 'Docentes',
-                                      style: Theme.of(context).textTheme.body2,
-                                    ),
-                                    Padding(
+                                  ),
+                                  ListView.separated(
+                                    separatorBuilder: (context, index) =>
+                                        Padding(
                                       padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
+                                          left: 80, right: 15),
                                       child: Divider(
                                         color: Colors.black26,
                                       ),
                                     ),
-                                    ListView.separated(
-                                      separatorBuilder: (context, index) =>
-                                          Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 80, right: 15),
-                                        child: Divider(
-                                          color: Colors.black26,
-                                        ),
-                                      ),
-                                      itemCount: participantes.docentes.length,
-                                      itemBuilder: (context, position) {
-                                        return ParticipanteWidget(
-                                            participantes.docentes[position]);
-                                      },
-                                      shrinkWrap:
-                                          true, // todo comment this out and check the result
-                                      physics:
-                                          ClampingScrollPhysics(), // todo comment this out and check the result
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                ),
+                                    itemCount: participantes.docentes.length,
+                                    itemBuilder: (context, position) {
+                                      return ParticipanteWidget(
+                                          participantes.docentes[position]);
+                                    },
+                                    shrinkWrap:
+                                        true, // todo comment this out and check the result
+                                    physics:
+                                        ClampingScrollPhysics(), // todo comment this out and check the result
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: 20,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Card(
+                              clipBehavior: Clip.antiAlias,
+                              margin: const EdgeInsets.only(
+                                left: 10.0,
+                                right: 10.0,
+                                bottom: 10.0,
                               ),
-                              Card(
-                                clipBehavior: Clip.antiAlias,
-                                margin: const EdgeInsets.only(
-                                  left: 10.0,
-                                  right: 10.0,
-                                  bottom: 10.0,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0)),
-                                elevation: 2.0,
-                                child: Column(
-                                  children: <Widget>[
-                                    SizedBox(
-                                      height: 10,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              elevation: 2.0,
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    participantes.discentes.length == 1
+                                        ? 'Discente'
+                                        : 'Discentes',
+                                    style: Theme.of(context).textTheme.body2,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    child: Divider(
+                                      color: Colors.black26,
                                     ),
-                                    Text(participantes.discentes.length==1 ?
-                                      'Discente' : 'Discentes',
-                                      style: Theme.of(context).textTheme.body2,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      child: Divider(
-                                        color: Colors.black26,
-                                      ),
-                                    ),
-                                    ListView.builder(
-                                      itemCount: participantes.discentes.length,
-                                      itemBuilder: (context, position) {
-                                        return ParticipanteWidget(
-                                            participantes.discentes[position]);
-                                      },
-                                      shrinkWrap:
-                                          true, 
-                                      physics:
-                                          ClampingScrollPhysics(),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
+                                  ),
+                                  ListView.builder(
+                                    itemCount: participantes.discentes.length,
+                                    itemBuilder: (context, position) {
+                                      return ParticipanteWidget(
+                                          participantes.discentes[position]);
+                                    },
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics(),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  )
+                                ],
+                              ),
+                            )
+                          ]),
+                        ),
+                      ],
                     );
                   }
                   break;

@@ -14,7 +14,7 @@ class NoticiasBloc {
   //   return _instance ??= NoticiasBloc._();
   // }
 
-  StreamController<List<NoticiaModel>> _streamController = StreamController();
+ StreamController<List<NoticiaModel>> _streamController = StreamController.broadcast();
 
   Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
 
@@ -55,5 +55,7 @@ class NoticiasBloc {
 
   dispose() {
     _streamController.close();
+    _streamController.sink.close();
+    
   }
 }
