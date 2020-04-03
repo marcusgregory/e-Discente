@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:uni_discente/models/aulas.model.dart';
+import 'package:uni_discente/pages/notas_turma.page.dart';
 import 'package:uni_discente/pages/participantes.page.dart';
 import 'package:uni_discente/stores/aulas.store.dart';
 import 'package:uni_discente/util/toast.util.dart';
@@ -32,9 +33,11 @@ class _AulasPageState extends State<AulasPage> {
       child: Scaffold(
         appBar: AppBar(title: Text(widget._titulo),
         bottom: TabBar(
+          
               tabs: [
                 Tab(text: 'CONTEÚDOS',),
-                Tab(text: 'PARTICIPANTES',),
+                Tab(text: 'MEMBROS',),
+                Tab(text: 'NOTAS',),
               ],
             ),
         ),
@@ -42,10 +45,11 @@ class _AulasPageState extends State<AulasPage> {
             children: [
               myWidgetAulas(),
               ParticipantesPage(widget._idTurma),
+              NotasTurmaPage(widget._idTurma)
             ],
           ),
       ),
-      length: 2,
+      length: 3,
     );
   }
 
@@ -79,6 +83,7 @@ class _AulasPageState extends State<AulasPage> {
               List<AulaModel> aulas = future.result;
               return Scrollbar(
                 child: ListView.builder(
+                  addAutomaticKeepAlives: true,
                   itemCount: aulas.length,
                   itemBuilder: (BuildContext context, int index) {
                     AulaModel aula = aulas[index];

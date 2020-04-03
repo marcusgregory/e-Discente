@@ -14,7 +14,7 @@ class NoticiasBloc {
   //   return _instance ??= NoticiasBloc._();
   // }
 
- StreamController<List<NoticiaModel>> _streamController = StreamController.broadcast();
+ StreamController<List<NoticiaModel>> _streamController = StreamController();
 
   Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
 

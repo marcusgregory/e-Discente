@@ -26,7 +26,7 @@ class Noticia extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.only(
-          left:20, right: 20, bottom: 10.0, top: 10.0),
+          left:10, right: 10, bottom: 10.0, top: 10.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 2.0,
       child: InkWell(

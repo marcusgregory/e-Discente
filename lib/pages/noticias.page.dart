@@ -25,15 +25,16 @@ class _NoticiasPageState extends State<NoticiasPage>
 
   @override
   void dispose() {
+    _noticiaStream = null;
     _noticiasBloc.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-        child: StreamBuilder<List<NoticiaModel>>(
+    return StreamBuilder<List<NoticiaModel>>(
       stream: _noticiaStream,
       builder:
           (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
@@ -56,8 +57,6 @@ class _NoticiasPageState extends State<NoticiasPage>
               print('hasError');
               ToastUtil.showShortToast('${snapshot.error}');
               return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   IconButton(
                     onPressed: () {
@@ -80,7 +79,7 @@ class _NoticiasPageState extends State<NoticiasPage>
           child: CircularProgressIndicator(),
         );
       },
-    ));
+    );
   }
 
   @override
@@ -94,7 +93,22 @@ class _NoticiasPageState extends State<NoticiasPage>
           shrinkWrap: true,
           itemCount: noticias.length,
           itemBuilder: (BuildContext context, int index) {
-            return Noticia(noticias[index]);
+            return OrientationBuilder(
+              builder: (context, orientation) {
+                if (MediaQuery.of(context).orientation ==
+                    Orientation.portrait) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Noticia(noticias[index]),
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 110, right: 110),
+                    child: Noticia(noticias[index]),
+                  );
+                }
+              },
+            );
           },
         ),
       ),

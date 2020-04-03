@@ -85,10 +85,12 @@ class _InicioPageState extends State<InicioPage> {
   @override
   void initState() {
     listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
+      scaffoldStateKey.currentState
+              .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
       switch (status) {
         case DataConnectionStatus.connected:
           scaffoldStateKey.currentState
-              .removeCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+              .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
           if (onlineFlag > 0) {
             scaffoldStateKey.currentState.showSnackBar(
               SnackBar(
@@ -117,7 +119,7 @@ class _InicioPageState extends State<InicioPage> {
           onlineFlag++;
           scaffoldStateKey.currentState.showSnackBar(
             SnackBar(
-              duration: Duration(minutes: 5),
+              duration: Duration(seconds: 30),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

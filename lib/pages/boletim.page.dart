@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:uni_discente/models/boletim.model.dart';
+import 'package:uni_discente/pages/widgets/item_nota.widget.dart';
 import 'package:uni_discente/stores/boletim.store.dart';
+
+import 'widgets/balao_nota.widget.dart';
 
 class BoletimPage extends StatefulWidget {
   @override
@@ -110,7 +113,7 @@ class _BoletimPageState extends State<BoletimPage>
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 2.0,
       child: ExpansionTile(
-        leading: balaoNota(boletim.resultado),
+        leading: BalaoNota(boletim.resultado),
         title: Text(
           boletim.disciplina,
           style: TextStyle(
@@ -126,15 +129,15 @@ class _BoletimPageState extends State<BoletimPage>
               color: Colors.black38,
             ),
           ),
-          itemNota('Nota 1', boletim.nota1.isEmpty ? '-' : boletim.nota1),
-          itemNota('Nota 2', boletim.nota2.isEmpty ? '-' : boletim.nota2),
-          itemNota('Nota 3', boletim.nota3.isEmpty ? '-' : boletim.nota3),
+          ItemNota('Nota 1', boletim.nota1.isEmpty ? '-' : boletim.nota1),
+          ItemNota('Nota 2', boletim.nota2.isEmpty ? '-' : boletim.nota2),
+          ItemNota('Nota 3', boletim.nota3.isEmpty ? '-' : boletim.nota3),
           if (boletim.nota4.isNotEmpty)
-            itemNota('Nota 4', boletim.nota4.isEmpty ? '-' : boletim.nota4),
+            ItemNota('Nota 4', boletim.nota4.isEmpty ? '-' : boletim.nota4),
           if (boletim.nota5.isNotEmpty)
-            itemNota('Nota 5', boletim.nota5.isEmpty ? '-' : boletim.nota5),
+            ItemNota('Nota 5', boletim.nota5.isEmpty ? '-' : boletim.nota5),
           if (boletim.recuperacao.isNotEmpty)
-            itemNota('Avaliação Final',
+            ItemNota('Avaliação Final',
                 boletim.recuperacao.isEmpty ? '-' : boletim.recuperacao),
           Padding(
             padding:
@@ -143,7 +146,7 @@ class _BoletimPageState extends State<BoletimPage>
               color: Colors.black38,
             ),
           ),
-          itemNota('Resultado Final', boletim.resultado),
+          ItemNota('Resultado Final', boletim.resultado),
           SizedBox(
             height: 4,
           )
@@ -152,39 +155,6 @@ class _BoletimPageState extends State<BoletimPage>
     );
   }
 
-  Widget balaoNota(String nota) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          width: 30.0,
-          height: 30.0,
-          decoration: BoxDecoration(
-            color: (nota.isEmpty || nota.contains('-'))
-                ? Colors.grey
-                : double.parse(nota.replaceAll(",", ".")) >= 7
-                    ? Colors.green[400]
-                    : Colors.orange,
-            shape: BoxShape.circle,
-          ),
-        ),
-        Text(nota,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
-      ],
-    );
-  }
-
-  Widget itemNota(String titulo, String nota) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: ListTile(
-          leading: balaoNota(nota),
-          title: Text(titulo),
-        ),
-      ),
-    );
-  }
 
   @override
   bool get wantKeepAlive => true;
