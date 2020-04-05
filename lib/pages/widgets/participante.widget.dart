@@ -14,15 +14,18 @@ class ParticipanteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (participante is DocenteModel) {
       DocenteModel docente = participante;
-      return ListTile(
-        leading: imagemPerfil(docente.urlFoto, 25),
-        title: Text(
-          docente.nome,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-          docente.departamento,
-          style: TextStyle(fontSize: 13.5),
+      return Padding(
+        padding: const EdgeInsets.only(top: 10,bottom: 10),
+        child: ListTile(
+          leading: imagemPerfil(docente.urlFoto, 25),
+          title: Text(
+            docente.nome,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            docente.departamento,
+            style: TextStyle(fontSize: 13.5),
+          ),
         ),
       );
     } else {

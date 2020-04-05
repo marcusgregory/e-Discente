@@ -3,116 +3,98 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:uni_discente/models/aulas.model.dart';
-import 'package:uni_discente/pages/notas_turma.page.dart';
-import 'package:uni_discente/pages/participantes.page.dart';
 import 'package:uni_discente/stores/aulas.store.dart';
 import 'package:uni_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AulasPage extends StatefulWidget {
-  final String _titulo;
+  final Aulas _aulasStore;
   final String _idTurma;
-
-  const AulasPage(this._titulo, this._idTurma);
-
+  AulasPage(this._aulasStore,this._idTurma);
   @override
   _AulasPageState createState() => _AulasPageState();
 }
 
-class _AulasPageState extends State<AulasPage> {
-  Aulas _aulasStore = Aulas();
+class _AulasPageState extends State<AulasPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
-    _aulasStore.loadAulas(widget._idTurma);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      child: Scaffold(
-        appBar: AppBar(title: Text(widget._titulo),
-        bottom: TabBar(
-          
-              tabs: [
-                Tab(text: 'CONTEÚDOS',),
-                Tab(text: 'MEMBROS',),
-                Tab(text: 'NOTAS',),
-              ],
-            ),
-        ),
-        body: TabBarView(
-            children: [
-              myWidgetAulas(),
-              ParticipantesPage(widget._idTurma),
-              NotasTurmaPage(widget._idTurma)
-            ],
-          ),
-      ),
-      length: 3,
+    super.build(context);
+    return SafeArea(
+      bottom: false,
+      top: false,
+      child: Container(
+          margin: EdgeInsets.only(bottom: 10),
+          child: Observer(builder: (_) {
+            final future = widget._aulasStore.aulas;
+            switch (future.status) {
+              case FutureStatus.pending:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+                break;
+              case FutureStatus.rejected:
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        widget._aulasStore.loadAulas(widget._idTurma);
+                      },
+                      icon: Icon(Icons.refresh),
+                    ),
+                    Text('Tentar novamente')
+                  ],
+                );
+                break;
+              case FutureStatus.fulfilled:
+                List<AulaModel> aulas = future.result;
+                return CustomScrollView(
+                  slivers: <Widget>[
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        AulaModel aula = aulas[index];
+                        return myExpansionTile(
+                            (index + 1).toString(), aula.titulo, aula.conteudo);
+                      }, childCount: aulas.length),
+                    )
+                  ],
+                );
+                break;
+            }
+            return Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                       widget._aulasStore.loadAulas(widget._idTurma);
+                      },
+                      icon: Icon(Icons.refresh),
+                    ),
+                    Text('Tentar novamente')
+                  ],
+                ),
+              ),
+            );
+          })),
     );
   }
 
-  Widget myWidgetAulas() {
-    return Container(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: Observer(builder: (_) {
-          final future = _aulasStore.aulas;
-          switch (future.status) {
-            case FutureStatus.pending:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-              break;
-            case FutureStatus.rejected:
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      _aulasStore.loadAulas(widget._idTurma);
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
-                  Text('Tentar novamente')
-                ],
-              );
-              break;
-            case FutureStatus.fulfilled:
-              List<AulaModel> aulas = future.result;
-              return Scrollbar(
-                child: ListView.builder(
-                  addAutomaticKeepAlives: true,
-                  itemCount: aulas.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    AulaModel aula = aulas[index];
-                    return myExpansionTile(
-                        (index + 1).toString(), aula.titulo, aula.conteudo);
-                  },
-                ),
-              );
-              break;
-          }
-          return Container(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      _aulasStore.loadAulas(widget._idTurma);
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
-                  Text('Tentar novamente')
-                ],
-              ),
-            ),
-          );
-        }));
-  }
+  @override
+  bool get wantKeepAlive => false;
 
   Widget myExpansionTile(String numero, String titulo, String conteudo) {
     return Card(
@@ -133,7 +115,9 @@ class _AulasPageState extends State<AulasPage> {
                 children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 15, right: 15, top: 0, bottom: 0),
+                        left: 15,
+                        right: 15,
+                      ),
                       child: Divider(
                         color: Colors.black38,
                       ),

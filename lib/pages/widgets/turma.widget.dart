@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:uni_discente/models/turma.model.dart';
-import 'package:uni_discente/pages/aulas.page.dart';
+import 'package:uni_discente/pages/turma.page.dart';
 
 class Turma extends StatelessWidget {
  final TurmaModel turma;
@@ -22,7 +22,7 @@ class Turma extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AulasPage(turma.nomeTurma,turma.idTurma)));
+                    builder: (context) => TurmaPage(turma.nomeTurma,turma.idTurma)));
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,

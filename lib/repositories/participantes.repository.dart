@@ -8,6 +8,7 @@ import '../settings.dart';
 class ParticipantesRepository{
    Future<ParticipantesModel> getParticipantes(String idTurma) async {
     try {
+      await Future.delayed(Duration(milliseconds: 1200));
       var url = '${Settings.apiURL}/sigaa/turma/$idTurma/participantes';
       http.Response response = await http.get(url, headers: {
         'jwt': Settings.usuario.token

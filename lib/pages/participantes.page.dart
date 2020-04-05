@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:uni_discente/models/participantes.model.dart';
 import 'package:uni_discente/pages/widgets/participante.widget.dart';
-import 'package:uni_discente/repositories/participantes.repository.dart';
 
 class ParticipantesPage extends StatefulWidget {
+  final Future<ParticipantesModel> _participantesFuture;
   final String _idTurma;
-  const ParticipantesPage(this._idTurma);
+  const ParticipantesPage(this._participantesFuture, this._idTurma);
   @override
   _ParticipantesPageState createState() => _ParticipantesPageState();
 }
 
 class _ParticipantesPageState extends State<ParticipantesPage>
     with AutomaticKeepAliveClientMixin {
-  Future<ParticipantesModel> participantesFuture;
   @override
   void initState() {
-    participantesFuture =
-        ParticipantesRepository().getParticipantes(widget._idTurma);
     super.initState();
   }
 
@@ -25,7 +22,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
     super.build(context);
     return Container(
         child: FutureBuilder(
-            future: participantesFuture,
+            future: widget._participantesFuture,
             builder: (BuildContext context,
                 AsyncSnapshot<ParticipantesModel> snapshot) {
               switch (snapshot.connectionState) {
@@ -41,115 +38,74 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                   break;
                 case ConnectionState.done:
                   if (snapshot.hasData) {
-                    ParticipantesModel participantes = snapshot.data;
+                    ParticipantesModel participantesModel = snapshot.data;
+                    List<dynamic> participantes = [
+                      ...participantesModel.docentes,
+                      ...participantesModel.discentes
+                    ];
                     return CustomScrollView(
                       slivers: <Widget>[
+                        SliverOverlapInjector(
+                            handle:
+                                NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                    context)),
                         SliverList(
-                          delegate: SliverChildListDelegate([
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Card(
-                              clipBehavior: Clip.antiAlias,
-                              margin: const EdgeInsets.only(
-                                left: 10.0,
-                                right: 10.0,
-                                bottom: 10.0,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0)),
-                              elevation: 2.0,
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    participantes.docentes.length == 1
-                                        ? 'Docente'
-                                        : 'Docentes',
-                                    style: Theme.of(context).textTheme.body2,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20, right: 20),
-                                    child: Divider(
-                                      color: Colors.black26,
+                            delegate:
+                                SliverChildBuilderDelegate((context, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Docentes',
+                                      style: Theme.of(context).textTheme.body2,
                                     ),
-                                  ),
-                                  ListView.separated(
-                                    separatorBuilder: (context, index) =>
-                                        Padding(
+                                    Padding(
                                       padding: const EdgeInsets.only(
-                                          left: 80, right: 15),
+                                          left: 20, right: 20),
                                       child: Divider(
-                                        color: Colors.black26,
+                                        color: Colors.grey[350],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          } else if (index ==
+                              participantesModel.docentes.length + 1) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                      child: Divider(
+                                        color: Colors.grey[350],
                                       ),
                                     ),
-                                    itemCount: participantes.docentes.length,
-                                    itemBuilder: (context, position) {
-                                      return ParticipanteWidget(
-                                          participantes.docentes[position]);
-                                    },
-                                    shrinkWrap:
-                                        true, // todo comment this out and check the result
-                                    physics:
-                                        ClampingScrollPhysics(), // todo comment this out and check the result
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Card(
-                              clipBehavior: Clip.antiAlias,
-                              margin: const EdgeInsets.only(
-                                left: 10.0,
-                                right: 10.0,
-                                bottom: 10.0,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0)),
-                              elevation: 2.0,
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    participantes.discentes.length == 1
-                                        ? 'Discente'
-                                        : 'Discentes',
-                                    style: Theme.of(context).textTheme.body2,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20, right: 20),
-                                    child: Divider(
-                                      color: Colors.black26,
+                                    Text(
+                                      'Discentes',
+                                      style: Theme.of(context).textTheme.body2,
                                     ),
-                                  ),
-                                  ListView.builder(
-                                    itemCount: participantes.discentes.length,
-                                    itemBuilder: (context, position) {
-                                      return ParticipanteWidget(
-                                          participantes.discentes[position]);
-                                    },
-                                    shrinkWrap: true,
-                                    physics: ClampingScrollPhysics(),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20),
+                                      child: Divider(
+                                        color: Colors.grey[350],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            )
-                          ]),
-                        ),
+                            );
+                          } else {
+                            return ParticipanteWidget(participantes[index - 1]);
+                          }
+                        }, childCount: participantes.length + 1)),
                       ],
                     );
                   }
@@ -160,5 +116,5 @@ class _ParticipantesPageState extends State<ParticipantesPage>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }
