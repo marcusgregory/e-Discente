@@ -56,6 +56,7 @@ class _AulasPageState extends State<AulasPage>
               case FutureStatus.fulfilled:
                 List<AulaModel> aulas = future.result;
                 return CustomScrollView(
+                  key: PageStorageKey('aulas:'+widget._idTurma),
                   slivers: <Widget>[
                     SliverOverlapInjector(
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
@@ -105,6 +106,7 @@ class _AulasPageState extends State<AulasPage>
         elevation: 2.0,
         child: conteudo.trim().isNotEmpty
             ? ExpansionTile(
+              key: PageStorageKey(numero),
                 leading: balao(numero),
                 title: Text(
                   titulo,
