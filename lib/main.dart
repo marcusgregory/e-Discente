@@ -8,13 +8,15 @@ import 'models/noticias.model.dart';
 import 'pages/splash_screen.page.dart';
 import 'repositories/noticias.repository.dart';
 
+/* Init Flutter Local Notification */
+//================================================================================
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 var initializationSettingsIOS = IOSInitializationSettings();
 var initializationSettings = InitializationSettings(
     initializationSettingsAndroid, initializationSettingsIOS);
-    
+//================================================================================
 
 Future<void> showNotification(int numNoticias) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -25,9 +27,7 @@ Future<void> showNotification(int numNoticias) async {
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
       0,
-      numNoticias <= 1
-          ? 'Nova Notícia'
-          : 'Novas Notícias',
+      numNoticias <= 1 ? 'Nova Notícia' : 'Novas Notícias',
       numNoticias <= 1
           ? '$numNoticias nova notícia foi postada no portal Unilab'
           : '$numNoticias novas notícias foram postadas no portal Unilab',
@@ -57,31 +57,6 @@ void backgroundFetchHeadlessTask(String taskId) async {
   BackgroundFetch.finish(taskId);
 }
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
-   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
-    }
-  });
-  
-  BackgroundFetch.configure(
-      BackgroundFetchConfig(
-          minimumFetchInterval: 15,
-          stopOnTerminate: false,
-          enableHeadless: true,
-          requiresBatteryNotLow: false,
-          startOnBoot: true,
-          requiresCharging: false,
-          requiresStorageNotLow: false,
-          requiresDeviceIdle: false,
-          requiredNetworkType: NetworkType.ANY),
-      backgroundFetchHeadlessTask);
-    BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
-}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -94,4 +69,33 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.white),
         home: SplashPage());
   }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+  init();
+}
+
+void init() async {
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+  });
+
+  BackgroundFetch.configure(
+      BackgroundFetchConfig(
+          minimumFetchInterval: 15,
+          stopOnTerminate: false,
+          enableHeadless: true,
+          requiresBatteryNotLow: false,
+          startOnBoot: true,
+          requiresCharging: false,
+          requiresStorageNotLow: false,
+          requiresDeviceIdle: false,
+          requiredNetworkType: NetworkType.ANY),
+      backgroundFetchHeadlessTask);
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }

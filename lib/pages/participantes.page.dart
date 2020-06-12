@@ -63,7 +63,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                           child: Text(
                                             'Docentes',
                                             style:
-                                                Theme.of(context).textTheme.body2,
+                                                Theme.of(context).textTheme.bodyText2,
                                           ),
                                         ),
                                         Padding(
@@ -100,7 +100,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                           child: Text(
                                             'Discentes',
                                             style:
-                                                Theme.of(context).textTheme.body2,
+                                                Theme.of(context).textTheme.bodyText2,
                                           ),
                                         ),
                                         Padding(

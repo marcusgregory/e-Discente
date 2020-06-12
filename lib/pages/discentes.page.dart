@@ -29,6 +29,5 @@ class _DiscentesPageState extends State<DiscentesPage> with AutomaticKeepAliveCl
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

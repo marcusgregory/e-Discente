@@ -5,7 +5,7 @@ import 'balao_nota.widget.dart';
 class ItemNota extends StatelessWidget {
   final String titulo;
   final String nota;
-  bool left = true;
+  final bool left;
   ItemNota(this.titulo, this.nota, {this.left = true});
   @override
   Widget build(BuildContext context) {

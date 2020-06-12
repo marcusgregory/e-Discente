@@ -14,15 +14,13 @@ import 'package:url_launcher/url_launcher.dart';
 import '../detalhes_screen.page.dart';
 
 class Noticia extends StatelessWidget {
-  NoticiaModel noticia;
-
+  final NoticiaModel noticia;
   Noticia(this.noticia);
 
-  BuildContext _context;
+  
 
   @override
   Widget build(BuildContext context) {
-    this._context = context;
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.only(
@@ -42,11 +40,11 @@ class Noticia extends StatelessWidget {
                         noticia.url,
                         noticia.id)));
           },
-          child: _getListTile()),
+          child: _getListTile(context)),
     );
   }
 
-  Widget _getListTile() {
+  Widget _getListTile(context) {
     // Foi adicionado dentro de Container para adicionar altura fixa.
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -54,12 +52,12 @@ class Noticia extends StatelessWidget {
       children: <Widget>[
         _loadImage(),
         _getColumText(
-            this.noticia.titulo, this.noticia.data, this.noticia.resumo),
+            this.noticia.titulo, this.noticia.data, this.noticia.resumo,context),
       ],
     );
   }
 
-  Widget _getColumText(title, date, description) {
+  Widget _getColumText(title, date, description,context) {
     return new Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -97,7 +95,7 @@ class Noticia extends StatelessWidget {
                         size: 20,
                       ),
                       onPressed: () {
-                        _showModalBottomSheet(this._context);
+                        _showModalBottomSheet(context);
                       },
                     ),
                   ),

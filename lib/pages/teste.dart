@@ -39,7 +39,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   handle:
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   
-                  child: SliverSafeArea(
+                  sliver: SliverSafeArea(
                     top: false,
                     sliver: SliverAppBar(
                       title: const Text('Books'),

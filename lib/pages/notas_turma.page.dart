@@ -67,7 +67,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                                 ),
                                 Text(
                                   'Notas',
-                                  style: Theme.of(context).textTheme.body2,
+                                  style: Theme.of(context).textTheme.bodyText2,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
@@ -117,7 +117,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                                 ),
                                 Text(
                                   'Resultados',
-                                  style: Theme.of(context).textTheme.body2,
+                                  style: Theme.of(context).textTheme.bodyText2,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
