@@ -18,7 +18,7 @@ class NotasRepository {
        
         Map<String,List<BoletimModel>> boletim = Map<String,List<BoletimModel>>();
          for(Map<String,dynamic> json in json['data']){
-           List<BoletimModel> notas = List<BoletimModel>();
+           List<BoletimModel> notas = [];
            for(Map<String,dynamic> json2 in json.values.first){
             notas.add(BoletimModel.fromJson(json2));
            }

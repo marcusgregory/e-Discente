@@ -12,19 +12,18 @@ import 'package:uni_discente/util/date.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../detalhes_screen.page.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:meet_network_image/meet_network_image.dart';
 
 class Noticia extends StatelessWidget {
   final NoticiaModel noticia;
   Noticia(this.noticia);
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.only(
-          left:10, right: 10, bottom: 10.0, top: 10.0),
+      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10.0, top: 10.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 2.0,
       child: InkWell(
@@ -51,13 +50,13 @@ class Noticia extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         _loadImage(),
-        _getColumText(
-            this.noticia.titulo, this.noticia.data, this.noticia.resumo,context),
+        _getColumText(this.noticia.titulo, this.noticia.data,
+            this.noticia.resumo, context),
       ],
     );
   }
 
-  Widget _getColumText(title, date, description,context) {
+  Widget _getColumText(title, date, description, context) {
     return new Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -269,25 +268,40 @@ class Noticia extends StatelessWidget {
   Widget _loadImage() {
     return Hero(
       tag: noticia.id,
-      child: CachedNetworkImage(
-        height: 185,
-        width: 185,
-          imageUrl: this.noticia.imagem,
-          imageBuilder: (context, imageProvider) => Container(
-            width: 185,
-            height: 185,
-                decoration: BoxDecoration(
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                ),
-              ),
-          placeholder: (context, url) => Container(
-            height: 185,
-        width: 185,
-            child: Image.memory(kTransparentImage))),
+      child: kIsWeb
+          ? MeetNetworkImage(
+              imageUrl: 'https://api.allorigins.win/raw?url='+Uri.encodeComponent(this.noticia.imagem),
+              width: 185,
+              height: 185,
+              fit: BoxFit.cover,
+              loadingBuilder: (context) => Container(
+                  height: 185,
+                  width: 185,
+                  child: Image.memory(kTransparentImage)),
+              errorBuilder: (context, e) => Container(
+                  height: 185,
+                  width: 185,
+                  child: Image.memory(kTransparentImage)),
+            )
+          : CachedNetworkImage(
+              height: 185,
+              width: 185,
+              imageUrl: this.noticia.imagem,
+              imageBuilder: (context, imageProvider) => Container(
+                    width: 185,
+                    height: 185,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+              placeholder: (context, url) => Container(
+                  height: 185,
+                  width: 185,
+                  child: Image.memory(kTransparentImage))),
     );
 
-    /*new FadeInImage(
+    /*new FadeInImage( 
         image: Image.network(this.noticia.imagem).image,
         fit: BoxFit.cover,
         width: 185.0,

@@ -10,6 +10,7 @@ import 'package:uni_discente/pages/noticias.page.dart';
 import 'package:uni_discente/pages/perfil.page.dart';
 import 'package:uni_discente/pages/turmas.page.dart';
 import '../settings.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class InicioPage extends StatefulWidget {
   @override
@@ -65,26 +66,30 @@ class _InicioPageState extends State<InicioPage> {
         items: [
           new BottomNavigationBarItem(
               icon: Icon(Icons.web),
-              title: Text('Notícias'),
+              label: 'Notícias',
               backgroundColor: Colors.green),
           new BottomNavigationBarItem(
               icon: Icon(Icons.school),
               title: Text('Turmas'),
+              label: 'Turmas',
               backgroundColor: Colors.blue),
           new BottomNavigationBarItem(
               icon: Icon(Icons.timeline),
               title: Text('Boletim'),
+              label: 'Boletim',
               backgroundColor: Colors.orange),
           new BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),
-              title: Text('Perfil'),
+              label: 'Perfil',
               backgroundColor: Colors.red)
         ],
       );
 
   @override
   void initState() {
-    listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
+    if (kIsWeb) {
+    }else{
+listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
       scaffoldStateKey.currentState
               .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
       switch (status) {
@@ -140,6 +145,8 @@ class _InicioPageState extends State<InicioPage> {
           break;
       }
     });
+    }
+    
     super.initState();
   }
 
@@ -177,7 +184,7 @@ class _InicioPageState extends State<InicioPage> {
                   radius: 13,
                   backgroundColor: Colors.transparent,
                   child: CachedNetworkImage(
-                    imageUrl: Settings.usuario.urlImagemPerfil,
+                    imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(Settings.usuario.urlImagemPerfil) : Settings.usuario.urlImagemPerfil,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

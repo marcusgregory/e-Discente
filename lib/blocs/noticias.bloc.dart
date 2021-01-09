@@ -4,23 +4,30 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/repositories/noticias.repository.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class NoticiasBloc {
   // NoticiasBloc._();
-  
+
   // static NoticiasBloc _instance;
 
   // static NoticiasBloc get instance {
   //   return _instance ??= NoticiasBloc._();
   // }
 
- StreamController<List<NoticiaModel>> _streamController = StreamController();
+  StreamController<List<NoticiaModel>> _streamController = StreamController();
 
   Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
 
   load({bool isRefreshIndicator = false}) async {
     if (!_streamController.isClosed) {
-      bool result = await DataConnectionChecker().hasConnection;
+      bool result = false;
+      if (kIsWeb) {
+        result = true;
+      } else {
+        result = await DataConnectionChecker().hasConnection;
+      }
+
       if (result == true) {
         try {
           if (!isRefreshIndicator) {
@@ -56,6 +63,5 @@ class NoticiasBloc {
   dispose() {
     _streamController.close();
     _streamController.sink.close();
-    
   }
 }

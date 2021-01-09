@@ -62,7 +62,7 @@ class _BoletimPageState extends State<BoletimPage>
                 ),
                 Expanded(
                   child: Scrollbar(
-                    child: ListView.builder(
+                    child: ListView.builder( 
                       itemCount: future
                           .result[_boletimStore.valores[_boletimStore.index]]
                           .length,

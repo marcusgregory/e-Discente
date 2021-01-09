@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
@@ -63,7 +64,7 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
     return Hero(
       child: CachedNetworkImage(
         height: 200,
-          imageUrl: url,
+          imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(url) : url,
           imageBuilder: (context, imageProvider) => Container(
             height: 200,
                 decoration: BoxDecoration(

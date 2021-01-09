@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,7 +18,7 @@ class PhotoViewWidget extends StatelessWidget {
         child: Center(
           child: Hero(
             child: CachedNetworkImage(
-              imageUrl: this.url,
+              imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(this.url) : this.url,
               imageBuilder: (context, imageProvider) {
                 return Container(
                   decoration: BoxDecoration(

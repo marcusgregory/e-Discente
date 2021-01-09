@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -102,7 +103,7 @@ class _PerfilScreenState extends State<PerfilScreen>
             child: Hero(
                 tag: url,
               child: CachedNetworkImage(
-                imageUrl: url,
+                imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(url) : url,
                 imageBuilder: (context, imageProvider) => Material(
                   shape: CircleBorder(),
                   clipBehavior: Clip.hardEdge,

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_discente/models/discente.model.dart';
 import 'package:uni_discente/models/docente.model.dart';
@@ -17,7 +18,7 @@ class ParticipanteWidget extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: 10,bottom: 10),
         child: ListTile(
-          leading: imagemPerfil(docente.urlFoto, 25),
+          leading: imagemPerfil(kIsWeb ? 'https://cors-anywhere.herokuapp.com/'+ docente.urlFoto : docente.urlFoto, 25),
           title: Text(
             docente.nome,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -31,7 +32,7 @@ class ParticipanteWidget extends StatelessWidget {
     } else {
       DiscenteModel discente = participante;
       return ListTile(
-        leading: imagemPerfil(discente.urlFoto, 20),
+        leading: imagemPerfil(kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(discente.urlFoto) : discente.urlFoto, 20),
         title: Text(
           discente.nome,
           style: TextStyle(
