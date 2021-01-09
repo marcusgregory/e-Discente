@@ -70,12 +70,10 @@ class _InicioPageState extends State<InicioPage> {
               backgroundColor: Colors.green),
           new BottomNavigationBarItem(
               icon: Icon(Icons.school),
-              title: Text('Turmas'),
               label: 'Turmas',
               backgroundColor: Colors.blue),
           new BottomNavigationBarItem(
               icon: Icon(Icons.timeline),
-              title: Text('Boletim'),
               label: 'Boletim',
               backgroundColor: Colors.orange),
           new BottomNavigationBarItem(
