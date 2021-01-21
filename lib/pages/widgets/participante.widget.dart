@@ -16,9 +16,14 @@ class ParticipanteWidget extends StatelessWidget {
     if (participante is DocenteModel) {
       DocenteModel docente = participante;
       return Padding(
-        padding: const EdgeInsets.only(top: 10,bottom: 10),
+        padding: const EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          leading: imagemPerfil(kIsWeb ? 'https://cors-anywhere.herokuapp.com/'+ docente.urlFoto : docente.urlFoto, 25),
+          leading: imagemPerfil(
+              kIsWeb
+                  ? 'https://api.allorigins.win/raw?url=' +
+                      Uri.encodeComponent(docente.urlFoto)
+                  : docente.urlFoto,
+              25),
           title: Text(
             docente.nome,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -32,7 +37,12 @@ class ParticipanteWidget extends StatelessWidget {
     } else {
       DiscenteModel discente = participante;
       return ListTile(
-        leading: imagemPerfil(kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(discente.urlFoto) : discente.urlFoto, 20),
+        leading: imagemPerfil(
+            kIsWeb
+                ? 'https://api.allorigins.win/raw?url=' +
+                    Uri.encodeComponent(discente.urlFoto)
+                : discente.urlFoto,
+            20),
         title: Text(
           discente.nome,
           style: TextStyle(

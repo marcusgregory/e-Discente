@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
@@ -37,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
               ),
             ),
             Text(
-              'UniDiscente',
+              'e-Discente',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 22.5,

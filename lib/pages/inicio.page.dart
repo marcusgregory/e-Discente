@@ -25,14 +25,14 @@ class _InicioPageState extends State<InicioPage> {
     PerfilScreen(),
   ];
   int onlineFlag = 0;
-   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'event_teste', 'Teste', '',
-        importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'event_teste', 'Teste', '',
+      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
   PageController pageController = PageController();
   StreamSubscription<DataConnectionStatus> listenConnection;
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
@@ -42,19 +42,19 @@ class _InicioPageState extends State<InicioPage> {
   }
 
   Future<void> showNotification() async {
-     var platformChannelSpecifics = NotificationDetails(
+    var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
         0, 'Teste', 'Notificação de teste', platformChannelSpecifics,
         payload: '');
-        var scheduledNotificationDateTime =
+    var scheduledNotificationDateTime =
         DateTime.now().add(Duration(seconds: 10));
-        await flutterLocalNotificationsPlugin.schedule(
-    0,
-    'scheduled titulo',
-    'scheduled corpo',
-    scheduledNotificationDateTime,
-    platformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        'scheduled titulo',
+        'scheduled corpo',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
   }
 
   Widget _bottomNavigationBar(int currentIndex, Function onTap) =>
@@ -86,18 +86,44 @@ class _InicioPageState extends State<InicioPage> {
   @override
   void initState() {
     if (kIsWeb) {
-    }else{
-listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
-      scaffoldStateKey.currentState
-              .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-      switch (status) {
-        case DataConnectionStatus.connected:
-          scaffoldStateKey.currentState
-              .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-          if (onlineFlag > 0) {
+    } else {
+      listenConnection =
+          DataConnectionChecker().onStatusChange.listen((status) {
+        scaffoldStateKey.currentState
+            .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
+        switch (status) {
+          case DataConnectionStatus.connected:
+            scaffoldStateKey.currentState
+                .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
+            if (onlineFlag > 0) {
+              scaffoldStateKey.currentState.showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                            color: Colors.green, shape: BoxShape.circle),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text('Agora está online.'),
+                    ],
+                  ),
+                ),
+                // SnackBar
+              );
+            }
+            break;
+          case DataConnectionStatus.disconnected:
+            onlineFlag++;
             scaffoldStateKey.currentState.showSnackBar(
               SnackBar(
-                backgroundColor: Colors.green,
+                duration: Duration(seconds: 30),
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -105,46 +131,21 @@ listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
                       width: 7,
                       height: 7,
                       decoration: BoxDecoration(
-                          color: Colors.green, shape: BoxShape.circle),
+                          color: Colors.red, shape: BoxShape.circle),
                     ),
                     SizedBox(
                       width: 5,
                     ),
-                    Text('Agora está online.'),
+                    Text('e-Discente está offline.'),
                   ],
                 ),
-              ),
-              // SnackBar
+              ), // SnackBar
             );
-          }
-          break;
-        case DataConnectionStatus.disconnected:
-          onlineFlag++;
-          scaffoldStateKey.currentState.showSnackBar(
-            SnackBar(
-              duration: Duration(seconds: 30),
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    width: 7,
-                    height: 7,
-                    decoration: BoxDecoration(
-                        color: Colors.red, shape: BoxShape.circle),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text('UniDiscente está offline.'),
-                ],
-              ),
-            ), // SnackBar
-          );
-          break;
-      }
-    });
+            break;
+        }
+      });
     }
-    
+
     super.initState();
   }
 
@@ -164,12 +165,12 @@ listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
             builder: (context, widget) {
               int indexPage =
                   pageController.page != null ? pageController.page.round() : 0;
-             return GestureDetector(
-                              child: Text(
+              return GestureDetector(
+                child: Text(
                     ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]),
-                    onDoubleTap: (){
-                      showNotification();
-                    },
+                onDoubleTap: () {
+                  showNotification();
+                },
               );
             },
           ),
@@ -182,7 +183,11 @@ listenConnection = DataConnectionChecker().onStatusChange.listen((status) {
                   radius: 13,
                   backgroundColor: Colors.transparent,
                   child: CachedNetworkImage(
-                    imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(Settings.usuario.urlImagemPerfil) : Settings.usuario.urlImagemPerfil,
+                    imageUrl: kIsWeb
+                        ? 'https://api.allorigins.win/raw?url=' +
+                            Uri.encodeComponent(
+                                Settings.usuario.urlImagemPerfil)
+                        : Settings.usuario.urlImagemPerfil,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

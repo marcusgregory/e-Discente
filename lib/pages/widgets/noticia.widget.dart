@@ -13,7 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../detalhes_screen.page.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:meet_network_image/meet_network_image.dart';
 
 class Noticia extends StatelessWidget {
   final NoticiaModel noticia;
@@ -268,37 +267,23 @@ class Noticia extends StatelessWidget {
   Widget _loadImage() {
     return Hero(
       tag: noticia.id,
-      child: kIsWeb
-          ? MeetNetworkImage(
-              imageUrl: 'https://api.allorigins.win/raw?url='+Uri.encodeComponent(this.noticia.imagem),
-              width: 185,
-              height: 185,
-              fit: BoxFit.cover,
-              loadingBuilder: (context) => Container(
-                  height: 185,
-                  width: 185,
-                  child: Image.memory(kTransparentImage)),
-              errorBuilder: (context, e) => Container(
-                  height: 185,
-                  width: 185,
-                  child: Image.memory(kTransparentImage)),
-            )
-          : CachedNetworkImage(
-              height: 185,
-              width: 185,
-              imageUrl: this.noticia.imagem,
-              imageBuilder: (context, imageProvider) => Container(
-                    width: 185,
-                    height: 185,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                  ),
-              placeholder: (context, url) => Container(
-                  height: 185,
-                  width: 185,
-                  child: Image.memory(kTransparentImage))),
+      child: CachedNetworkImage(
+          height: 185,
+          width: 185,
+          imageUrl: kIsWeb
+              ? 'https://api.allorigins.win/raw?url=' +
+                  Uri.encodeComponent(this.noticia.imagem)
+              : this.noticia.imagem,
+          imageBuilder: (context, imageProvider) => Container(
+                width: 185,
+                height: 185,
+                decoration: BoxDecoration(
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+          placeholder: (context, url) => Container(
+              height: 185, width: 185, child: Image.memory(kTransparentImage))),
     );
 
     /*new FadeInImage( 
