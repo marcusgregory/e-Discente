@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
           prefixIcon: Padding(
             padding: EdgeInsets.all(0.0),
             child: Icon(
-              Icons.vpn_key,
+              Icons.lock,
               color: Colors.grey,
             ),
           ),
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
     var forgotLabel = FlatButton(
       child: Text(
         'Esqueceu sua senha?',
-        style: TextStyle(color: Colors.black54),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
       ),
       onPressed: () {
         _launchURL();
@@ -146,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
     _scrollController = ScrollController(initialScrollOffset: 100.0);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).canvasColor,
       body: Container(
         child: Center(
           child: ListView(

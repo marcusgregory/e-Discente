@@ -4,10 +4,9 @@ import 'package:uni_discente/models/turma.model.dart';
 import 'package:uni_discente/pages/turma.page.dart';
 
 class Turma extends StatelessWidget {
- final TurmaModel turma;
+  final TurmaModel turma;
 
   Turma(this.turma);
-
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,8 @@ class Turma extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TurmaPage(turma.nomeTurma,turma.idTurma)));
+                    builder: (context) =>
+                        TurmaPage(turma.nomeTurma, turma.idTurma)));
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -49,7 +49,7 @@ class Turma extends StatelessWidget {
                         maxLines: 3,
                         style: TextStyle(
                             fontSize: 15,
-                            color: Colors.black,
+                            color: Theme.of(context).textTheme.bodyText1.color,
                             fontWeight: FontWeight.w700),
                       ),
                       SizedBox(height: 5),
@@ -58,16 +58,22 @@ class Turma extends StatelessWidget {
                         children: <Widget>[
                           Icon(
                             Icons.assignment_ind,
-                            color: Colors.grey[600],
+                            color: Theme.of(context).textTheme.bodyText1.color,
                             size: 18,
                           ),
                           SizedBox(width: 5),
                           Expanded(
-                            child: Text(this.turma.docente != null ? this.turma.docente : 'O docente fechou esta turma',
+                            child: Text(
+                                this.turma.docente != null
+                                    ? this.turma.docente
+                                    : 'O docente fechou esta turma',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: new TextStyle(
-                                    color: Colors.grey[600],
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
                                     fontWeight: FontWeight.w500)),
                           ),
                         ],
@@ -77,14 +83,19 @@ class Turma extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Icon(Icons.account_balance,
-                              color: Colors.grey[600], size: 18),
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
+                              size: 18),
                           SizedBox(width: 5),
                           Expanded(
                             child: Text(this.turma.local,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: new TextStyle(
-                                    color: Colors.grey[600],
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
                                     fontWeight: FontWeight.w500)),
                           ),
                         ],
@@ -94,14 +105,19 @@ class Turma extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Icon(Icons.date_range,
-                              color: Colors.grey[600], size: 18),
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
+                              size: 18),
                           SizedBox(width: 5),
                           Expanded(
                             child: Text(this.turma.horario,
                                 maxLines: 5,
                                 overflow: TextOverflow.ellipsis,
                                 style: new TextStyle(
-                                    color: Colors.grey[600],
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
                                     fontWeight: FontWeight.w500)),
                           ),
                         ],
@@ -110,8 +126,14 @@ class Turma extends StatelessWidget {
                   ),
                 ),
               ),
-               Icon(Icons.arrow_forward_ios,color: Colors.grey[600],size: 15,),
-               SizedBox(width: 12,) 
+              Icon(
+                Icons.arrow_forward_ios,
+                color: Theme.of(context).textTheme.bodyText1.color,
+                size: 15,
+              ),
+              SizedBox(
+                width: 12,
+              )
             ],
           ),
         ));

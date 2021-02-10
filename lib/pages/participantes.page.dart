@@ -41,7 +41,8 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                   if (snapshot.hasData) {
                     ParticipantesModel participantesModel = snapshot.data;
                     return CustomScrollView(
-                      key: PageStorageKey<String>('participantes:'+widget._idTurma),
+                      key: PageStorageKey<String>(
+                          'participantes:' + widget._idTurma),
                       slivers: <Widget>[
                         SliverOverlapInjector(
                             handle:
@@ -53,17 +54,18 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                 maxHeight: 42,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[50]
-                                  ),
+                                      color: Theme.of(context).canvasColor),
                                   child: Center(
                                     child: Column(
                                       children: <Widget>[
                                         Padding(
-                                        padding: const EdgeInsets.only(top: 10),
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
                                           child: Text(
                                             'Docentes',
-                                            style:
-                                                Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2,
                                           ),
                                         ),
                                         Padding(
@@ -84,23 +86,24 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                               participantesModel.docentes[index]);
                         }, childCount: participantesModel.docentes.length)),
                         SliverPersistentHeader(
-                          pinned: true,
+                            pinned: true,
                             delegate: _SliverAppBarDelegate(
                                 minHeight: 42,
                                 maxHeight: 42,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[50]
-                                  ),
+                                      color: Theme.of(context).canvasColor),
                                   child: Center(
                                     child: Column(
                                       children: <Widget>[
                                         Padding(
-                                        padding: const EdgeInsets.only(top: 10),
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
                                           child: Text(
                                             'Discentes',
-                                            style:
-                                                Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2,
                                           ),
                                         ),
                                         Padding(
@@ -114,7 +117,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                     ),
                                   ),
                                 ))),
-                                SliverList(
+                        SliverList(
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {
                           return ParticipanteWidget(

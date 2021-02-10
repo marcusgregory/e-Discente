@@ -15,7 +15,8 @@ class Detalhe extends StatefulWidget {
   final String _url;
   final int _id;
 
-  Detalhe(this._img, this._title, this._date, this._description, this._url, this._id);
+  Detalhe(this._img, this._title, this._date, this._description, this._url,
+      this._id);
 
   @override
   _DetalheState createState() => _DetalheState();
@@ -25,7 +26,7 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return new Scaffold(
+    return Scaffold(
       appBar: new AppBar(
         actions: <Widget>[
           IconButton(
@@ -63,18 +64,19 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
   Widget _getImageNetwork(url) {
     return Hero(
       child: CachedNetworkImage(
-        height: 200,
-          imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(url) : url,
+          height: 200,
+          imageUrl: kIsWeb
+              ? 'https://api.allorigins.win/raw?url=' + Uri.encodeComponent(url)
+              : url,
           imageBuilder: (context, imageProvider) => Container(
-            height: 200,
+                height: 200,
                 decoration: BoxDecoration(
                   image:
                       DecorationImage(image: imageProvider, fit: BoxFit.cover),
                 ),
               ),
-          placeholder: (context, url) => Container(
-            height: 200,
-            child: Image.memory(kTransparentImage))),
+          placeholder: (context, url) =>
+              Container(height: 200, child: Image.memory(kTransparentImage))),
       tag: widget._id,
     );
   }

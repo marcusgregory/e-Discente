@@ -59,8 +59,8 @@ class Noticia extends StatelessWidget {
     return new Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _getTitleWidget(title),
-          _getDescriptionWidget(description),
+          _getTitleWidget(title, context),
+          _getDescriptionWidget(description, context),
           Row(
             children: <Widget>[
               Align(
@@ -78,7 +78,9 @@ class Noticia extends StatelessWidget {
               ),
               Text(
                 'Unilab  •  ${DateUtil.getTimeElapsedByDate(date)}',
-                style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+                style: TextStyle(
+                    fontSize: 11,
+                    color: Theme.of(context).textTheme.bodyText1.color),
               ),
               Expanded(
                 child: Align(
@@ -89,7 +91,7 @@ class Noticia extends StatelessWidget {
                     child: FlatButton(
                       child: Icon(
                         Icons.more_vert,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).textTheme.bodyText1.color,
                         size: 20,
                       ),
                       onPressed: () {
@@ -104,26 +106,29 @@ class Noticia extends StatelessWidget {
         ]);
   }
 
-  Widget _getTitleWidget(String curencyName) {
+  Widget _getTitleWidget(String curencyName, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 16),
       child: Text(
         curencyName,
         maxLines: 4,
         style: new TextStyle(
-            fontSize: 17.9, fontWeight: FontWeight.w400, color: Colors.black),
+            fontSize: 17.9,
+            fontWeight: FontWeight.w400,
+            color: Theme.of(context).textTheme.bodyText1.color),
       ),
     );
   }
 
-  Widget _getDescriptionWidget(String description) {
+  Widget _getDescriptionWidget(String description, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 5),
       child: Text(
         description,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: new TextStyle(color: Colors.grey[600]),
+        style:
+            new TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
       ),
     );
   }

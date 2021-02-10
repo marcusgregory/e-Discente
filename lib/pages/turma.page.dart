@@ -46,11 +46,9 @@ class _TurmaPageState extends State<TurmaPage>
         body: DefaultTabController(
           length: 3,
           child: NestedScrollView(
-            
             headerSliverBuilder: (BuildContext context, bool boxIsScrolled) {
               return <Widget>[
                 SliverOverlapAbsorber(
-
                   handle:
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverSafeArea(

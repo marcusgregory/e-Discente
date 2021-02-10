@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/pages/boletim.page.dart';
 import 'package:uni_discente/pages/login.page.dart';
@@ -24,14 +24,8 @@ class _InicioPageState extends State<InicioPage> {
     BoletimPage(),
     PerfilScreen(),
   ];
-  int onlineFlag = 0;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'event_teste', 'Teste', '',
-      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  int onlineFlag = 0;
 
   PageController pageController = PageController();
   StreamSubscription<DataConnectionStatus> listenConnection;
@@ -41,42 +35,26 @@ class _InicioPageState extends State<InicioPage> {
     pageController.jumpToPage(index);
   }
 
-  Future<void> showNotification() async {
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'Teste', 'Notificação de teste', platformChannelSpecifics,
-        payload: '');
-    var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 10));
-    await flutterLocalNotificationsPlugin.schedule(
-        0,
-        'scheduled titulo',
-        'scheduled corpo',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics);
-  }
-
   Widget _bottomNavigationBar(int currentIndex, Function onTap) =>
       BottomNavigationBar(
         onTap: onTap,
         currentIndex: currentIndex,
-        selectedItemColor: Theme.of(context).primaryColor,
+        selectedItemColor: Theme.of(context).accentColor,
         type: BottomNavigationBarType.fixed,
         items: [
-          new BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.web),
               label: 'Notícias',
               backgroundColor: Colors.green),
-          new BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.school),
               label: 'Turmas',
               backgroundColor: Colors.blue),
-          new BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.timeline),
               label: 'Boletim',
               backgroundColor: Colors.orange),
-          new BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),
               label: 'Perfil',
               backgroundColor: Colors.red)
@@ -168,14 +146,18 @@ class _InicioPageState extends State<InicioPage> {
               return GestureDetector(
                 child: Text(
                     ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]),
-                onDoubleTap: () {
-                  showNotification();
-                },
+                onDoubleTap: () {},
               );
             },
           ),
           elevation: 1.0,
           actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.brightness_6_rounded),
+              onPressed: () {
+                AdaptiveTheme.of(context).toggleThemeMode();
+              },
+            ),
             IconButton(
               icon: Hero(
                 tag: 'icon_book',
@@ -212,7 +194,7 @@ class _InicioPageState extends State<InicioPage> {
                     MaterialPageRoute(
                         builder: (BuildContext context) => LoginPage()));
               },
-            )
+            ),
           ],
         ),
         body: PageView(
