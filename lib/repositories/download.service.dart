@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uni_discente/models/documento.model.dart';
@@ -12,11 +13,14 @@ import 'package:uni_discente/util/toast.util.dart';
 
 class DownloadService {
   final BuildContext _context;
+  bool _isOpen = true;
+
   DownloadService(this._context);
   Future<void> downloadDocumento(
       String idTurma, DocumentoModel documento) async {
     try {
       _showMaterialDialog(_context);
+      _isOpen = true;
       var _permissionReady = await _checkPermission();
       var _localPath = (await _findLocalPath());
 
@@ -80,15 +84,23 @@ class DownloadService {
           print(formatBytes(rec));
           _fileLength = rec;
         });
-        ToastUtil.showLongToast(
-            'Download concluído!\nNome: "$_filename" Tamanho:' +
-                formatBytes(_fileLength));
+        print(_isOpen);
+        if (_isOpen) {
+          Navigator.of(_context).pop();
+          _showCompleteDialog(
+              _context, _filename, _localPath + '/' + _filename, _fileLength);
+        } else {
+          ToastUtil.showLongToast(
+              'Download do arquivo \"$_filename\" foi concluido\nTamanho: ${formatBytes(_fileLength)}');
+        }
       }
     } catch (e) {
+      print(_isOpen);
+      if (_isOpen) {
+        Navigator.of(_context).pop();
+      }
       ToastUtil.showLongToast('Ocorreu um erro ao baixar o Documento');
-    } finally {
-      Navigator.of(_context).pop();
-    }
+    } finally {}
   }
 
   Future<String> _findLocalPath() async {
@@ -122,6 +134,31 @@ class DownloadService {
         builder: (_) => AlertDialog(
               title: Text("Fazendo Download"),
               content: LinearProgressIndicator(value: null),
+            )).then((value) => _isOpen = false);
+  }
+
+  _showCompleteDialog(
+      BuildContext context, String fileName, String filePath, int fileLength) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+              title: Text("Deseja abrir?"),
+              content: Text(
+                  'O arquivo \"$fileName\" foi salvo no seu dispositivo\nTamanho: ${formatBytes(fileLength)}'),
+              actions: [
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Não')),
+                FlatButton(
+                    onPressed: () {
+                      OpenFile.open(filePath);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Sim'))
+              ],
             ));
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:uni_discente/blocs/download.service.dart';
+import 'package:uni_discente/repositories/download.service.dart';
 import 'package:uni_discente/models/documento.model.dart';
 import 'package:uni_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
