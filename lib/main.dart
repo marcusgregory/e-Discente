@@ -1,6 +1,10 @@
+// @dart=2.9
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_discente/background_fetch_settings.dart';
-import 'package:uni_discente/notification_settings.dart';
+import 'package:uni_discente/notification_settings2.dart';
 import 'pages/splash_screen.page.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
@@ -11,10 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveTheme(
         light: ThemeData(
-            accentColor: Colors.teal[300],
-            primaryColor: Color(0xFF00396A),
-            backgroundColor: Colors.white),
-        dark: ThemeData.dark(),
+            primaryColor: Color(0xFF00396A), backgroundColor: Colors.white),
+        dark: ThemeData.dark().copyWith(
+            colorScheme:
+                ColorScheme.dark(primary: ThemeData.dark().accentColor)),
         initial: savedThemeMode ?? AdaptiveThemeMode.light,
         builder: (theme, darkTheme) => MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -29,6 +33,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
   runApp(MyApp(savedThemeMode: savedThemeMode));
-  initNotification();
-  initBackgroundFetch();
+  if (!kIsWeb) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      NotificationAwesome.initNotificationAweSome();
+      initBackgroundFetch();
+    }
+  }
 }

@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -11,7 +12,7 @@ class NoticiasRepository {
     try {
       var url = '${Settings.apiURL}/unilab/noticias';
       http.Response response =
-          await http.get(url).timeout(Duration(seconds: 30));
+          await http.get(Uri.parse(url)).timeout(Duration(seconds: 30));
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable noticias = json['data'];

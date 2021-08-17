@@ -12,14 +12,18 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="e-Discente"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -31,6 +35,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!--  Notifications -->
+         <meta-data android:name="com.google.firebase.messaging.default_notification_icon" 
+            android:resource="@drawable/ic_notification" />   
         <!--   OpenFile plugin -->
             <provider
                 android:name="androidx.core.content.FileProvider"

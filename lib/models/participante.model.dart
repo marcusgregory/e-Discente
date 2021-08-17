@@ -1,3 +1,4 @@
+// @dart=2.9
 abstract class ParticipanteModel {
   String urlFoto;
   String nome;
@@ -5,5 +6,4 @@ abstract class ParticipanteModel {
   String email;
 
   ParticipanteModel(this.urlFoto, this.nome, this.usuario, this.email);
-
 }

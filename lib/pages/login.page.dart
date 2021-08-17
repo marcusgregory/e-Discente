@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
 import 'package:uni_discente/models/autenticacao.model.dart';
@@ -48,9 +49,14 @@ class _LoginPageState extends State<LoginPage> {
   Padding loginButton(bool progressIndicator) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Color(0xff1a4972),
+          onPrimary: Color(0xff1a4972),
+          padding: EdgeInsets.all(13),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
         ),
         onPressed: () {
           setState(() {
@@ -58,13 +64,11 @@ class _LoginPageState extends State<LoginPage> {
           });
           //Navigator.of(context).pushNamed(HomePage.tag);
         },
-        padding: EdgeInsets.all(13),
-        color: Color(0xff1a4972),
         child: progressIndicator
             ? SizedBox(
                 height: 20.0,
                 width: 20.0,
-                child: CircularProgressIndicator(
+                child: CircularProgressIndicator.adaptive(
                   valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
                   strokeWidth: 3.0,
                 ))

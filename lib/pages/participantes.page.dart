@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:uni_discente/models/participantes.model.dart';
 import 'package:uni_discente/pages/widgets/participante.widget.dart';
@@ -32,7 +33,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                   break;
                 case ConnectionState.waiting:
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator.adaptive(),
                   );
                   break;
                 case ConnectionState.active:
@@ -71,9 +72,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               left: 20, right: 20),
-                                          child: Divider(
-                                            color: Colors.grey[350],
-                                          ),
+                                          child: Divider(),
                                         )
                                       ],
                                     ),
@@ -109,9 +108,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               left: 20, right: 20),
-                                          child: Divider(
-                                            color: Colors.grey[350],
-                                          ),
+                                          child: Divider(),
                                         )
                                       ],
                                     ),

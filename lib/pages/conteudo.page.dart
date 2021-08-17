@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:uni_discente/repositories/download.service.dart';
@@ -51,10 +52,7 @@ class ConteudoPage extends StatelessWidget {
                           Padding(
                               padding: const EdgeInsets.only(
                                   left: 20, right: 20, top: 16),
-                              child: Container(
-                                color: Colors.grey[300],
-                                height: 1,
-                              )),
+                              child: Divider()),
                           _conteudo.isNotEmpty
                               ? Column(
                                   children: [
@@ -109,7 +107,7 @@ class ConteudoPage extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             left: 3, right: 3, bottom: 6, top: 6),
                         child: ListTile(
-                          leading: balaoArquivo('PDF'),
+                          leading: balaoArquivo('PDF', context),
                           title: Text(_documentos[index].nome,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
@@ -130,7 +128,7 @@ class ConteudoPage extends StatelessWidget {
         )));
   }
 
-  Widget balaoArquivo(String tipo) {
+  Widget balaoArquivo(String tipo, BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -138,7 +136,7 @@ class ConteudoPage extends StatelessWidget {
           width: 45.0,
           height: 45.0,
           decoration: BoxDecoration(
-            color: Colors.teal[300],
+            color: Theme.of(context).accentColor,
             shape: BoxShape.circle,
           ),
         ),

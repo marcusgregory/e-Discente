@@ -1,6 +1,10 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:uni_discente/blocs/usuario.bloc.dart';
+import 'package:uni_discente/chat/app_instance.dart';
+import 'package:uni_discente/chat/services/socket-io.service.dart';
 import 'package:uni_discente/models/usuario.model.dart';
 
 import 'inicio.page.dart';
@@ -31,9 +35,12 @@ class _SplashPageState extends State<SplashPage> {
               tag: 'icon_book',
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                radius: 60.0,
-                child: Image.asset('assets/book.png'),
+                radius: 45.0,
+                child: Image.asset('assets/icon_init.png'),
               ),
+            ),
+            SizedBox(
+              height: 13,
             ),
             Text(
               'e-Discente',
@@ -50,6 +57,7 @@ class _SplashPageState extends State<SplashPage> {
 
   void _loadUser() async {
     UsuarioModel usuario = await UsuarioBloc().loadUsuario();
+    await initializeDateFormatting('pt_Br', null);
     await Future.delayed(Duration(milliseconds: 1000));
     if (usuario != null) {
       Navigator.pushReplacement(

@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:mobx/mobx.dart';
 import 'package:uni_discente/models/aulas.model.dart';
 import 'package:uni_discente/repositories/aulas.repository.dart';

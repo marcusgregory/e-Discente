@@ -1,3 +1,4 @@
+// @dart=2.9
 class TurmaModel {
   String codigo;
   String nomeTurma;
@@ -14,7 +15,7 @@ class TurmaModel {
       this.horario,
       this.idTurma});
 
- TurmaModel.fromJson(Map<String, dynamic> json) {
+  TurmaModel.fromJson(Map<String, dynamic> json) {
     codigo = json['codigo'];
     nomeTurma = json['nomeTurma'];
     docente = json['docente'];

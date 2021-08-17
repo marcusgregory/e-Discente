@@ -1,3 +1,4 @@
+// @dart=2.9
 /* Init Flutter Local Notification */
 //================================================================================
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -7,7 +8,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 const initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 const initializationSettingsIOS = IOSInitializationSettings();
 const initializationSettings = InitializationSettings(
-    initializationSettingsAndroid, initializationSettingsIOS);
+    android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 //================================================================================
 
 void initNotification() async {
@@ -22,10 +23,11 @@ void initNotification() async {
 Future<void> showNotification(int numNoticias) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'event_new_notice', 'Noticias', '',
-      importance: Importance.Max, priority: Priority.High, ticker: 'ticker');
+      importance: Importance.max, priority: Priority.high, ticker: 'ticker');
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.show(
       0,
       numNoticias <= 1 ? 'Nova Notícia' : 'Novas Notícias',

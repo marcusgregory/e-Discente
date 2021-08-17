@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/noticias.bloc.dart';
 import 'package:uni_discente/models/noticias.model.dart';
@@ -40,21 +41,16 @@ class _NoticiasPageState extends State<NoticiasPage>
           (BuildContext context, AsyncSnapshot<List<NoticiaModel>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            print('none');
             break;
           case ConnectionState.waiting:
-            print('waiting');
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(),
             );
             break;
           case ConnectionState.active:
-            print('active');
             if (snapshot.hasData) {
-              print('hasDada');
               return getListView(snapshot.data);
             } else if (snapshot.hasError) {
-              print('hasError');
               ToastUtil.showShortToast('${snapshot.error}');
               return Column(
                 children: <Widget>[
@@ -67,16 +63,13 @@ class _NoticiasPageState extends State<NoticiasPage>
                   Text('Tentar novamente')
                 ],
               );
-            } else {
-              print('else');
-            }
+            } else {}
             break;
           case ConnectionState.done:
-            print('done');
             break;
         }
         return Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator.adaptive(),
         );
       },
     );

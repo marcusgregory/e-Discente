@@ -5,7 +5,8 @@ import 'package:flutter/widgets.dart';
 
 class PhotoViewWidget extends StatelessWidget {
   final String url;
-  const PhotoViewWidget(this.url);
+  final String tag;
+  const PhotoViewWidget(this.url, {this.tag = ''});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +19,10 @@ class PhotoViewWidget extends StatelessWidget {
         child: Center(
           child: Hero(
             child: CachedNetworkImage(
-              imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(this.url) : this.url,
+              imageUrl: kIsWeb
+                  ? 'https://api.allorigins.win/raw?url=' +
+                      Uri.encodeComponent(this.url)
+                  : this.url,
               imageBuilder: (context, imageProvider) {
                 return Container(
                   decoration: BoxDecoration(
@@ -27,7 +31,7 @@ class PhotoViewWidget extends StatelessWidget {
                 );
               },
             ),
-            tag: url,
+            tag: tag == '' ? url : tag,
           ),
         ),
       ),

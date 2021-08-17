@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,7 +10,7 @@ class PerfilRepository {
   Future<PerfilModel> getPerfil() async {
     try {
       var url = '${Settings.apiURL}/sigaa/discente';
-      http.Response response = await http.get(url, headers: {
+      http.Response response = await http.get(Uri.parse(url), headers: {
         'jwt': Settings.usuario.token
       }).timeout(Duration(seconds: 50));
 

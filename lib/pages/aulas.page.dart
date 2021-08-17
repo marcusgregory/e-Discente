@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -35,7 +36,7 @@ class _AulasPageState extends State<AulasPage>
             switch (future.status) {
               case FutureStatus.pending:
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator.adaptive(),
                 );
                 break;
               case FutureStatus.rejected:

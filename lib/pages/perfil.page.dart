@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                       SizedBox(
                         height: 20,
                       ),
-                      CircularProgressIndicator(),
+                      CircularProgressIndicator.adaptive(),
                       SizedBox(
                         height: 10,
                       ),
@@ -101,9 +102,12 @@ class _PerfilScreenState extends State<PerfilScreen>
             radius: 58,
             backgroundColor: Colors.transparent,
             child: Hero(
-                tag: url,
+              tag: url,
               child: CachedNetworkImage(
-                imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(url) : url,
+                imageUrl: kIsWeb
+                    ? 'https://api.allorigins.win/raw?url=' +
+                        Uri.encodeComponent(url)
+                    : url,
                 imageBuilder: (context, imageProvider) => Material(
                   shape: CircleBorder(),
                   clipBehavior: Clip.hardEdge,
@@ -147,7 +151,6 @@ class _PerfilScreenState extends State<PerfilScreen>
                   percent: 0.0,
                   animation: true,
                   animationDuration: 500,
-                  progressColor: Theme.of(context).accentColor,
                   circularStrokeCap: CircularStrokeCap.round,
                   backgroundColor: Colors.transparent,
                 );
@@ -191,7 +194,7 @@ class _PerfilScreenState extends State<PerfilScreen>
           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Text(
             Settings.usuario.curso,
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            style: TextStyle(fontSize: 14),
             textAlign: TextAlign.center,
           ),
         ),
@@ -200,10 +203,7 @@ class _PerfilScreenState extends State<PerfilScreen>
         ),
         Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Container(
-            color: Colors.grey[300],
-            height: 1,
-          ),
+          child: Divider(),
         ),
         SizedBox(
           height: 15,

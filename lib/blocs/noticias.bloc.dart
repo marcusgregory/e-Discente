@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'package:data_connection_checker/data_connection_checker.dart';
@@ -43,8 +44,8 @@ class NoticiasBloc {
       } else {
         try {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          String noticiasPref = prefs.getString('noticias');
-          if (noticiasPref != null) {
+          String noticiasPref = prefs.getString('noticias') ?? '';
+          if (noticiasPref != '') {
             Iterable noticias = jsonDecode(noticiasPref);
             List<NoticiaModel> noticiasList =
                 noticias.map((model) => NoticiaModel.fromJson(model)).toList();

@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationUtil {
@@ -6,12 +7,13 @@ class NotificationUtil {
 
   static var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'event_geral', 'Geral', 'Notificação de e-Discente',
-      importance: Importance.Max,
-      priority: Priority.High,
+      importance: Importance.max,
+      priority: Priority.high,
       ticker: 'Notificação de e-Discente');
   static var iOSPlatformChannelSpecifics = IOSNotificationDetails();
   static var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics);
 
   static Future<void> showNotification(int id, String title, String body,
       {String payload}) async {

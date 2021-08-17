@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +8,7 @@ import 'package:uni_discente/repositories/conta.repository.dart';
 import 'package:uni_discente/settings.dart';
 
 class UsuarioBloc {
-  UsuarioModel usuario = new UsuarioModel();
+  UsuarioModel usuario = UsuarioModel();
   UsuarioBloc() {
     usuario = null;
   }
@@ -17,6 +18,7 @@ class UsuarioBloc {
       var repository = new ContaRepository();
       var res = await repository.autenticar(autenticacao);
       usuario = res;
+      usuario.nomeDeUsuario = autenticacao.usuario.toLowerCase().trim();
       await prefs.setString('usuario', jsonEncode(usuario));
       Settings.usuario = usuario;
       return res;
@@ -34,8 +36,8 @@ class UsuarioBloc {
   Future<UsuarioModel> loadUsuario() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await Future.delayed(Duration(milliseconds: 1500));
-    String usuarioPref = prefs.getString('usuario');
-    if (usuarioPref != null) {
+    String usuarioPref = prefs.getString('usuario') ?? '';
+    if (usuarioPref != '') {
       UsuarioModel usuarioM = UsuarioModel.fromJson(jsonDecode(usuarioPref));
       usuario = usuarioM;
       Settings.usuario = usuario;
@@ -49,7 +51,7 @@ class UsuarioBloc {
 
   deslogar() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('usuario', null);
+    await prefs.setString('usuario', '');
     usuario = null;
     Settings.usuario = null;
   }

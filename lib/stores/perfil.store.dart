@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:mobx/mobx.dart';
 import 'package:uni_discente/models/perfil.model.dart';
 import 'package:uni_discente/repositories/perfil.repository.dart';

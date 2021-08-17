@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -10,7 +11,7 @@ class TurmasRepository {
   Future<List<TurmaModel>> getTurmas() async {
     try {
       var url = '${Settings.apiURL}/sigaa/turmas';
-      http.Response response = await http.get(url, headers: {
+      http.Response response = await http.get(Uri.parse(url), headers: {
         'jwt': Settings.usuario.token
       }).timeout(Duration(seconds: 50));
 

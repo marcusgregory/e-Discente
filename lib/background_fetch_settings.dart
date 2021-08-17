@@ -1,10 +1,10 @@
+// @dart=2.9
 import 'dart:convert';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_discente/models/noticias.model.dart';
-
-import 'notification_settings.dart';
+import 'notification_settings2.dart';
 import 'repositories/noticias.repository.dart';
 
 void initBackgroundFetch() {
@@ -39,8 +39,9 @@ void backgroundFetchHeadlessTask(String taskId) async {
   print(noticiasNovas.length);
   if (noticiasNovas.length > 0) {
     print('[BackgroundFetch] novas noticias.');
-    showNotification(noticiasNovas.length);
+    noticiasNovas.forEach((noticia) {
+      NotificationAwesome.createNotificationBigPictureNoticia(noticia);
+    });
   }
-
   BackgroundFetch.finish(taskId);
 }

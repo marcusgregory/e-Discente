@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:uni_discente/blocs/turmas.bloc.dart';
 import 'package:uni_discente/models/turma.model.dart';
@@ -44,7 +45,7 @@ class _TurmasPageState extends State<TurmasPage>
             case ConnectionState.waiting:
               print('waiting');
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(),
               );
               break;
             case ConnectionState.active:
@@ -77,7 +78,7 @@ class _TurmasPageState extends State<TurmasPage>
               break;
           }
           return Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator.adaptive(),
           );
         },
       ),

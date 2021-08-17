@@ -1,3 +1,4 @@
+// @dart=2.9
 class NoticiaModel {
   int id;
   String url;
@@ -24,7 +25,7 @@ class NoticiaModel {
           id == other.id &&
           url == other.url;
   @override
-  int get hashCode => id+url.hashCode;
+  int get hashCode => id + url.hashCode;
 
   NoticiaModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

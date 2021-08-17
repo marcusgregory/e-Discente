@@ -1,14 +1,19 @@
+// @dart=2.9
 import 'dart:async';
-import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_discente/blocs/usuario.bloc.dart';
+import 'package:uni_discente/chat/app_instance.dart';
+import 'package:uni_discente/chat/models/chat_item.model.dart';
+import 'package:uni_discente/chat/pages/chats.page.dart';
+import 'package:uni_discente/chat/services/socket-io.service.dart';
+import 'package:uni_discente/chat/stores/socket_io.store.dart';
 import 'package:uni_discente/pages/boletim.page.dart';
-import 'package:uni_discente/pages/login.page.dart';
 import 'package:uni_discente/pages/noticias.page.dart';
 import 'package:uni_discente/pages/perfil.page.dart';
 import 'package:uni_discente/pages/turmas.page.dart';
+import 'package:uni_discente/pages/widgets/dialog_account.widget.dart';
 import '../settings.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -22,10 +27,12 @@ class _InicioPageState extends State<InicioPage> {
     NoticiasPage(),
     TurmasPage(),
     BoletimPage(),
+    ChatsPage(),
     PerfilScreen(),
   ];
 
   int onlineFlag = 0;
+  Flushbar flush = Flushbar();
 
   PageController pageController = PageController();
   StreamSubscription<DataConnectionStatus> listenConnection;
@@ -39,7 +46,6 @@ class _InicioPageState extends State<InicioPage> {
       BottomNavigationBar(
         onTap: onTap,
         currentIndex: currentIndex,
-        selectedItemColor: Theme.of(context).accentColor,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
@@ -55,6 +61,10 @@ class _InicioPageState extends State<InicioPage> {
               label: 'Boletim',
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Conversas',
+              backgroundColor: Colors.orange),
+          BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),
               label: 'Perfil',
               backgroundColor: Colors.red)
@@ -63,62 +73,48 @@ class _InicioPageState extends State<InicioPage> {
 
   @override
   void initState() {
+    var socket = SocketIOStore();
+    AppInstance.socketStore = socket;
+    socket.initSocket();
     if (kIsWeb) {
     } else {
       listenConnection =
           DataConnectionChecker().onStatusChange.listen((status) {
-        scaffoldStateKey.currentState
-            .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
+        flush.dismiss();
         switch (status) {
           case DataConnectionStatus.connected:
-            scaffoldStateKey.currentState
-                .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
             if (onlineFlag > 0) {
-              scaffoldStateKey.currentState.showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                            color: Colors.green, shape: BoxShape.circle),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text('Agora está online.'),
-                    ],
-                  ),
+              flush = Flushbar(
+                message: 'Agora está online.',
+                backgroundColor: Colors.green,
+                icon: Container(
+                  width: 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                      color: Colors.green, shape: BoxShape.circle),
                 ),
-                // SnackBar
-              );
+                duration: Duration(seconds: 3),
+                isDismissible: true,
+                flushbarStyle: FlushbarStyle.GROUNDED,
+                flushbarPosition: FlushbarPosition.TOP,
+              )..show(context);
             }
             break;
           case DataConnectionStatus.disconnected:
             onlineFlag++;
-            scaffoldStateKey.currentState.showSnackBar(
-              SnackBar(
-                duration: Duration(seconds: 30),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text('e-Discente está offline.'),
-                  ],
-                ),
-              ), // SnackBar
-            );
+            flush = Flushbar(
+              message: 'e-Discente está offline.',
+              icon: Container(
+                width: 7,
+                height: 7,
+                decoration:
+                    BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+              ),
+              duration: Duration(seconds: 30),
+              isDismissible: true,
+              flushbarStyle: FlushbarStyle.GROUNDED,
+              flushbarPosition: FlushbarPosition.TOP,
+            )..show(context);
             break;
         }
       });
@@ -144,20 +140,19 @@ class _InicioPageState extends State<InicioPage> {
               int indexPage =
                   pageController.page != null ? pageController.page.round() : 0;
               return GestureDetector(
-                child: Text(
-                    ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]),
+                child: Text([
+                  'Notícias',
+                  'Turmas',
+                  'Boletim',
+                  'Conversas',
+                  'Perfil'
+                ][indexPage]),
                 onDoubleTap: () {},
               );
             },
           ),
           elevation: 1.0,
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.brightness_6_rounded),
-              onPressed: () {
-                AdaptiveTheme.of(context).toggleThemeMode();
-              },
-            ),
             IconButton(
               icon: Hero(
                 tag: 'icon_book',
@@ -187,12 +182,31 @@ class _InicioPageState extends State<InicioPage> {
                 ),
               ),
               onPressed: () async {
-                print("Tocou na foto de Perfil");
-                await UsuarioBloc().deslogar();
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => LoginPage()));
+                // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                //   return DialogAccount();
+                // }));
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: DialogAccount());
+                  },
+                );
+                // showModalBottomSheet(
+                //     isScrollControlled: true,
+                //     context: context,
+                //     builder: (_) {
+                //       return DialogAccount();
+                //     });
+                //     print("Tocou na foto de Perfil");
+                //     await UsuarioBloc().deslogar();
+                //     Navigator.pushReplacement(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (BuildContext context) => LoginPage()));
               },
             ),
           ],

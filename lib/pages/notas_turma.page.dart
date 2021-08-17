@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:uni_discente/models/notas_turma.model.dart';
 import 'package:uni_discente/pages/widgets/balao_resultado.widget.dart';
@@ -12,7 +13,8 @@ class NotasTurmaPage extends StatefulWidget {
   _NotasTurmaPageState createState() => _NotasTurmaPageState();
 }
 
-class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAliveClientMixin {
+class _NotasTurmaPageState extends State<NotasTurmaPage>
+    with AutomaticKeepAliveClientMixin {
   Future<NotasTurmaModel> notasFuture;
 
   @override
@@ -20,6 +22,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
     notasFuture = NotasTurmaRepository().getNotaTurma(widget.idTurma);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -30,12 +33,11 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                 AsyncSnapshot<NotasTurmaModel> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-               
                   return Container();
                   break;
                 case ConnectionState.waiting:
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator.adaptive(),
                   );
                   break;
                 case ConnectionState.active:
@@ -72,9 +74,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20, right: 20),
-                                  child: Divider(
-                                    color: Colors.black26,
-                                  ),
+                                  child: Divider(),
                                 ),
                                 ListView.builder(
                                     addAutomaticKeepAlives: true,
@@ -122,9 +122,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20, right: 20),
-                                  child: Divider(
-                                    color: Colors.black26,
-                                  ),
+                                  child: Divider(),
                                 ),
                                 ListView(
                                   shrinkWrap: true,
@@ -148,9 +146,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20),
-                                      child: Divider(
-                                        color: Colors.black26,
-                                      ),
+                                      child: Divider(),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(
@@ -176,7 +172,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                         ]))
                       ],
                     );
-                  }else{
+                  } else {
                     return Center(
                       child: Text('Ainda sem notas disponíveis.'),
                     );

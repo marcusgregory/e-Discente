@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -30,7 +31,7 @@ class _BoletimPageState extends State<BoletimPage>
         switch (future.status) {
           case FutureStatus.pending:
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(),
             );
             break;
           case FutureStatus.rejected:
@@ -55,14 +56,14 @@ class _BoletimPageState extends State<BoletimPage>
               children: <Widget>[
                 myDropDownButtonBuilder(future.result),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15,right: 15),
+                  padding: const EdgeInsets.only(left: 15, right: 15),
                   child: Divider(
                     color: Colors.black45,
                   ),
                 ),
                 Expanded(
                   child: Scrollbar(
-                    child: ListView.builder( 
+                    child: ListView.builder(
                       itemCount: future
                           .result[_boletimStore.valores[_boletimStore.index]]
                           .length,
@@ -84,10 +85,13 @@ class _BoletimPageState extends State<BoletimPage>
   Widget myDropDownButtonBuilder(var result) {
     return Container(
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-      padding: EdgeInsets.only(left: 10, right: 10,top: 10),
+      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
       child: ListTile(
-        title: Text('Semestre',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
-              trailing: DropdownButton(
+        title: Text(
+          'Semestre',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+        ),
+        trailing: DropdownButton(
             items: Map.from(result).keys.map((dropDownStringItem) {
               _boletimStore.addValor(dropDownStringItem);
               return DropdownMenuItem<String>(
@@ -154,7 +158,6 @@ class _BoletimPageState extends State<BoletimPage>
       ),
     );
   }
-
 
   @override
   bool get wantKeepAlive => true;

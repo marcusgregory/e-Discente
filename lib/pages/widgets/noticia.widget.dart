@@ -1,9 +1,10 @@
+// @dart=2.9
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:uni_discente/models/noticias.model.dart';
 import 'package:uni_discente/presentation/custom_icons_icons.dart';
@@ -248,13 +249,13 @@ class Noticia extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Container(color: Colors.grey[300], height: 1),
+                  child: Divider(),
                 ),
                 SizedBox(
                   width: double.infinity,
                   height: 50,
-                  child: FlatButton(
-                    padding: const EdgeInsets.all(0),
+                  child: TextButton(
+                    style: ButtonStyle(),
                     child: Text(
                       "Fechar",
                     ),

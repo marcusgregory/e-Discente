@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,7 +10,7 @@ class NotasTurmaRepository {
   Future<NotasTurmaModel> getNotaTurma(String idTurma) async {
     try {
       var url = '${Settings.apiURL}/sigaa/turma/$idTurma/notas';
-      http.Response response = await http.get(url, headers: {
+      http.Response response = await http.get(Uri.parse(url), headers: {
         'jwt': Settings.usuario.token
       }).timeout(Duration(seconds: 30));
       if (response.statusCode == 200) {

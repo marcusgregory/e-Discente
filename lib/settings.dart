@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'models/usuario.model.dart';
 
 class Settings {
