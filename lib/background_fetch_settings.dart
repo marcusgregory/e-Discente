@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_discente/models/noticias.model.dart';
+import 'package:e_discente/models/noticias.model.dart';
 import 'notification_settings2.dart';
 import 'repositories/noticias.repository.dart';
 

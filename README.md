@@ -1,5 +1,5 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5e43085335303b6530234d80/5e43085335303b6530234d7f/status_badge.svg)](https://codemagic.io/apps/5e43085335303b6530234d80/5e43085335303b6530234d7f/latest_build)
-# uni_discente 
+# e_discente 
 
 A new Flutter project.
 

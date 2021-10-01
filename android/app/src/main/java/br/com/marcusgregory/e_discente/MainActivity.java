@@ -1,4 +1,4 @@
-package br.com.marcusgregory.uni_discente;
+package br.com.marcusgregory.e_discente;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

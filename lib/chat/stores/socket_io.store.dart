@@ -4,10 +4,10 @@ import 'dart:convert';
 
 import 'package:mobx/mobx.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-import 'package:uni_discente/chat/models/evento_digitando.model.dart';
-import 'package:uni_discente/chat/models/message.model.dart';
-import 'package:uni_discente/chat/stores/socket_io_message.store.dart';
+import 'package:e_discente/chat/models/chat_item.model.dart';
+import 'package:e_discente/chat/models/evento_digitando.model.dart';
+import 'package:e_discente/chat/models/message.model.dart';
+import 'package:e_discente/chat/stores/socket_io_message.store.dart';
 
 import '../../settings.dart';
 import '../app_instance.dart';

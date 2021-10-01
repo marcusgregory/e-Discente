@@ -1,8 +1,8 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:uni_discente/blocs/turmas.bloc.dart';
-import 'package:uni_discente/models/turma.model.dart';
-import 'package:uni_discente/util/toast.util.dart';
+import 'package:e_discente/blocs/turmas.bloc.dart';
+import 'package:e_discente/models/turma.model.dart';
+import 'package:e_discente/util/toast.util.dart';
 import 'widgets/turma.widget.dart';
 
 class TurmasPage extends StatefulWidget {

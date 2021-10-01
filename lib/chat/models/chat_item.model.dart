@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/chat/stores/list_messages.store.dart';
+import 'package:e_discente/chat/stores/list_messages.store.dart';
 
 import '../app_instance.dart';
 import 'evento_digitando.model.dart';

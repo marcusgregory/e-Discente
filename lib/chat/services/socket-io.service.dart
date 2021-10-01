@@ -2,9 +2,9 @@
 import 'dart:convert';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-//import 'package:uni_discente/chat/models/message.model.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/chat/models/chat_item.model.dart';
+//import 'package:e_discente/chat/models/message.model.dart';
+import 'package:e_discente/settings.dart';
 //import '../../notification_settings2.dart';
 import '../app_instance.dart';
 

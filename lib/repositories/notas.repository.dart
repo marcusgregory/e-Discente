@@ -3,8 +3,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/models/boletim.model.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/models/boletim.model.dart';
+import 'package:e_discente/settings.dart';
 
 class NotasRepository {
   Future<Map<String, List<BoletimModel>>> getNotas() async {

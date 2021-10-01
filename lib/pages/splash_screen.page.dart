@@ -1,12 +1,14 @@
 // @dart=2.9
+import 'package:e_discente/repositories/register_fcmToken.repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:uni_discente/blocs/usuario.bloc.dart';
-import 'package:uni_discente/chat/app_instance.dart';
-import 'package:uni_discente/chat/services/socket-io.service.dart';
-import 'package:uni_discente/models/usuario.model.dart';
+import 'package:e_discente/blocs/usuario.bloc.dart';
+import 'package:e_discente/chat/app_instance.dart';
+import 'package:e_discente/chat/services/socket-io.service.dart';
+import 'package:e_discente/models/usuario.model.dart';
 
+import '../settings.dart';
 import 'inicio.page.dart';
 import 'login.page.dart';
 

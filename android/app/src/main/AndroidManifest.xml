@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="br.com.marcusgregory.uni_discente">
+    package="br.com.marcusgregory.e_discente">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -21,8 +21,6 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -37,7 +35,18 @@
             android:value="2" />
         <!--  Notifications -->
          <meta-data android:name="com.google.firebase.messaging.default_notification_icon" 
-            android:resource="@drawable/ic_notification" />   
+            android:resource="@drawable/res_ic_notification_default_large" />  
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="chat_channel" />   
+        <meta-data 
+        android:name="firebase_messaging_auto_init_enabled"
+        android:value="false"
+        />    
+        <meta-data 
+        android:name="firebase_analytics_enabled"
+        android:value="false"
+        />  
         <!--   OpenFile plugin -->
             <provider
                 android:name="androidx.core.content.FileProvider"

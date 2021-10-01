@@ -1,6 +1,6 @@
 //@dart=2.9
-import 'package:uni_discente/chat/stores/socket_io.store.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/chat/stores/socket_io.store.dart';
+import 'package:e_discente/settings.dart';
 import 'stores/list_chats.store.dart';
 
 class AppInstance {

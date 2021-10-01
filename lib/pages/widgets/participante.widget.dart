@@ -2,10 +2,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_discente/models/discente.model.dart';
-import 'package:uni_discente/models/docente.model.dart';
-import 'package:uni_discente/models/participante.model.dart';
-import 'package:uni_discente/pages/widgets/photo_view.widget.dart';
+import 'package:e_discente/models/discente.model.dart';
+import 'package:e_discente/models/docente.model.dart';
+import 'package:e_discente/models/participante.model.dart';
+import 'package:e_discente/pages/widgets/photo_view.widget.dart';
 
 class ParticipanteWidget extends StatelessWidget {
   final ParticipanteModel participante;

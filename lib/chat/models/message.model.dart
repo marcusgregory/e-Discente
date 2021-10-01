@@ -1,8 +1,8 @@
 // @dart=2.9
 import 'dart:convert';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/chat/app_instance.dart';
-import 'package:uni_discente/chat/stores/list_messages.store.dart';
+import 'package:e_discente/chat/app_instance.dart';
+import 'package:e_discente/chat/stores/list_messages.store.dart';
 import 'package:uuid/uuid.dart';
 
 part 'message.model.g.dart';
@@ -61,9 +61,15 @@ abstract class _MessageModelBase with Store implements Comparable {
   @action
   void enviarMensagem(ListMessagesStore store) {
     store.enviarMensagem(this, (ack) {
-      state = MessageState.SENDED;
       print('Mensagem recebida no servidor.');
+      state = MessageState.SENDED;
+      updateSendAt(DateTime.parse(ack['server_time']));
     });
+  }
+
+  @action
+  void updateSendAt(DateTime sendAt) {
+    this.sendAt = sendAt;
   }
 
   factory _MessageModelBase.fromJson(Map<String, dynamic> json) => MessageModel(

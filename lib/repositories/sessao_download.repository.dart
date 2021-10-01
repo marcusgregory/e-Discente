@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:uni_discente/models/sessao_download.model.dart';
+import 'package:e_discente/models/sessao_download.model.dart';
 
 import '../settings.dart';
 import 'package:http/http.dart' as http;

@@ -1,11 +1,11 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:uni_discente/models/participantes.model.dart';
-import 'package:uni_discente/pages/aulas.page.dart';
-import 'package:uni_discente/pages/notas_turma.page.dart';
-import 'package:uni_discente/pages/participantes.page.dart';
-import 'package:uni_discente/repositories/participantes.repository.dart';
-import 'package:uni_discente/stores/aulas.store.dart';
+import 'package:e_discente/models/participantes.model.dart';
+import 'package:e_discente/pages/aulas.page.dart';
+import 'package:e_discente/pages/notas_turma.page.dart';
+import 'package:e_discente/pages/participantes.page.dart';
+import 'package:e_discente/repositories/participantes.repository.dart';
+import 'package:e_discente/stores/aulas.store.dart';
 
 class TurmaPage extends StatefulWidget {
   final String _titulo;

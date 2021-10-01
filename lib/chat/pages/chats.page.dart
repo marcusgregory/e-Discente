@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-import 'package:uni_discente/chat/stores/list_chats.store.dart';
+import 'package:e_discente/chat/models/chat_item.model.dart';
+import 'package:e_discente/chat/stores/list_chats.store.dart';
 
 import '../app_instance.dart';
 import 'chat.page.dart';

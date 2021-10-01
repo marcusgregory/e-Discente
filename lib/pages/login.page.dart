@@ -1,9 +1,9 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:uni_discente/blocs/usuario.bloc.dart';
-import 'package:uni_discente/models/autenticacao.model.dart';
-import 'package:uni_discente/models/usuario.model.dart';
-import 'package:uni_discente/util/toast.util.dart';
+import 'package:e_discente/blocs/usuario.bloc.dart';
+import 'package:e_discente/models/autenticacao.model.dart';
+import 'package:e_discente/models/usuario.model.dart';
+import 'package:e_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'inicio.page.dart';

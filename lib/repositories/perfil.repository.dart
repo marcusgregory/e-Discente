@@ -3,8 +3,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/models/perfil.model.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/models/perfil.model.dart';
+import 'package:e_discente/settings.dart';
 
 class PerfilRepository {
   Future<PerfilModel> getPerfil() async {

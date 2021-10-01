@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:uni_discente/models/aulas.model.dart';
+import 'package:e_discente/models/aulas.model.dart';
 import 'package:http/http.dart' as http;
 
 import '../settings.dart';

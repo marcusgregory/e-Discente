@@ -1,15 +1,16 @@
 // @dart=2.9
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:uni_discente/models/perfil.model.dart';
-import 'package:uni_discente/pages/widgets/photo_view.widget.dart';
-import 'package:uni_discente/stores/perfil.store.dart';
-import 'package:uni_discente/util/toast.util.dart';
+import 'package:e_discente/models/perfil.model.dart';
+import 'package:e_discente/pages/widgets/photo_view.widget.dart';
+import 'package:e_discente/stores/perfil.store.dart';
+import 'package:e_discente/util/toast.util.dart';
 import '../settings.dart';
 
 class PerfilScreen extends StatefulWidget {
@@ -223,7 +224,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'Curso',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.school),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.folder_fill_badge_person_crop)
+                  : Icon(Icons.school),
               subtitle: Text(perfilModel.curso),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: Settings.usuario.curso));
@@ -236,7 +239,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'Matrícula',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.offline_pin),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.checkmark_shield_fill)
+                  : Icon(Icons.offline_pin),
               subtitle: Text(Settings.usuario.numMatricula),
               onTap: () {
                 Clipboard.setData(
@@ -250,7 +255,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'Integralização',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.insert_chart),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.chart_bar_square_fill)
+                  : Icon(Icons.insert_chart),
               subtitle: Text(perfilModel.integralizacao + '%'),
               onTap: () {
                 Clipboard.setData(
@@ -264,7 +271,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'Nível',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.assistant),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.asterisk_circle_fill)
+                  : Icon(Icons.assistant),
               subtitle: Text(perfilModel.nivel),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.nivel));
@@ -277,7 +286,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'Situação',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.assignment),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.doc_text_fill)
+                  : Icon(Icons.assignment),
               subtitle: Text(perfilModel.situacao),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.situacao));
@@ -290,7 +301,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'Semestre de Entrada',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.event_available),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.calendar)
+                  : Icon(Icons.event_available),
               subtitle: Text(perfilModel.semestreEntrada),
               onTap: () {
                 Clipboard.setData(
@@ -304,7 +317,9 @@ class _PerfilScreenState extends State<PerfilScreen>
                 'IDE',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              leading: Icon(Icons.timeline),
+              leading: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.graph_square_fill)
+                  : Icon(Icons.timeline),
               subtitle: Text(perfilModel.iDE),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: perfilModel.iDE));

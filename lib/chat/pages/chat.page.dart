@@ -7,12 +7,12 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:linkwell/linkwell.dart';
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-import 'package:uni_discente/chat/models/message.model.dart';
-import 'package:uni_discente/chat/stores/list_messages.store.dart';
-import 'package:uni_discente/chat/widgets/jumping_dots.widget.dart';
-import 'package:uni_discente/chat/widgets/marquee.widget.dart';
-import 'package:uni_discente/pages/widgets/photo_view.widget.dart';
+import 'package:e_discente/chat/models/chat_item.model.dart';
+import 'package:e_discente/chat/models/message.model.dart';
+import 'package:e_discente/chat/stores/list_messages.store.dart';
+import 'package:e_discente/chat/widgets/jumping_dots.widget.dart';
+import 'package:e_discente/chat/widgets/marquee.widget.dart';
+import 'package:e_discente/pages/widgets/photo_view.widget.dart';
 
 import '../app_instance.dart';
 
@@ -145,6 +145,9 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               child: Container(
                 child: Observer(builder: (_) {
                   var lista = listMessagesStore.mensagens.toList();
+                  // lista.forEach((element) {
+                  //   element.sendAt;
+                  // });
                   if (listMessagesStore.isLoading) {
                     print(listMessagesStore.isLoading);
                     return Center(child: CircularProgressIndicator.adaptive());
@@ -153,9 +156,9 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       controller: listScrollController,
                       elements: lista,
                       groupBy: (MessageModel message) => DateTime(
-                          message.sendAt.year,
-                          message.sendAt.month,
-                          message.sendAt.day),
+                          message.sendAt.toLocal().year,
+                          message.sendAt.toLocal().month,
+                          message.sendAt.toLocal().day),
                       order: GroupedListOrder.DESC,
                       reverse: true,
                       floatingHeader: true,
@@ -176,8 +179,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   message.sendAt.year == DateTime.now().year
-                                      ? '${formatDateMonthDay.format(message.sendAt)}'
-                                      : '${formatDateYearMonthDay.format(message.sendAt)}',
+                                      ? '${formatDateMonthDay.format(message.sendAt.toLocal())}'
+                                      : '${formatDateYearMonthDay.format(message.sendAt.toLocal())}',
                                   style: TextStyle(
                                       fontSize: Theme.of(context)
                                               .textTheme
@@ -196,6 +199,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       indexedItemBuilder:
                           (context, MessageModel messageModel, int index) =>
                               Observer(builder: (_) {
+                        //messageModel.sendAt;
                         // print(index);
                         // print(messageModel.toJson());
                         return buildItemChat(messageModel, lista, index);
@@ -441,7 +445,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        f.format(message.sendAt),
+                        f.format(message.sendAt.toLocal()),
                         style: TextStyle(
                             color:
                                 Theme.of(context).brightness == Brightness.light
@@ -488,18 +492,30 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                     ? Colors.grey[300]
                     : Theme.of(context).cardColor,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(
-                  !isMyMessage && isLastMessage(index) && !isFirstMessageUser
-                      ? 0
+              topLeft: Radius.circular(!isMyMessage &&
+                      isLastMessage(index) &&
+                      !isFirstMessageUser
+                  ? 0
+                  : !isMyMessage && !isFirstMessageUser && !isLastMessage(index)
+                      ? 8
                       : 20),
-              topRight: Radius.circular(
-                  isMyMessage && isLastMessage(index) && !isFirstMessageUser
-                      ? 0
+              topRight: Radius.circular(isMyMessage &&
+                      isLastMessage(index) &&
+                      !isFirstMessageUser
+                  ? 0
+                  : isMyMessage && !isFirstMessageUser && !isLastMessage(index)
+                      ? 8
                       : 20),
-              bottomLeft:
-                  Radius.circular(!isMyMessage && isFirstMessageUser ? 0 : 20),
-              bottomRight:
-                  Radius.circular(isMyMessage && isFirstMessageUser ? 0 : 20),
+              bottomLeft: Radius.circular(!isMyMessage && isFirstMessageUser
+                  ? 0
+                  : !isMyMessage && !isFirstMessageUser && !isLastMessage(index)
+                      ? 8
+                      : 20),
+              bottomRight: Radius.circular(isMyMessage && isFirstMessageUser
+                  ? 0
+                  : isMyMessage && !isFirstMessageUser && !isLastMessage(index)
+                      ? 8
+                      : 20),
             ),
           ),
           margin: isMyMessage

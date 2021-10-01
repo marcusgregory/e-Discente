@@ -1,7 +1,7 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:uni_discente/models/participantes.model.dart';
-import 'package:uni_discente/pages/widgets/participante.widget.dart';
+import 'package:e_discente/models/participantes.model.dart';
+import 'package:e_discente/pages/widgets/participante.widget.dart';
 import 'dart:math' as math;
 
 class ParticipantesPage extends StatefulWidget {

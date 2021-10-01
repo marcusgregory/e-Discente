@@ -1,8 +1,8 @@
 // @dart=2.9
 import 'dart:async';
 
-import 'package:uni_discente/models/turma.model.dart';
-import 'package:uni_discente/repositories/turmas.repository.dart';
+import 'package:e_discente/models/turma.model.dart';
+import 'package:e_discente/repositories/turmas.repository.dart';
 
 class TurmasBloc {
   TurmasBloc() {

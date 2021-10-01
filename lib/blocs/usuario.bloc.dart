@@ -1,11 +1,13 @@
 // @dart=2.9
 import 'dart:convert';
 import 'dart:io';
+import 'package:e_discente/repositories/register_fcmToken.repository.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_discente/models/autenticacao.model.dart';
-import 'package:uni_discente/models/usuario.model.dart';
-import 'package:uni_discente/repositories/conta.repository.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/models/autenticacao.model.dart';
+import 'package:e_discente/models/usuario.model.dart';
+import 'package:e_discente/repositories/conta.repository.dart';
+import 'package:e_discente/settings.dart';
 
 class UsuarioBloc {
   UsuarioModel usuario = UsuarioModel();
@@ -21,6 +23,11 @@ class UsuarioBloc {
       usuario.nomeDeUsuario = autenticacao.usuario.toLowerCase().trim();
       await prefs.setString('usuario', jsonEncode(usuario));
       Settings.usuario = usuario;
+      await FirebaseMessaging.instance.setAutoInitEnabled(true);
+      Settings.fcmToken = await FirebaseMessaging.instance.getToken();
+      if (Settings.fcmToken != null) {
+        RegisterFcmTokenRepository().register(Settings.fcmToken);
+      }
       return res;
     } catch (ex) {
       usuario = null;
@@ -41,6 +48,11 @@ class UsuarioBloc {
       UsuarioModel usuarioM = UsuarioModel.fromJson(jsonDecode(usuarioPref));
       usuario = usuarioM;
       Settings.usuario = usuario;
+      await FirebaseMessaging.instance.setAutoInitEnabled(true);
+      Settings.fcmToken = await FirebaseMessaging.instance.getToken();
+      if (Settings.fcmToken != null) {
+        RegisterFcmTokenRepository().register(Settings.fcmToken);
+      }
       return usuario;
     } else {
       usuario = null;
@@ -49,10 +61,12 @@ class UsuarioBloc {
     }
   }
 
-  deslogar() async {
+  Future<void> deslogar() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('usuario', '');
     usuario = null;
     Settings.usuario = null;
+    await FirebaseMessaging.instance.deleteToken();
+    await FirebaseMessaging.instance.setAutoInitEnabled(false);
   }
 }

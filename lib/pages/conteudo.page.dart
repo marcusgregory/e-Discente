@@ -1,9 +1,9 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:uni_discente/repositories/download.service.dart';
-import 'package:uni_discente/models/documento.model.dart';
-import 'package:uni_discente/util/toast.util.dart';
+import 'package:e_discente/repositories/download.service.dart';
+import 'package:e_discente/models/documento.model.dart';
+import 'package:e_discente/util/toast.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ConteudoPage extends StatelessWidget {
@@ -107,7 +107,8 @@ class ConteudoPage extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             left: 3, right: 3, bottom: 6, top: 6),
                         child: ListTile(
-                          leading: balaoArquivo('PDF', context),
+                          leading:
+                              balaoArquivo(_documentos[index].nome, context),
                           title: Text(_documentos[index].nome,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
@@ -136,13 +137,16 @@ class ConteudoPage extends StatelessWidget {
           width: 45.0,
           height: 45.0,
           decoration: BoxDecoration(
-            color: Theme.of(context).accentColor,
+            color:
+                tipo.toLowerCase().contains('.pdf') ? Colors.red : Colors.grey,
             shape: BoxShape.circle,
           ),
         ),
         IconButton(
             icon: Icon(
-              Icons.assignment_rounded,
+              tipo.toLowerCase().contains('.pdf')
+                  ? Icons.picture_as_pdf
+                  : Icons.insert_drive_file,
               color: Colors.white,
             ),
             onPressed: null)

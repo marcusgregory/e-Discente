@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/models/aulas.model.dart';
-import 'package:uni_discente/models/documento.model.dart';
-import 'package:uni_discente/stores/aulas.store.dart';
+import 'package:e_discente/models/aulas.model.dart';
+import 'package:e_discente/models/documento.model.dart';
+import 'package:e_discente/stores/aulas.store.dart';
 
 import 'conteudo.page.dart';
 

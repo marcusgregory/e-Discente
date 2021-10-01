@@ -1,10 +1,12 @@
 // @dart=2.9
 import 'dart:io';
 
+import 'package:e_discente/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_discente/background_fetch_settings.dart';
-import 'package:uni_discente/notification_settings2.dart';
+import 'package:e_discente/background_fetch_settings.dart';
+import 'package:e_discente/notification_settings2.dart';
 import 'pages/splash_screen.page.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
@@ -15,10 +17,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveTheme(
         light: ThemeData(
-            primaryColor: Color(0xFF00396A), backgroundColor: Colors.white),
+          colorScheme: ColorScheme.light().copyWith(
+            primary: Color(0xFF00396A),
+            secondary: Colors.blue,
+            background: Colors.white,
+          ),
+        ),
         dark: ThemeData.dark().copyWith(
-            colorScheme:
-                ColorScheme.dark(primary: ThemeData.dark().accentColor)),
+            colorScheme: ColorScheme.dark(
+                primary: ThemeData.dark().colorScheme.secondary)),
         initial: savedThemeMode ?? AdaptiveThemeMode.light,
         builder: (theme, darkTheme) => MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -37,6 +44,7 @@ void main() async {
     if (Platform.isAndroid || Platform.isIOS) {
       NotificationAwesome.initNotificationAweSome();
       initBackgroundFetch();
+      initFirebaseMessaging();
     }
   }
 }

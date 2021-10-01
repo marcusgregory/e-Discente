@@ -6,10 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:uni_discente/models/noticias.model.dart';
-import 'package:uni_discente/presentation/custom_icons_icons.dart';
-import 'package:uni_discente/util/toast.util.dart';
-import 'package:uni_discente/util/date.util.dart';
+import 'package:e_discente/models/noticias.model.dart';
+import 'package:e_discente/presentation/custom_icons_icons.dart';
+import 'package:e_discente/util/toast.util.dart';
+import 'package:e_discente/util/date.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../detalhes_screen.page.dart';
@@ -48,62 +48,76 @@ class Noticia extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        _loadImage(),
-        _getColumText(this.noticia.titulo, this.noticia.data,
-            this.noticia.resumo, context),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _loadImage(),
+            _getColumText(this.noticia.titulo, this.noticia.data,
+                this.noticia.resumo, context),
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                  height: 25,
+                  width: 30,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Image.asset('assets/logo_unilab.png'),
+                  )),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              'Unilab  •  ${DateUtil.getTimeElapsedByDate(this.noticia.data)}',
+              style: TextStyle(
+                  fontSize: 11,
+                  color: Theme.of(context).textTheme.bodyText1.color),
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: TextButton(
+                    child: Theme.of(context).platform == TargetPlatform.iOS
+                        ? Icon(
+                            Icons.more_horiz,
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                            size: 20,
+                          )
+                        : Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                            size: 20,
+                          ),
+                    onPressed: () {
+                      _showModalBottomSheet(context);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
 
   Widget _getColumText(title, date, description, context) {
-    return new Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           _getTitleWidget(title, context),
           _getDescriptionWidget(description, context),
-          Row(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                    height: 25,
-                    width: 30,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: Image.asset('assets/logo_unilab.png'),
-                    )),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              Text(
-                'Unilab  •  ${DateUtil.getTimeElapsedByDate(date)}',
-                style: TextStyle(
-                    fontSize: 11,
-                    color: Theme.of(context).textTheme.bodyText1.color),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: FlatButton(
-                      child: Icon(
-                        Icons.more_vert,
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        _showModalBottomSheet(context);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          )
         ]);
   }
 

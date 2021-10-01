@@ -2,10 +2,10 @@
 import 'dart:async';
 
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/chat/app_instance.dart';
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-import 'package:uni_discente/chat/repositories/list-chat.repository.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/chat/app_instance.dart';
+import 'package:e_discente/chat/models/chat_item.model.dart';
+import 'package:e_discente/chat/repositories/list-chat.repository.dart';
+import 'package:e_discente/settings.dart';
 
 import 'socket_io.store.dart';
 part 'list_chats.store.g.dart';
@@ -60,44 +60,44 @@ abstract class _ListChatsStoreBase with Store {
   Future<ObservableList<ChatItemModel>> fetchListChats(
       {bool silent = false}) async {
     final future = _chatsRepository.getChats();
-    final chatItem = ChatItemModel(
-      createdAt: DateTime.now(),
-      createdBy: 'sistema',
-      gid: '0',
-      members: [''],
-      modifiedAt: DateTime.now(),
-      name: 'DISCENTES GERAL',
-      recentMessage: RecentMessage(
-          messageText: '', readBy: [], sentAt: DateTime.now(), sentBy: ''),
-    );
-    final chatItem2 = ChatItemModel(
-      createdAt: DateTime.now(),
-      createdBy: 'sistema',
-      gid: Settings.usuario.curso
-          .toLowerCase()
-          .trim()
-          .replaceAll(" ", "")
-          .replaceAll('/', "-")
-          .replaceAll(r'\', '-'),
-      members: [''],
-      modifiedAt: DateTime.now(),
-      name: Settings.usuario.curso,
-      recentMessage: RecentMessage(
-          messageText: '', readBy: [], sentAt: DateTime.now(), sentBy: ''),
-    );
+    // final chatItem = ChatItemModel(
+    //   createdAt: DateTime.now(),
+    //   createdBy: 'sistema',
+    //   gid: '0',
+    //   members: [''],
+    //   modifiedAt: DateTime.now(),
+    //   name: 'DISCENTES GERAL',
+    //   recentMessage: RecentMessage(
+    //       messageText: '', readBy: [], sentAt: DateTime.now(), sentBy: ''),
+    // );
+    // final chatItem2 = ChatItemModel(
+    //   createdAt: DateTime.now(),
+    //   createdBy: 'sistema',
+    //   gid: Settings.usuario.curso
+    //       .toLowerCase()
+    //       .trim()
+    //       .replaceAll(" ", "")
+    //       .replaceAll('/', "-")
+    //       .replaceAll(r'\', '-'),
+    //   members: [''],
+    //   modifiedAt: DateTime.now(),
+    //   name: Settings.usuario.curso,
+    //   recentMessage: RecentMessage(
+    //       messageText: '', readBy: [], sentAt: DateTime.now(), sentBy: ''),
+    // );
     // ObservableList<ChatItemModel> listChats1 =
     //     ObservableList<ChatItemModel>.of([chatItem, chatItem2]);
     // final future = Future.value(listChats1);
     if (silent) {
       fetchListChatsFuture = ObservableFuture.value(
-          ObservableList.of([chatItem, chatItem2] + await future));
+          ObservableList.of(/*[chatItem, chatItem2] + */ await future));
       listChats = fetchListChatsFuture.value;
       AppInstance.socketStore.rooms = listChats.map((e) => e.gid).toList();
       return listChats;
     }
     // await Future.delayed(Duration(seconds: 2));
     fetchListChatsFuture = ObservableFuture.value(
-        ObservableList.of([chatItem, chatItem2] + await future));
+        ObservableList.of(/*[chatItem, chatItem2] + */ await future));
 
     listChats = fetchListChatsFuture.value;
     AppInstance.socketStore.rooms = listChats.map((e) => e.gid).toList();

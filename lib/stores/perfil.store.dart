@@ -1,7 +1,7 @@
 // @dart=2.9
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/models/perfil.model.dart';
-import 'package:uni_discente/repositories/perfil.repository.dart';
+import 'package:e_discente/models/perfil.model.dart';
+import 'package:e_discente/repositories/perfil.repository.dart';
 
 part 'perfil.store.g.dart';
 

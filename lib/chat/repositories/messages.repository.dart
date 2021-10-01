@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/chat/models/message.model.dart';
+import 'package:e_discente/chat/models/message.model.dart';
 import '../app_instance.dart';
 
 class MessagesRepository {

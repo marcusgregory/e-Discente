@@ -1,11 +1,11 @@
 // @dart=2.9
 import 'dart:async';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-import 'package:uni_discente/chat/models/evento_digitando.model.dart';
-import 'package:uni_discente/chat/models/message.model.dart';
-import 'package:uni_discente/chat/repositories/messages.repository.dart';
-import 'package:uni_discente/chat/stores/socket_io.store.dart';
+import 'package:e_discente/chat/models/chat_item.model.dart';
+import 'package:e_discente/chat/models/evento_digitando.model.dart';
+import 'package:e_discente/chat/models/message.model.dart';
+import 'package:e_discente/chat/repositories/messages.repository.dart';
+import 'package:e_discente/chat/stores/socket_io.store.dart';
 
 import '../../notification_settings2.dart';
 import '../app_instance.dart';
@@ -68,11 +68,11 @@ abstract class _ListMessagesStoreBase with Store {
   receberMensagem(MessageModel messageModel) {
     if (messageModel.gid.toLowerCase().trim() ==
         this.chatItemModel.gid.toLowerCase().trim()) {
-      if (messageModel.sendBy.toLowerCase().trim() != AppInstance.nomeUsuario &&
-          (AppInstance.currentChatPageOpenId != messageModel.gid)) {
-        NotificationAwesome.createNotificationLargeIconMessage(
-            messageModel, chatItemModel.name);
-      }
+      // if (messageModel.sendBy.toLowerCase().trim() != AppInstance.nomeUsuario &&
+      //     (AppInstance.currentChatPageOpenId != messageModel.gid)) {
+      //   NotificationAwesome.createNotificationLargeIconMessage(
+      //       messageModel, chatItemModel.name);
+      // }
       print('sendo disparado @receberMensagem do gid:' + chatItemModel.gid);
       messageModel.state = MessageState.SENDED;
       mensagens.add(messageModel);

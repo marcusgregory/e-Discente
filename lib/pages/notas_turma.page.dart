@@ -1,9 +1,9 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:uni_discente/models/notas_turma.model.dart';
-import 'package:uni_discente/pages/widgets/balao_resultado.widget.dart';
-import 'package:uni_discente/pages/widgets/item_nota.widget.dart';
-import 'package:uni_discente/repositories/notas_turma.repository.dart';
+import 'package:e_discente/models/notas_turma.model.dart';
+import 'package:e_discente/pages/widgets/balao_resultado.widget.dart';
+import 'package:e_discente/pages/widgets/item_nota.widget.dart';
+import 'package:e_discente/repositories/notas_turma.repository.dart';
 
 class NotasTurmaPage extends StatefulWidget {
   final String idTurma;

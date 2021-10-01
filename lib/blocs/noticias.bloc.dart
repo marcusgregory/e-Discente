@@ -1,10 +1,9 @@
 // @dart=2.9
 import 'dart:async';
 import 'dart:convert';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_discente/models/noticias.model.dart';
-import 'package:uni_discente/repositories/noticias.repository.dart';
+import 'package:e_discente/models/noticias.model.dart';
+import 'package:e_discente/repositories/noticias.repository.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class NoticiasBloc {
@@ -26,7 +25,7 @@ class NoticiasBloc {
       if (kIsWeb) {
         result = true;
       } else {
-        result = await DataConnectionChecker().hasConnection;
+        result = true; //await DataConnectionChecker().hasConnection;
       }
 
       if (result == true) {

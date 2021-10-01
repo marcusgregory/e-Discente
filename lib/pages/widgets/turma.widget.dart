@@ -1,8 +1,8 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:uni_discente/models/turma.model.dart';
-import 'package:uni_discente/pages/turma.page.dart';
+import 'package:e_discente/models/turma.model.dart';
+import 'package:e_discente/pages/turma.page.dart';
 
 class Turma extends StatelessWidget {
   final TurmaModel turma;

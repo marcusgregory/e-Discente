@@ -2,15 +2,18 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:uni_discente/models/documento.model.dart';
-import 'package:uni_discente/repositories/sessao_download.repository.dart';
-import 'package:uni_discente/settings.dart';
-import 'package:uni_discente/util/toast.util.dart';
+import 'package:e_discente/models/documento.model.dart';
+//import 'package:e_discente/repositories/sessao_download.repository.dart';
+import 'package:e_discente/settings.dart';
+import 'package:e_discente/util/toast.util.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_launcher/url_launcher.dart';
 
 class DownloadService {
   final BuildContext _context;
@@ -19,6 +22,37 @@ class DownloadService {
   DownloadService(this._context);
   Future<void> downloadDocumento(
       String idTurma, DocumentoModel documento) async {
+    String urlFile =
+        'https://sig.unilab.edu.br/sigaa/verArquivo?idArquivo=${documento.id}&key=${documento.key}&salvar=false';
+    if (kIsWeb) {
+      openUrl(urlFile);
+    } else {
+      if (Platform.isAndroid) {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        int sdk = androidInfo.version.sdkInt;
+        if (sdk <= 28) {
+          execute(idTurma, documento, urlFile);
+        } else {
+          openUrl(urlFile);
+        }
+      } else {
+        execute(idTurma, documento, urlFile);
+      }
+    }
+  }
+
+  Future<void> openUrl(String urlFile) async {
+    String url = Uri.encodeFull(urlFile);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      ToastUtil.showShortToast("Não foi possível abrir o documento");
+    }
+  }
+
+  Future<void> execute(
+      String idTurma, DocumentoModel documento, String urlFile) async {
     try {
       _showMaterialDialog(_context);
       _isOpen = true;
@@ -36,27 +70,39 @@ class DownloadService {
           }
         }
         print(_localPath);
-        var sessaoDownloadModel =
-            await SessaoDownload().requestSessaoDownload(idTurma);
+        // var sessaoDownloadModel =
+        //     await SessaoDownload().requestSessaoDownload(idTurma);
         var _dio = Dio();
-        final response =
-            await _dio.post('https://sig.unilab.edu.br/sigaa/ava/index.jsf',
-                data: {
-                  'javax.faces.ViewState': sessaoDownloadModel.sessao,
-                  'formAva': 'formAva',
-                  'formAva:idTopicoSelecionado': '0',
-                  'id': documento.id.trim(),
-                  documento.formAva.trim(): documento.formAva.trim(),
-                },
-                options: (Options(
-                  contentType: Headers.formUrlEncodedContentType,
-                  headers: {
-                    'Cookie':
-                        'JSESSIONID=' + sessaoDownloadModel.cookieSessao.trim(),
-                    'User-Agent': 'Mozilla/5.0'
-                  },
-                  followRedirects: false,
-                )));
+        // final response =
+        //     await _dio.post('https://sig.unilab.edu.br/sigaa/ava/index.jsf',
+        //         data: {
+        //           'javax.faces.ViewState': sessaoDownloadModel.sessao,
+        //           'formAva': 'formAva',
+        //           'formAva:idTopicoSelecionado': '0',
+        //           'id': documento.id.trim(),
+        //           documento.formAva.trim(): documento.formAva.trim(),
+        //         },
+        //         options: (Options(
+        //           contentType: Headers.formUrlEncodedContentType,
+        //           headers: {
+        //             'Cookie':
+        //                 'JSESSIONID=' + sessaoDownloadModel.cookieSessao.trim(),
+        //             'User-Agent': 'Mozilla/5.0'
+        //           },
+        //           followRedirects: false,
+        //         )));
+        // print(response.headers);
+        // _filename = response.headers
+        //     .value('content-disposition')
+        //     .split('=')[1]
+        //     .replaceAll('"', '');
+
+        final response = await _dio.get(urlFile,
+            options: (Options(
+              contentType: Headers.formUrlEncodedContentType,
+              headers: {'User-Agent': 'Mozilla/5.0'},
+              followRedirects: false,
+            )));
         print(response.headers);
         _filename = response.headers
             .value('content-disposition')
@@ -64,27 +110,40 @@ class DownloadService {
             .replaceAll('"', '');
         print(_filename);
         int _fileLength = 0;
-        await _dio.download('https://sig.unilab.edu.br/sigaa/ava/index.jsf',
-            _localPath + '/' + _filename,
-            data: {
-              'javax.faces.ViewState': sessaoDownloadModel.sessao,
-              'formAva': 'formAva',
-              'formAva:idTopicoSelecionado': '0',
-              'id': documento.id.trim(),
-              documento.formAva.trim(): documento.formAva.trim(),
-            },
+        // await _dio.download('https://sig.unilab.edu.br/sigaa/ava/index.jsf',
+        //     _localPath + '/' + _filename,
+        //     data: {
+        //       'javax.faces.ViewState': sessaoDownloadModel.sessao,
+        //       'formAva': 'formAva',
+        //       'formAva:idTopicoSelecionado': '0',
+        //       'id': documento.id.trim(),
+        //       documento.formAva.trim(): documento.formAva.trim(),
+        //     },
+        //     options: Options(
+        //         contentType: Headers.formUrlEncodedContentType,
+        //         headers: {
+        //           'Cookie':
+        //               'JSESSIONID=' + sessaoDownloadModel.cookieSessao.trim(),
+        //           'User-Agent': 'Mozilla/5.0'
+        //         },
+        //         followRedirects: false,
+        //         method: 'POST'), onReceiveProgress: (rec, res) {
+        //   print(formatBytes(rec));
+        //   _fileLength = rec;
+        // });
+        await _dio.download(urlFile, _localPath + '/' + _filename,
             options: Options(
                 contentType: Headers.formUrlEncodedContentType,
-                headers: {
-                  'Cookie':
-                      'JSESSIONID=' + sessaoDownloadModel.cookieSessao.trim(),
-                  'User-Agent': 'Mozilla/5.0'
-                },
+                headers: {'User-Agent': 'Mozilla/5.0'},
                 followRedirects: false,
-                method: 'POST'), onReceiveProgress: (rec, res) {
-          print(formatBytes(rec));
-          _fileLength = rec;
+                method: 'GET'), onReceiveProgress: (received, total) {
+          print(formatBytes(received));
+          int percentage = ((received / total) * 100).floor();
+          print('${percentage.toDouble()} %');
+
+          _fileLength = received;
         });
+
         print(_isOpen);
         if (_isOpen) {
           Navigator.of(_context).pop();
@@ -148,12 +207,12 @@ class DownloadService {
               content: Text(
                   'O arquivo \"$fileName\" foi salvo no seu dispositivo\nTamanho: ${formatBytes(fileLength)}'),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     child: Text('Não')),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       OpenFile.open(filePath);
                       Navigator.of(context).pop();

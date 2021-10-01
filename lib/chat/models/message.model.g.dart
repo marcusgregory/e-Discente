@@ -115,6 +115,17 @@ mixin _$MessageModel on _MessageModelBase, Store {
   }
 
   @override
+  void updateSendAt(DateTime sendAt) {
+    final _$actionInfo = _$_MessageModelBaseActionController.startAction(
+        name: '_MessageModelBase.updateSendAt');
+    try {
+      return super.updateSendAt(sendAt);
+    } finally {
+      _$_MessageModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 gid: ${gid},

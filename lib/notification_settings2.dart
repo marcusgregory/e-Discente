@@ -4,7 +4,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/src/enumerators/group_alert_behaviour.dart'
     as Notifications;
-import 'package:uni_discente/models/noticias.model.dart';
+import 'package:e_discente/models/noticias.model.dart';
 
 import 'chat/app_instance.dart';
 import 'chat/models/message.model.dart';
@@ -49,7 +49,8 @@ class NotificationAwesome {
   }
 
   static void createNotificationLargeIconMessage(
-      MessageModel message, String groupName) async {
+      MessageModel message, String groupName,
+      {bool showLargeIcon = false}) async {
     AwesomeNotifications().setChannel(
         NotificationChannel(
             channelKey: 'chat_channel',
@@ -73,7 +74,37 @@ class NotificationAwesome {
             channelKey: "chat_channel",
             title: '$nomeGrupo',
             body: '<b>${message.sendBy}</b>: ${message.messageText.trim()}',
-            largeIcon: message.profilePicUrl,
+            largeIcon: showLargeIcon ? message.profilePicUrl : '',
+            ticker: "Nova mensagem",
+            notificationLayout: NotificationLayout.Messaging,
+            payload: {'uuid': 'uuid-test'}));
+  }
+
+  static void createNotificationLargeIconMessageData(
+      String body, String title, String largeIcon) async {
+    AwesomeNotifications().setChannel(
+        NotificationChannel(
+            channelKey: 'chat_channel',
+            channelName: 'Conversas',
+            channelDescription: 'Conversas',
+            importance: NotificationImportance.Max,
+            channelShowBadge: true,
+            enableVibration: true,
+            groupKey: 'chat',
+            defaultPrivacy: NotificationPrivacy.Public,
+            groupAlertBehavior: Notifications.GroupAlertBehavior.Children,
+            playSound: true,
+            defaultColor: Color(0xFF00396A),
+            ledColor: Color(0xFF00396A)),
+        forceUpdate: true);
+
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: new Random().nextInt(100000),
+            channelKey: "chat_channel",
+            title: '$title',
+            body: body,
+            largeIcon: largeIcon,
             ticker: "Nova mensagem",
             notificationLayout: NotificationLayout.Messaging,
             payload: {'uuid': 'uuid-test'}));

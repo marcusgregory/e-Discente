@@ -1,19 +1,16 @@
 // @dart=2.9
-import 'dart:async';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_discente/chat/app_instance.dart';
-import 'package:uni_discente/chat/models/chat_item.model.dart';
-import 'package:uni_discente/chat/pages/chats.page.dart';
-import 'package:uni_discente/chat/services/socket-io.service.dart';
-import 'package:uni_discente/chat/stores/socket_io.store.dart';
-import 'package:uni_discente/pages/boletim.page.dart';
-import 'package:uni_discente/pages/noticias.page.dart';
-import 'package:uni_discente/pages/perfil.page.dart';
-import 'package:uni_discente/pages/turmas.page.dart';
-import 'package:uni_discente/pages/widgets/dialog_account.widget.dart';
+import 'package:e_discente/chat/app_instance.dart';
+import 'package:e_discente/chat/pages/chats.page.dart';
+import 'package:e_discente/chat/stores/socket_io.store.dart';
+import 'package:e_discente/pages/boletim.page.dart';
+import 'package:e_discente/pages/noticias.page.dart';
+import 'package:e_discente/pages/perfil.page.dart';
+import 'package:e_discente/pages/turmas.page.dart';
+import 'package:e_discente/pages/widgets/dialog_account.widget.dart';
 import '../settings.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -35,7 +32,7 @@ class _InicioPageState extends State<InicioPage> {
   Flushbar flush = Flushbar();
 
   PageController pageController = PageController();
-  StreamSubscription<DataConnectionStatus> listenConnection;
+  //StreamSubscription<DataConnectionStatus> listenConnection;
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
 
   void _onItemTapped(int index) {
@@ -49,23 +46,33 @@ class _InicioPageState extends State<InicioPage> {
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.web),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.news_solid)
+                  : Icon(Icons.web),
               label: 'Notícias',
               backgroundColor: Colors.green),
           BottomNavigationBarItem(
-              icon: Icon(Icons.school),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.square_stack_3d_down_right_fill)
+                  : Icon(Icons.school),
               label: 'Turmas',
               backgroundColor: Colors.blue),
           BottomNavigationBarItem(
-              icon: Icon(Icons.timeline),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.graph_square_fill)
+                  : Icon(Icons.timeline),
               label: 'Boletim',
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.chat_bubble_2_fill)
+                  : Icon(Icons.chat),
               label: 'Conversas',
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? Icon(CupertinoIcons.person_alt_circle_fill)
+                  : Icon(Icons.account_circle),
               label: 'Perfil',
               backgroundColor: Colors.red)
         ],
@@ -76,56 +83,56 @@ class _InicioPageState extends State<InicioPage> {
     var socket = SocketIOStore();
     AppInstance.socketStore = socket;
     socket.initSocket();
-    if (kIsWeb) {
-    } else {
-      listenConnection =
-          DataConnectionChecker().onStatusChange.listen((status) {
-        flush.dismiss();
-        switch (status) {
-          case DataConnectionStatus.connected:
-            if (onlineFlag > 0) {
-              flush = Flushbar(
-                message: 'Agora está online.',
-                backgroundColor: Colors.green,
-                icon: Container(
-                  width: 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                      color: Colors.green, shape: BoxShape.circle),
-                ),
-                duration: Duration(seconds: 3),
-                isDismissible: true,
-                flushbarStyle: FlushbarStyle.GROUNDED,
-                flushbarPosition: FlushbarPosition.TOP,
-              )..show(context);
-            }
-            break;
-          case DataConnectionStatus.disconnected:
-            onlineFlag++;
-            flush = Flushbar(
-              message: 'e-Discente está offline.',
-              icon: Container(
-                width: 7,
-                height: 7,
-                decoration:
-                    BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-              ),
-              duration: Duration(seconds: 30),
-              isDismissible: true,
-              flushbarStyle: FlushbarStyle.GROUNDED,
-              flushbarPosition: FlushbarPosition.TOP,
-            )..show(context);
-            break;
-        }
-      });
-    }
+    // if (kIsWeb) {
+    // } else {
+    //   listenConnection =
+    //       DataConnectionChecker().onStatusChange.listen((status) {
+    //     flush.dismiss();
+    //     switch (status) {
+    //       case DataConnectionStatus.connected:
+    //         if (onlineFlag > 0) {
+    //           flush = Flushbar(
+    //             message: 'Agora está online.',
+    //             backgroundColor: Colors.green,
+    //             icon: Container(
+    //               width: 7,
+    //               height: 7,
+    //               decoration: BoxDecoration(
+    //                   color: Colors.green, shape: BoxShape.circle),
+    //             ),
+    //             duration: Duration(seconds: 3),
+    //             isDismissible: true,
+    //             flushbarStyle: FlushbarStyle.GROUNDED,
+    //             flushbarPosition: FlushbarPosition.TOP,
+    //           )..show(context);
+    //         }
+    //         break;
+    //       case DataConnectionStatus.disconnected:
+    //         onlineFlag++;
+    //         flush = Flushbar(
+    //           message: 'e-Discente está offline.',
+    //           icon: Container(
+    //             width: 7,
+    //             height: 7,
+    //             decoration:
+    //                 BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+    //           ),
+    //           duration: Duration(seconds: 30),
+    //           isDismissible: true,
+    //           flushbarStyle: FlushbarStyle.GROUNDED,
+    //           flushbarPosition: FlushbarPosition.TOP,
+    //         )..show(context);
+    //         break;
+    //     }
+    //   });
+    // }
 
     super.initState();
   }
 
   @override
   void dispose() {
-    listenConnection.cancel();
+    //listenConnection.cancel();
     super.dispose();
   }
 

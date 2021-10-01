@@ -1,7 +1,7 @@
 // @dart=2.9
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/models/boletim.model.dart';
-import 'package:uni_discente/repositories/notas.repository.dart';
+import 'package:e_discente/models/boletim.model.dart';
+import 'package:e_discente/repositories/notas.repository.dart';
 part 'boletim.store.g.dart';
 
 class Boletim = _BoletimBase with _$Boletim;

@@ -1,5 +1,5 @@
 // @dart=2.9
-import 'package:uni_discente/models/participante.model.dart';
+import 'package:e_discente/models/participante.model.dart';
 
 class DocenteModel extends ParticipanteModel {
   String departamento;

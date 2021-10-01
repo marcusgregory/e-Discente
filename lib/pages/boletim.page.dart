@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/models/boletim.model.dart';
-import 'package:uni_discente/pages/widgets/item_nota.widget.dart';
-import 'package:uni_discente/stores/boletim.store.dart';
+import 'package:e_discente/models/boletim.model.dart';
+import 'package:e_discente/pages/widgets/item_nota.widget.dart';
+import 'package:e_discente/stores/boletim.store.dart';
 
 import 'widgets/balao_nota.widget.dart';
 
