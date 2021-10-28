@@ -11,6 +11,7 @@ import 'package:e_discente/pages/noticias.page.dart';
 import 'package:e_discente/pages/perfil.page.dart';
 import 'package:e_discente/pages/turmas.page.dart';
 import 'package:e_discente/pages/widgets/dialog_account.widget.dart';
+import 'package:flutter/services.dart';
 import '../settings.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -141,6 +142,8 @@ class _InicioPageState extends State<InicioPage> {
     return Scaffold(
         key: scaffoldStateKey,
         appBar: AppBar(
+          systemOverlayStyle:
+              SystemUiOverlayStyle(statusBarColor: Colors.transparent),
           title: AnimatedBuilder(
             animation: pageController,
             builder: (context, widget) {

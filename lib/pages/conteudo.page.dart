@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:e_discente/repositories/download.service.dart';
 import 'package:e_discente/models/documento.model.dart';
@@ -19,6 +20,8 @@ class ConteudoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          systemOverlayStyle:
+              SystemUiOverlayStyle(statusBarColor: Colors.transparent),
           title: Text('$_numero° Conteúdo'),
         ),
         body: Container(

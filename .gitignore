@@ -39,3 +39,5 @@ lib/generated_plugin_registrant.dart
 .fvm/flutter_sdk
 .vscode/launch.json
 .vscode/settings.json
+web/icons/Icon-maskable-192.png
+web/icons/Icon-maskable-512.png
