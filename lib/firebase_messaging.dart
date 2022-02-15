@@ -45,7 +45,7 @@ registerOnFirebase() async {
   });
   FirebaseMessaging.onMessage.listen((message) {
     print('_messaging onMessage: $message');
-    var messageModel = messageFromJson(message.data['message']);
+    var messageModel = MessageModel.fromJson(message.data['message']);
     var groupName = message.data['groupName'] ?? '';
     String messageTo = message.data['messageTo'] ?? '';
     if (messageTo.toLowerCase().trim() ==
@@ -67,8 +67,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print(usuarioPref);
   if (usuarioPref != '') {
     UsuarioModel usuarioM = UsuarioModel.fromJson(jsonDecode(usuarioPref));
-    NotificationAwesome.initNotificationAweSome();
-    var messageModel = messageFromJson(message.data['message']);
+    NotificationAwesome.initNotificationAwesome();
+    var messageModel = MessageModel.fromJson(message.data['message']);
     String groupName = message.data['groupName'] ?? '';
     String messageTo = message.data['messageTo'] ?? '';
     if (usuarioM.nomeDeUsuario.toLowerCase().trim() ==

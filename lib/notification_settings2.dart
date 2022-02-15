@@ -10,7 +10,7 @@ import 'chat/app_instance.dart';
 import 'chat/models/message.model.dart';
 
 class NotificationAwesome {
-  static void initNotificationAweSome() {
+  static void initNotificationAwesome() {
     AwesomeNotifications().initialize(
         // set the icon to null if you want to use the default app icon
         'resource://drawable/ic_notification_default_large',
@@ -59,7 +59,7 @@ class NotificationAwesome {
             importance: NotificationImportance.Max,
             channelShowBadge: true,
             enableVibration: true,
-            groupKey: 'chat',
+            //groupKey: 'chat',
             defaultPrivacy: NotificationPrivacy.Public,
             groupAlertBehavior: Notifications.GroupAlertBehavior.Children,
             playSound: true,
@@ -73,7 +73,7 @@ class NotificationAwesome {
             id: new Random().nextInt(100000),
             channelKey: "chat_channel",
             title: '$nomeGrupo',
-            body: '<b>${message.sendBy}</b>: ${message.messageText.trim()}',
+            body: '${message.sendBy}: ${message.messageText.trim()}',
             largeIcon: showLargeIcon ? message.profilePicUrl : '',
             ticker: "Nova mensagem",
             notificationLayout: NotificationLayout.Messaging,
@@ -90,7 +90,7 @@ class NotificationAwesome {
             importance: NotificationImportance.Max,
             channelShowBadge: true,
             enableVibration: true,
-            groupKey: 'chat',
+            // groupKey: 'chat',
             defaultPrivacy: NotificationPrivacy.Public,
             groupAlertBehavior: Notifications.GroupAlertBehavior.Children,
             playSound: true,

@@ -1,6 +1,8 @@
 //@dart=2.6
 import 'dart:async';
 
+import 'package:e_discente/chat/stores/chats.store.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:e_discente/chat/models/message.model.dart';
 
@@ -13,7 +15,7 @@ class SocketIOMessageStore = _SocketIOMessageStoreBase
 abstract class _SocketIOMessageStoreBase with Store {
   _SocketIOMessageStoreBase();
 
-  var _messageStream = StreamController<MessageModel>.broadcast();
+  final _messageStream = StreamController<MessageModel>.broadcast();
   Stream<MessageModel> get messageStream => _messageStream.stream;
 
   @observable
@@ -24,6 +26,7 @@ abstract class _SocketIOMessageStoreBase with Store {
     print('Uma nova mensagem foi recebida: ' + newMessage.toJson().toString());
     messageModel = newMessage;
     _messageStream.sink.add(newMessage);
+    GetIt.I<ChatsStore>().receiveMessage(newMessage);
   }
 
   void dispose() {

@@ -1,94 +1,82 @@
-// @dart=2.9
 import 'dart:convert';
-import 'package:mobx/mobx.dart';
-import 'package:e_discente/chat/app_instance.dart';
-import 'package:e_discente/chat/stores/list_messages.store.dart';
-import 'package:uuid/uuid.dart';
 
-part 'message.model.g.dart';
+import '../app_instance.dart';
 
-MessageModel messageFromJson(String str) =>
-    _MessageModelBase.fromJson(json.decode(str));
-
-String messageToJson(MessageModel data) => json.encode(data.toJson());
-
-MessageModel messageFromMap(Map<String, dynamic> str) =>
-    _MessageModelBase.fromJson(str);
-
-Map<String, dynamic> messageToMap(MessageModel data) => data.toJson();
-
-class MessageModel = _MessageModelBase with _$MessageModel;
-
-abstract class _MessageModelBase with Store implements Comparable {
-  _MessageModelBase(
-      {String mid,
-      this.gid,
-      this.messageText,
-      this.sendAt,
-      this.sendBy,
-      String profilePic})
-      : _mid = mid ?? Uuid().v1(),
-        profilePicUrl = profilePic ??
-            '${AppInstance.apiURL}/user/profilepic/${sendBy.toLowerCase().trim()}';
-
-  String _mid;
-
-  String get mid => _mid;
-
-  @observable
+class MessageModel implements Comparable {
+  String mid;
   String gid;
-
-  @observable
   String messageText;
-
-  @observable
   DateTime sendAt;
-
-  @observable
   String sendBy;
-
-  @observable
   String profilePicUrl;
-
-  @observable
-  MessageState state = MessageState.SENDING;
+  MessageState state;
+  MessageModel({
+    required this.mid,
+    required this.gid,
+    required this.messageText,
+    required this.sendAt,
+    required this.sendBy,
+    String? profilePicUrl,
+    this.state = MessageState.SENDING,
+  }) : profilePicUrl = profilePicUrl ??
+            '${AppInstance.apiURL}/user/profilepic/${sendBy.toLowerCase().trim()}';
 
   @override
   int compareTo(other) {
     return sendAt.compareTo(other.sendAt);
   }
 
-  @action
-  void enviarMensagem(ListMessagesStore store) {
-    store.enviarMensagem(this, (ack) {
-      print('Mensagem recebida no servidor.');
-      state = MessageState.SENDED;
-      updateSendAt(DateTime.parse(ack['server_time']));
-    });
+  MessageModel copyWith({
+    String? mid,
+    String? gid,
+    String? messageText,
+    DateTime? sendAt,
+    String? sendBy,
+    String? profilePicUrl,
+    MessageState? state,
+  }) {
+    return MessageModel(
+      mid: mid ?? this.mid,
+      gid: gid ?? this.gid,
+      messageText: messageText ?? this.messageText,
+      sendAt: sendAt ?? this.sendAt,
+      sendBy: sendBy ?? this.sendBy,
+      profilePicUrl: profilePicUrl ?? this.profilePicUrl,
+      state: state ?? this.state,
+    );
   }
 
-  @action
-  void updateSendAt(DateTime sendAt) {
-    this.sendAt = sendAt;
+  Map<String, dynamic> toMap() {
+    return {
+      'mid': mid,
+      'gid': gid,
+      'messageText': messageText,
+      'sendAt': sendAt.toIso8601String(),
+      'sendBy': sendBy,
+      'profilePicUrl': profilePicUrl,
+    };
   }
 
-  factory _MessageModelBase.fromJson(Map<String, dynamic> json) => MessageModel(
-        mid: json["mid"],
-        gid: json["gid"],
-        messageText: json["messageText"],
-        sendAt: DateTime.parse(json["sendAt"]),
-        sendBy: json["sendBy"],
-        profilePic: json["profilePicUrl"],
-      );
+  factory MessageModel.fromMap(Map<String, dynamic> map) {
+    return MessageModel(
+      mid: map['mid'],
+      gid: map['gid'],
+      messageText: map['messageText'],
+      sendAt: DateTime.parse(map['sendAt']),
+      sendBy: map['sendBy'],
+      profilePicUrl: map['profilePicUrl'],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "mid": _mid,
-        "gid": gid,
-        "messageText": messageText,
-        "sendAt": sendAt.toIso8601String(),
-        "sendBy": sendBy,
-        "profilePicUrl": profilePicUrl,
-      };
+  String toJson() => json.encode(toMap());
+
+  factory MessageModel.fromJson(String source) =>
+      MessageModel.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'MessageModel(mid: $mid, gid: $gid, messageText: $messageText, sendAt: $sendAt, sendBy: $sendBy, profilePicUrl: $profilePicUrl, state: $state)';
+  }
 }
 
-enum MessageState { SENDED, SENDING }
+enum MessageState { SENDED, SENDING, ERROR }

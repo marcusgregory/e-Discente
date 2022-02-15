@@ -137,14 +137,6 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
       margin: new EdgeInsets.only(top: 20.0),
       child: new Html(
         data: this.widget._description,
-        defaultTextStyle: TextStyle(fontSize: 16.5),
-        onLinkTap: (url) async {
-          if (await canLaunch(url)) {
-            await launch(url);
-          } else {
-            ToastUtil.showShortToast('Não foi possível abrir a url: $url');
-          }
-        },
       ),
     );
   }

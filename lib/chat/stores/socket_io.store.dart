@@ -1,9 +1,10 @@
-//@dart=2.9
+//@dart=2.6
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:e_discente/chat/stores/chats.store.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:e_discente/chat/models/chat_item.model.dart';
 import 'package:e_discente/chat/models/evento_digitando.model.dart';
 import 'package:e_discente/chat/models/message.model.dart';
@@ -16,12 +17,12 @@ part 'socket_io.store.g.dart';
 class SocketIOStore = _SocketIOStoreBase with _$SocketIOStore;
 
 abstract class _SocketIOStoreBase with Store {
-  IO.Socket socket;
+  socket_io.Socket socket;
 
   @observable
-  SocketState socketState;
+  SocketState socketState = SocketState.DISCONNECTED;
 
-  var _socketStateStream = StreamController<SocketState>.broadcast();
+  final _socketStateStream = StreamController<SocketState>.broadcast();
   Stream<SocketState> get socketStateStream => _socketStateStream.stream;
 
   SocketIOMessageStore socketIOMessageStore;
@@ -29,9 +30,9 @@ abstract class _SocketIOStoreBase with Store {
   List<String> rooms = [];
 
   @observable
-  EventoDigitandoModel eventoDigitando;
+  EventoDigitandoModel eventoDigitando = EventoDigitandoModel();
 
-  var _eventoDigitandoStream =
+  final _eventoDigitandoStream =
       StreamController<EventoDigitandoModel>.broadcast();
   Stream<EventoDigitandoModel> get eventoDigitandoStream =>
       _eventoDigitandoStream.stream;
@@ -42,9 +43,9 @@ abstract class _SocketIOStoreBase with Store {
 
   void initSocket() {
     print('initSocket');
-    socket = IO.io(
+    socket = socket_io.io(
         AppInstance.apiURL,
-        IO.OptionBuilder()
+        socket_io.OptionBuilder()
             .enableForceNewConnection()
             .setTransports(['websocket']).setQuery({
           'token': AppInstance.token,
@@ -58,7 +59,7 @@ abstract class _SocketIOStoreBase with Store {
     socket.onDisconnect((data) => print('O socket foi desconectado!'));
     socket.onError((data) => print('Ocorreu um erro no socket!'));
     socket.on('receber_mensagem', (data) {
-      socketIOMessageStore.receberMensagem(messageFromMap(data));
+      socketIOMessageStore.receberMensagem(MessageModel.fromMap(data));
     });
     socket.on('evento_digitando', (data) {
       receberEventoDigitando(EventoDigitandoModel.fromJson(data));
@@ -99,8 +100,7 @@ abstract class _SocketIOStoreBase with Store {
 
   void enviarMensagem(MessageModel messageModel, Function callback) {
     print('Uma nova mensagem foi enviada ' + messageModel.toJson().toString());
-    socket.emitWithAck('enviar_mensagem', messageToMap(messageModel),
-        ack: (ack) {
+    socket.emitWithAck('enviar_mensagem', messageModel.toMap(), ack: (ack) {
       callback(ack);
     });
   }
@@ -111,6 +111,7 @@ abstract class _SocketIOStoreBase with Store {
         'Novo evento recebido: ${newDigitandoModel.sendBy} está digitando... gid: ${newDigitandoModel.gid}');
     _eventoDigitandoStream.sink.add(newDigitandoModel);
     eventoDigitando = newDigitandoModel;
+    GetIt.I<ChatsStore>().receiveTypingEvent(newDigitandoModel);
   }
 
   void enviarEventoDigitando(EventoDigitandoModel eventoDigitando) {
@@ -128,7 +129,7 @@ abstract class _SocketIOStoreBase with Store {
   void entrarNosGruposByIds(List<String> gid) {
     if (gid.isNotEmpty) {
       print('Enviando a lista de salas para o servidor');
-      Future.delayed(Duration(milliseconds: 1500))
+      Future.delayed(const Duration(milliseconds: 1500))
           .then((value) => {socket.emit('entrar_nos_grupos', jsonEncode(gid))});
     } else {
       print('Atenção: Não pode ser enviado uma lista de grupos vazia!');
@@ -149,4 +150,10 @@ abstract class _SocketIOStoreBase with Store {
   }
 }
 
-enum SocketState { CONNECT, CONNECTING, RECONNECTED, RECONNECTING }
+enum SocketState {
+  CONNECT,
+  CONNECTING,
+  RECONNECTED,
+  RECONNECTING,
+  DISCONNECTED
+}

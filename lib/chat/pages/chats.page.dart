@@ -1,16 +1,15 @@
-// @dart=2.9
+import 'package:e_discente/chat/stores/chats.store.dart';
+import 'package:e_discente/chat/utils/user.util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:grouped_list/grouped_list.dart';
-import 'package:mobx/mobx.dart';
+import 'package:get_it/get_it.dart';
 import 'package:e_discente/chat/models/chat_item.model.dart';
-import 'package:e_discente/chat/stores/list_chats.store.dart';
 
 import '../app_instance.dart';
 import 'chat.page.dart';
 
 class ChatsPage extends StatefulWidget {
-  ChatsPage();
+  const ChatsPage({Key? key}) : super(key: key);
 
   @override
   _ChatsPageState createState() => _ChatsPageState();
@@ -18,12 +17,12 @@ class ChatsPage extends StatefulWidget {
 
 class _ChatsPageState extends State<ChatsPage>
     with AutomaticKeepAliveClientMixin {
-  ListChatsStore _listChatsStore;
+  late ChatsStore _chatsStore;
 
   @override
   void initState() {
-    _listChatsStore = ListChatsStore()..loadListChats();
-    AppInstance.listChatsStore = _listChatsStore;
+    _chatsStore = GetIt.I<ChatsStore>();
+    _chatsStore.loadListChats();
     super.initState();
   }
 
@@ -35,85 +34,41 @@ class _ChatsPageState extends State<ChatsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // return Scaffold(
-    //     appBar: AppBar(
-    //       title: InkWell(
-    //           onTap: () {
-    //             _listChatsStore.loadListChats();
-    //           },
-    //           child: Text('Conversas')),
-    //     ),
-    //     body:
-    return Container(
+    return SizedBox(
       height: double.infinity,
       width: double.infinity,
       child: Observer(builder: (_) {
-        final future = _listChatsStore.fetchListChatsFuture;
-
-        //bool update = _listChatsStore.toogleUpdate;
-        switch (future.status) {
-          case FutureStatus.pending:
-            print('pending');
-            return Center(
+        switch (_chatsStore.chatsState) {
+          case ChatsState.LOADING:
+            return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
-            break;
-          case FutureStatus.rejected:
+          case ChatsState.READY:
+            if (_chatsStore.listChats.isEmpty) {
+              return const Center(
+                child: Text('Você não tem chats'),
+              );
+            } else {
+              return ListView.builder(
+                  itemCount: _chatsStore.listChats.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildItem(context, _chatsStore.listChats[index]);
+                  });
+            }
+          case ChatsState.ERROR:
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 IconButton(
                   onPressed: () {
-                    _listChatsStore.fetchListChats();
+                    _chatsStore.loadListChats();
                   },
-                  icon: Icon(Icons.refresh),
+                  icon: const Icon(Icons.refresh),
                 ),
-                Text('Tentar novamente')
+                const Text('Tentar novamente')
               ],
             );
-            break;
-          case FutureStatus.fulfilled:
-            print('fulfilled');
-            var listChats = _listChatsStore.fetchListChatsFuture.value.toList();
-
-            if (listChats.isEmpty) {
-              return Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-            return Observer(builder: (_) {
-              listChats.forEach((element) {
-                if (element.messagesStore.mensagens.isNotEmpty) {
-                  element.messagesStore.mensagens.last;
-                }
-              });
-              return GroupedListView(
-                  elements: listChats,
-                  order: GroupedListOrder.DESC,
-                  groupBy: (ChatItemModel chatItem) =>
-                      chatItem.messagesStore.mensagens.isNotEmpty
-                          ? chatItem.messagesStore.mensagens.last.sendAt
-                          : DateTime.now(),
-                  groupHeaderBuilder: (_) => Visibility(
-                        visible: false,
-                        child: Text(''),
-                      ),
-                  indexedItemBuilder: (context, ChatItemModel chatItem, index) {
-                    return Observer(builder: (_) {
-                      return buildItem(context, chatItem);
-                    });
-                  });
-            });
-
-            // return ListView.builder(
-            //     itemCount: listChats.length,
-            //     itemBuilder: (BuildContext context, int index) {
-            //       return Observer(builder: (_) {
-            //         return buildItem(context, listChats[index]);
-            //       });
-            //     });
-            break;
         }
         return Container();
       }),
@@ -121,6 +76,7 @@ class _ChatsPageState extends State<ChatsPage>
   }
 
   Widget buildItem(BuildContext context, ChatItemModel item) {
+    print(item.eventoDigitando);
     return chatItemTile(
         traling: Visibility(
             visible: item.unreadedCounter > 0,
@@ -128,13 +84,20 @@ class _ChatsPageState extends State<ChatsPage>
         leading: Container(
             width: 55.0,
             height: 55.0,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                     fit: BoxFit.cover,
                     image: AssetImage('assets/group_icon_grey_square.png')))),
         title: item.name,
-        subtitle: item.isTyping ? '${item.typingText}...' : item.recentMessage,
+        subtitle: item.eventoDigitando == null
+            ? UserUtil.isYouOrUser(item.recentMessage.sendBy) +
+                ": " +
+                item.recentMessage.messageText
+            : item.eventoDigitando!.sendBy! +
+                " está digitando...", //item.messages.isNotEmpty
+        //     ? '${item.messages.last.sendBy}: ${item.messages.last.messageText}'
+        //     : '',
         item: item);
   }
 
@@ -151,17 +114,18 @@ class _ChatsPageState extends State<ChatsPage>
           ),
         ),
         Text(unreaded < 100 ? unreaded.toString() : '+99',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }
 
   Widget chatItemTile(
-      {Widget traling,
-      Widget leading,
-      String title,
-      String subtitle,
-      ChatItemModel item}) {
+      {required Widget traling,
+      required Widget leading,
+      required String title,
+      required String subtitle,
+      required ChatItemModel item}) {
     return InkWell(
       onTap: () {
         Navigator.of(context)
@@ -174,11 +138,11 @@ class _ChatsPageState extends State<ChatsPage>
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             leading,
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Expanded(
@@ -188,20 +152,21 @@ class _ChatsPageState extends State<ChatsPage>
                   Text(
                     title,
                     maxLines: 1,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   Text(subtitle,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: TextStyle(fontSize: 14))
+                      style: const TextStyle(fontSize: 14))
                 ],
               ),
             ),
             traling,
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
           ],

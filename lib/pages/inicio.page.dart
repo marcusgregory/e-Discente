@@ -12,6 +12,7 @@ import 'package:e_discente/pages/perfil.page.dart';
 import 'package:e_discente/pages/turmas.page.dart';
 import 'package:e_discente/pages/widgets/dialog_account.widget.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import '../settings.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -81,9 +82,7 @@ class _InicioPageState extends State<InicioPage> {
 
   @override
   void initState() {
-    var socket = SocketIOStore();
-    AppInstance.socketStore = socket;
-    socket.initSocket();
+    GetIt.I<SocketIOStore>().initSocket();
     // if (kIsWeb) {
     // } else {
     //   listenConnection =
@@ -224,7 +223,7 @@ class _InicioPageState extends State<InicioPage> {
         body: PageView(
           controller: pageController,
           children: _children,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
         ),
         bottomNavigationBar: AnimatedBuilder(
           animation: pageController,

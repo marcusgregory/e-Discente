@@ -23,11 +23,14 @@ class UsuarioBloc {
       usuario.nomeDeUsuario = autenticacao.usuario.toLowerCase().trim();
       await prefs.setString('usuario', jsonEncode(usuario));
       Settings.usuario = usuario;
-      await FirebaseMessaging.instance.setAutoInitEnabled(true);
-      Settings.fcmToken = await FirebaseMessaging.instance.getToken();
-      if (Settings.fcmToken != null) {
-        RegisterFcmTokenRepository().register(Settings.fcmToken);
+      if (Platform.isAndroid || Platform.isIOS) {
+        await FirebaseMessaging.instance.setAutoInitEnabled(true);
+        Settings.fcmToken = await FirebaseMessaging.instance.getToken();
+        if (Settings.fcmToken != null) {
+          RegisterFcmTokenRepository().register(Settings.fcmToken);
+        }
       }
+
       return res;
     } catch (ex) {
       usuario = null;
@@ -48,10 +51,12 @@ class UsuarioBloc {
       UsuarioModel usuarioM = UsuarioModel.fromJson(jsonDecode(usuarioPref));
       usuario = usuarioM;
       Settings.usuario = usuario;
-      await FirebaseMessaging.instance.setAutoInitEnabled(true);
-      Settings.fcmToken = await FirebaseMessaging.instance.getToken();
-      if (Settings.fcmToken != null) {
-        RegisterFcmTokenRepository().register(Settings.fcmToken);
+      if (Platform.isAndroid || Platform.isIOS) {
+        await FirebaseMessaging.instance.setAutoInitEnabled(true);
+        Settings.fcmToken = await FirebaseMessaging.instance.getToken();
+        if (Settings.fcmToken != null) {
+          RegisterFcmTokenRepository().register(Settings.fcmToken);
+        }
       }
       return usuario;
     } else {

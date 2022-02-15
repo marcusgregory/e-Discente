@@ -1,6 +1,7 @@
 // @dart=2.9
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_discente/chat/stores/messages.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -9,10 +10,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:e_discente/chat/models/chat_item.model.dart';
 import 'package:e_discente/chat/models/message.model.dart';
-import 'package:e_discente/chat/stores/list_messages.store.dart';
 import 'package:e_discente/chat/widgets/jumping_dots.widget.dart';
 import 'package:e_discente/chat/widgets/marquee.widget.dart';
 import 'package:e_discente/pages/widgets/photo_view.widget.dart';
+import 'package:uuid/uuid.dart';
 
 import '../app_instance.dart';
 
@@ -27,7 +28,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   final ScrollController listScrollController = ScrollController();
   //final listMessagesBloc = ListMessagesBloc();
-  ListMessagesStore listMessagesStore;
+  MessagesStore messagesStore;
 
   final f = DateFormat('HH:mm');
   DateFormat formatDateMonthDay = DateFormat(DateFormat.MONTH_DAY, 'pt_Br');
@@ -38,7 +39,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
 
-    listMessagesStore = widget.chatItem.messagesStore;
+    messagesStore = widget.chatItem.messagesStore;
+    messagesStore.loadMessages();
     AppInstance.currentChatPageOpenId = widget.chatItem.gid;
     WidgetsBinding.instance.addObserver(this);
   }
@@ -104,32 +106,39 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           overflow: TextOverflow.fade),
                     ),
                     Observer(builder: (_) {
-                      if (listMessagesStore.chatItemModel.isTyping) {
-                        return Row(
-                          children: [
-                            Text(listMessagesStore.chatItemModel.typingText,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[200],
-                                    fontWeight: FontWeight.normal)),
-                            JumpingDotsProgressIndicator(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .backgroundColor)
-                          ],
-                        );
-                      } else {
-                        return Text('',
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[200],
-                                fontWeight: FontWeight.normal));
+                      switch (widget.chatItem.messagesStore.typingState) {
+                        case TypingState.TYPING:
+                          return Row(
+                            children: [
+                              Text(
+                                  widget.chatItem.messagesStore.eventTyping
+                                          .sendBy +
+                                      " está digitando",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[200],
+                                      fontWeight: FontWeight.normal)),
+                              JumpingDotsProgressIndicator(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .backgroundColor)
+                            ],
+                          );
+                          break;
+                        case TypingState.NOTHING:
+                          return Text('',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[200],
+                                  fontWeight: FontWeight.normal));
+                          break;
                       }
+                      return Container();
                     })
                   ],
                 ),
@@ -146,111 +155,87 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
             Expanded(
               child: Container(
                 child: Observer(builder: (_) {
-                  var lista = listMessagesStore.mensagens.toList();
-                  // lista.forEach((element) {
-                  //   element.sendAt;
-                  // });
-                  if (listMessagesStore.isLoading) {
-                    print(listMessagesStore.isLoading);
-                    return Center(child: CircularProgressIndicator.adaptive());
-                  } else {
-                    return GroupedListView(
-                      controller: listScrollController,
-                      elements: lista,
-                      groupBy: (MessageModel message) => DateTime(
-                          message.sendAt.toLocal().year,
-                          message.sendAt.toLocal().month,
-                          message.sendAt.toLocal().day),
-                      order: GroupedListOrder.DESC,
-                      reverse: true,
-                      floatingHeader: true,
-                      useStickyGroupSeparators: true,
-                      shrinkWrap: true,
-                      groupHeaderBuilder: (MessageModel message) => Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5),
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.4),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(20.0)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  message.sendAt.year == DateTime.now().year
-                                      ? '${formatDateMonthDay.format(message.sendAt.toLocal())}'
-                                      : '${formatDateYearMonthDay.format(message.sendAt.toLocal())}',
-                                  style: TextStyle(
-                                      fontSize: Theme.of(context)
-                                              .textTheme
-                                              .caption
-                                              .fontSize *
-                                          0.9,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
+                  // print(widget.chatItem.messagesStore.messages.toList());
+                  switch (widget.chatItem.messagesStore.messagesState) {
+                    case MessagesState.LOADING:
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                      break;
+                    case MessagesState.READY:
+                      return Observer(builder: (_) {
+                        var lista =
+                            widget.chatItem.messagesStore.messages.toList();
+                        return GroupedListView(
+                            controller: listScrollController,
+                            elements: lista,
+                            groupBy: (MessageModel message) => DateTime(
+                                message.sendAt.toLocal().year,
+                                message.sendAt.toLocal().month,
+                                message.sendAt.toLocal().day),
+                            order: GroupedListOrder.DESC,
+                            reverse: true,
+                            floatingHeader: true,
+                            useStickyGroupSeparators: true,
+                            shrinkWrap: true,
+                            groupHeaderBuilder: (MessageModel message) =>
+                                Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 5, bottom: 5),
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.4),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(20.0)),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            message.sendAt.year ==
+                                                    DateTime.now().year
+                                                ? '${formatDateMonthDay.format(message.sendAt.toLocal())}'
+                                                : '${formatDateYearMonthDay.format(message.sendAt.toLocal())}',
+                                            style: TextStyle(
+                                                fontSize: Theme.of(context)
+                                                        .textTheme
+                                                        .caption
+                                                        .fontSize *
+                                                    0.9,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                            indexedItemBuilder: (context,
+                                    MessageModel messageModel, int index) =>
+                                buildItemChat(messageModel, lista, index));
+                      });
+                      break;
+                    case MessagesState.ERROR:
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          IconButton(
+                            onPressed: () {
+                              widget.chatItem.messagesStore.loadMessages();
+                            },
+                            icon: const Icon(Icons.refresh),
                           ),
-                        ),
-                      ),
-                      indexedItemBuilder:
-                          (context, MessageModel messageModel, int index) =>
-                              Observer(builder: (_) {
-                        //messageModel.sendAt;
-                        // print(index);
-                        // print(messageModel.toJson());
-                        return buildItemChat(messageModel, lista, index);
-                      }),
-                    );
-                    // return ListView.builder(
-                    //   shrinkWrap: true,
-                    //   reverse: true,
-                    //   controller: listScrollController,
-                    //   itemBuilder: (context, index) => Observer(builder: (_) {
-                    //     print(index);
-                    //     print(lista[index].toJson());
-                    //     return buildItemChat(lista[index], lista, index);
-                    //   }),
-                    //   itemCount: lista.length,
-                    // );
+                          const Text('Tentar novamente')
+                        ],
+                      );
+                      break;
                   }
+                  return Container();
                 }),
-                /*child: StreamBuilder<List<MessageModel>>(
-                    stream: listMessagesBloc.stream,
-                    builder: (context, snapshot) {
-                      //print(snapshot);
-                      if (snapshot.hasData) {
-                        var lista = snapshot.data
-                            .where(
-                                (element) => element.gid == widget.chatItem.gid)
-                            .toList()
-                            .reversed
-                            .toList();
-
-                        return ListView.builder(
-                          reverse: true,
-                          shrinkWrap: true,
-                          controller: listScrollController,
-                          itemBuilder: (context, index) =>
-                              buildItemChat(lista[index], lista, index),
-                          itemCount: lista.length,
-                        );
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    }),*/
-
-                /* ListView(
-                  padding: EdgeInsets.all(10.0),
-                  reverse: true,
-                  shrinkWrap: true,
-                  children: [],
-                ),*/
               ),
             ),
             buildInput()
@@ -570,8 +555,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               minLines: 1,
               autofocus: true,
               onChanged: (_) {
-                listMessagesStore.enviarEventoDigitando(
-                    AppInstance.nomeUsuario.trim(), widget.chatItem.gid);
+                widget.chatItem.messagesStore.sendTypingEvent();
               },
               style: TextStyle(fontSize: 15.0),
               controller: textEditingController,
@@ -592,15 +576,16 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               onPressed: () {
                 if (textEditingController.text.isNotEmpty &&
                     !textEditingController.text.startsWith(" ")) {
-                  MessageModel(
-                          gid: widget.chatItem.gid,
-                          messageText: textEditingController.text
-                              .replaceAll(RegExp(r"[\n\r]$"), "")
-                              .replaceAll(RegExp(r"^[\n\r]"), "")
-                              .trim(),
-                          sendAt: DateTime.now(),
-                          sendBy: AppInstance.nomeUsuario.toLowerCase().trim())
-                      .enviarMensagem(listMessagesStore);
+                  widget.chatItem.messagesStore.sendMessage(MessageModel(
+                      gid: widget.chatItem.gid,
+                      messageText: textEditingController.text
+                          .replaceAll(RegExp(r"[\n\r]$"), "")
+                          .replaceAll(RegExp(r"^[\n\r]"), "")
+                          .trim(),
+                      sendAt: DateTime.now(),
+                      sendBy: AppInstance.nomeUsuario.toLowerCase().trim(),
+                      mid: Uuid().v1()));
+
                   listScrollController.animateTo(0.0,
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeOut);

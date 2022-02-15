@@ -1,173 +1,123 @@
-// @dart=2.9
-import 'dart:async';
 import 'dart:convert';
-import 'package:mobx/mobx.dart';
-import 'package:e_discente/chat/stores/list_messages.store.dart';
 
-import '../app_instance.dart';
-import 'evento_digitando.model.dart';
+import 'package:e_discente/chat/models/evento_digitando.model.dart';
+import 'package:flutter/foundation.dart';
 
-part 'chat_item.model.g.dart';
+import 'package:e_discente/chat/models/message.model.dart';
+import 'package:e_discente/chat/stores/messages.store.dart';
 
-ChatItemModel chatItemFromJson(String str) =>
-    _ChatItemModelBase.fromJson(json.decode(str));
-
-String chatItemToJson(ChatItemModel data) => json.encode(data.toJson());
-
-ChatItemModel chatItemFromMap(Map<String, dynamic> str) =>
-    _ChatItemModelBase.fromJson(str);
-
-Map<String, dynamic> chatItemToMap(ChatItemModel data) => data.toJson();
-
-class ChatItemModel = _ChatItemModelBase with _$ChatItemModel;
-
-abstract class _ChatItemModelBase with Store {
-  int unreadedCounter = 0;
-  ListMessagesStore messagesStore;
+class ChatItemModel {
   String gid;
+  String name;
+  MessageModel recentMessage;
+  int unreadedCounter;
   List<String> members;
   DateTime createdAt;
   String createdBy;
   DateTime modifiedAt;
-  String name;
-  @observable
-  EventoDigitandoModel eventoDigitando;
-  @observable
-  String itemSubtitle = '';
-  @observable
-  RecentMessage _recentMessage;
-  StreamSubscription subscription;
-
-  _ChatItemModelBase({
-    this.gid,
-    this.members,
-    this.createdAt,
-    this.createdBy,
-    this.modifiedAt,
-    this.name,
-    RecentMessage recentMessage,
-  }) : _recentMessage = recentMessage {
-    messagesStore = ListMessagesStore(this);
-    subscription = AppInstance.socketStore.eventoDigitandoStream
-        .listen((EventoDigitandoModel eventoDigitando) {
-      receberEventoDigitando(eventoDigitando);
-    });
-  }
-  factory _ChatItemModelBase.fromJson(Map<String, dynamic> json) =>
-      ChatItemModel(
-        gid: json["gid"],
-        members: List<String>.from(json["members"].map((x) => x)),
-        createdAt: DateTime.parse(json["createdAt"]),
-        createdBy: json["createdBy"],
-        modifiedAt: DateTime.parse(json["modifiedAt"]),
-        name: json["name"],
-        recentMessage: RecentMessage.fromJson(json["recentMessage"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "gid": gid,
-        "members": List<dynamic>.from(members.map((x) => x)),
-        "createdAt": createdAt.toIso8601String(),
-        "createdBy": createdBy,
-        "modifiedAt": modifiedAt.toIso8601String(),
-        "name": name,
-        "recentMessage": _recentMessage.toJson(),
-      };
-
-  @computed
-  String get recentMessage {
-    if (messagesStore.mensagens.isNotEmpty) {
-      var lastMessage = messagesStore.mensagens.last;
-      return (AppInstance.nomeUsuario.toLowerCase().trim() ==
-                  lastMessage.sendBy.toLowerCase().trim()
-              ? 'Você'
-              : '${lastMessage.sendBy}') +
-          ': ${lastMessage.messageText}';
-    }
-    /* else if (_recentMessage != null) {
-      return '${_recentMessage.sentBy}: ${_recentMessage.messageText}';
-    }*/
-    return '';
+  MessagesStore? messagesStore;
+  EventoDigitandoModel? eventoDigitando;
+  ChatItemModel(
+      {required this.gid,
+      required this.name,
+      required this.recentMessage,
+      this.unreadedCounter = 0,
+      required this.members,
+      required this.createdAt,
+      required this.createdBy,
+      required this.modifiedAt,
+      this.messagesStore,
+      this.eventoDigitando}) {
+    messagesStore == null
+        ? messagesStore = MessagesStore(gid)
+        : this.messagesStore;
   }
 
-  sumCounter() {
-    unreadedCounter++;
+  Map<String, dynamic> toMap() {
+    return {
+      'gid': gid,
+      'name': name,
+      'recentMessage': recentMessage.toMap(),
+      'unreadedCounter': unreadedCounter,
+      'members': members,
+      'createdAt': createdAt.toIso8601String(),
+      'createdBy': createdBy,
+      'modifiedAt': modifiedAt.toIso8601String(),
+    };
   }
 
-  resetCounter() {
-    unreadedCounter = 0;
+  factory ChatItemModel.fromMap(Map<String, dynamic> map) {
+    return ChatItemModel(
+      gid: map['gid'] ?? '',
+      name: map['name'] ?? '',
+      recentMessage: MessageModel.fromMap(map['recentMessage']),
+      unreadedCounter: map['unreadedCounter']?.toInt() ?? 0,
+      members: List<String>.from(map['members']),
+      createdAt: DateTime.parse(map['createdAt']),
+      createdBy: map['createdBy'] ?? '',
+      modifiedAt: DateTime.parse(map['modifiedAt']),
+    );
   }
 
-  @computed
-  bool get isTyping =>
-      eventoDigitando != null &&
-      eventoDigitando.sendBy.toLowerCase().trim() !=
-          AppInstance.nomeUsuario.toLowerCase().trim();
+  String toJson() => json.encode(toMap());
 
-  @computed
-  String get typingText =>
-      (AppInstance.nomeUsuario.toLowerCase().trim() ==
-              eventoDigitando.sendBy.toLowerCase().trim()
-          ? 'Você'
-          : '${eventoDigitando.sendBy}') +
-      ' está digitando';
+  factory ChatItemModel.fromJson(String source) =>
+      ChatItemModel.fromMap(json.decode(source));
 
-  @action
-  receberEventoDigitando(EventoDigitandoModel digitandoModel) {
-    if (digitandoModel.gid == this.gid) {
-      _onDigitandoHandler(digitandoModel);
-    }
+  @override
+  String toString() {
+    return 'ChatItemModel(gid: $gid, name: $name, recentMessage: $recentMessage, unreadedCounter: $unreadedCounter, members: $members, createdAt: $createdAt, createdBy: $createdBy, modifiedAt: $modifiedAt)';
   }
 
-  Timer _searchOnStoppedTyping;
-  @action
-  _onDigitandoHandler(EventoDigitandoModel digitandoModel) {
-    const duration = Duration(
-        milliseconds:
-            800); //set the duration that you want call stopTyping() after that.
-    if (_searchOnStoppedTyping != null) {
-      _searchOnStoppedTyping.cancel();
-      //clear timer
-      eventoDigitando = digitandoModel;
-      itemSubtitle = '${digitandoModel.sendBy.trim()} está digitando...';
-    }
-    _searchOnStoppedTyping = new Timer(duration, () => stopTyping());
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ChatItemModel &&
+        other.gid == gid &&
+        other.name == name &&
+        other.recentMessage == recentMessage &&
+        other.unreadedCounter == unreadedCounter &&
+        listEquals(other.members, members) &&
+        other.createdAt == createdAt &&
+        other.createdBy == createdBy &&
+        other.modifiedAt == modifiedAt;
   }
 
-  @action
-  stopTyping() {
-    eventoDigitando = null;
+  @override
+  int get hashCode {
+    return gid.hashCode ^
+        name.hashCode ^
+        recentMessage.hashCode ^
+        unreadedCounter.hashCode ^
+        members.hashCode ^
+        createdAt.hashCode ^
+        createdBy.hashCode ^
+        modifiedAt.hashCode;
   }
 
-  void dispose() {
-    subscription.cancel();
+  ChatItemModel copyWith(
+      {String? gid,
+      String? name,
+      MessageModel? recentMessage,
+      int? unreadedCounter,
+      List<String>? members,
+      DateTime? createdAt,
+      String? createdBy,
+      DateTime? modifiedAt,
+      MessagesStore? messagesStore,
+      EventoDigitandoModel? eventoDigitando}) {
+    return ChatItemModel(
+      gid: gid ?? this.gid,
+      name: name ?? this.name,
+      recentMessage: recentMessage ?? this.recentMessage,
+      unreadedCounter: unreadedCounter ?? this.unreadedCounter,
+      members: members ?? this.members,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      modifiedAt: modifiedAt ?? this.modifiedAt,
+      messagesStore: messagesStore ?? this.messagesStore,
+      eventoDigitando: eventoDigitando,
+    );
   }
-}
-
-class RecentMessage {
-  RecentMessage({
-    this.messageText,
-    this.sentBy,
-    this.sentAt,
-    this.readBy,
-  });
-
-  String messageText;
-  String sentBy;
-  DateTime sentAt;
-  List<String> readBy;
-
-  factory RecentMessage.fromJson(Map<String, dynamic> json) => RecentMessage(
-        messageText: json["messageText"],
-        sentBy: json["sentBy"],
-        sentAt: DateTime.parse(json["sentAt"]),
-        readBy: List<String>.from(json["readBy"].map((x) => x)),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "messageText": messageText,
-        "sentBy": sentBy,
-        "sentAt": sentAt.toIso8601String(),
-        "readBy": List<dynamic>.from(readBy.map((x) => x)),
-      };
 }

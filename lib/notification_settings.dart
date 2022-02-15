@@ -21,10 +21,10 @@ void initNotification() async {
 }
 
 Future<void> showNotification(int numNoticias) async {
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'event_new_notice', 'Noticias', '',
+  var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'event_new_notice', 'Noticias', 'Notícias',
       importance: Importance.max, priority: Priority.high, ticker: 'ticker');
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var iOSPlatformChannelSpecifics = const IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);

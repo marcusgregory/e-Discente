@@ -5,12 +5,12 @@ class NotificationUtil {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  static var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'event_geral', 'Geral', 'Notificação de e-Discente',
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'Notificação de e-Discente');
-  static var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  static var iOSPlatformChannelSpecifics = const IOSNotificationDetails();
   static var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);

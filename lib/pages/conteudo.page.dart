@@ -63,16 +63,6 @@ class ConteudoPage extends StatelessWidget {
                                       padding: const EdgeInsets.all(12.0),
                                       child: Html(
                                         data: _conteudo,
-                                        defaultTextStyle:
-                                            TextStyle(fontSize: 14),
-                                        onLinkTap: (url) async {
-                                          if (await canLaunch(url)) {
-                                            await launch(url);
-                                          } else {
-                                            ToastUtil.showShortToast(
-                                                'Não foi possível abrir a url: $url');
-                                          }
-                                        },
                                       ),
                                     ),
                                     SizedBox(

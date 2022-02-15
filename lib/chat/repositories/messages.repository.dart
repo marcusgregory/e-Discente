@@ -17,7 +17,8 @@ class MessagesRepository {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable chats = json['data'];
         return chats
-            .map((model) => messageFromMap(model)..state = MessageState.SENDED)
+            .map((model) =>
+                MessageModel.fromMap(model)..state = MessageState.SENDED)
             .toList();
       } else if (response.statusCode == 400 || response.statusCode == 401) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
