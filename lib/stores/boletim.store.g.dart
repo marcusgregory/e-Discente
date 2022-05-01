@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'boletim.store.dart';
 
@@ -13,13 +12,13 @@ mixin _$Boletim on _BoletimBase, Store {
   final _$boletimAtom = Atom(name: '_BoletimBase.boletim');
 
   @override
-  ObservableFuture<Map<String, List<BoletimModel>>> get boletim {
+  ObservableFuture<Map<String, List<BoletimModel>>>? get boletim {
     _$boletimAtom.reportRead();
     return super.boletim;
   }
 
   @override
-  set boletim(ObservableFuture<Map<String, List<BoletimModel>>> value) {
+  set boletim(ObservableFuture<Map<String, List<BoletimModel>>>? value) {
     _$boletimAtom.reportWrite(value, super.boletim, () {
       super.boletim = value;
     });

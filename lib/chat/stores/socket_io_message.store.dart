@@ -1,4 +1,3 @@
-//@dart=2.6
 import 'dart:async';
 
 import 'package:e_discente/chat/stores/chats.store.dart';
@@ -6,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:e_discente/chat/models/message.model.dart';
 
-import '../app_instance.dart';
 part 'socket_io_message.store.g.dart';
 
 class SocketIOMessageStore = _SocketIOMessageStoreBase
@@ -19,7 +17,7 @@ abstract class _SocketIOMessageStoreBase with Store {
   Stream<MessageModel> get messageStream => _messageStream.stream;
 
   @observable
-  MessageModel messageModel;
+  MessageModel? messageModel;
 
   @action
   receberMensagem(MessageModel newMessage) {

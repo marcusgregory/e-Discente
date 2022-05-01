@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.6
 
 part of 'socket_io_message.store.dart';
 
@@ -14,13 +13,13 @@ mixin _$SocketIOMessageStore on _SocketIOMessageStoreBase, Store {
       Atom(name: '_SocketIOMessageStoreBase.messageModel');
 
   @override
-  MessageModel get messageModel {
+  MessageModel? get messageModel {
     _$messageModelAtom.reportRead();
     return super.messageModel;
   }
 
   @override
-  set messageModel(MessageModel value) {
+  set messageModel(MessageModel? value) {
     _$messageModelAtom.reportWrite(value, super.messageModel, () {
       super.messageModel = value;
     });

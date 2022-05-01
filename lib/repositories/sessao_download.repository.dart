@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -12,8 +11,8 @@ class SessaoDownload {
     try {
       var url = '${Settings.apiURL}/sigaa/turma/$idTurma/sessao-download';
       http.Response response = await http.get(Uri.parse(url), headers: {
-        'jwt': Settings.usuario.token
-      }).timeout(Duration(seconds: 50));
+        'jwt': Settings.usuario!.token!
+      }).timeout(const Duration(seconds: 50));
       if (response.statusCode == 200) {
         return SessaoDownloadModel(
             response.headers['j-id'], response.headers['cookie-sigaa']);

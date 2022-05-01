@@ -6,11 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'blocs/usuario.bloc.dart';
 import 'chat/app_instance.dart';
 import 'models/usuario.model.dart';
 import 'notification_settings2.dart';
-import 'repositories/register_fcmToken.repository.dart';
 
 FirebaseMessaging messaging = FirebaseMessaging.instance;
 Future<void> initFirebaseMessaging() async {
@@ -49,10 +47,11 @@ registerOnFirebase() async {
     var groupName = message.data['groupName'] ?? '';
     String messageTo = message.data['messageTo'] ?? '';
     if (messageTo.toLowerCase().trim() ==
-        Settings.usuario.nomeDeUsuario.trim()) {
-      if (messageModel.gid != AppInstance.currentChatPageOpenId) {
+        Settings.usuario!.nomeDeUsuario!.trim()) {
+      if (messageModel.gid.trim() != AppInstance.currentChatPageOpenId.trim()) {
         NotificationAwesome.createNotificationLargeIconMessage(
-            messageModel, groupName);
+            messageModel, groupName,
+            showLargeIcon: false);
       }
     }
   });
@@ -71,10 +70,11 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     var messageModel = MessageModel.fromJson(message.data['message']);
     String groupName = message.data['groupName'] ?? '';
     String messageTo = message.data['messageTo'] ?? '';
-    if (usuarioM.nomeDeUsuario.toLowerCase().trim() ==
+    if (usuarioM.nomeDeUsuario!.toLowerCase().trim() ==
         messageTo.toLowerCase().trim()) {
       NotificationAwesome.createNotificationLargeIconMessage(
-          messageModel, groupName);
+          messageModel, groupName,
+          showLargeIcon: false);
     }
   }
 }

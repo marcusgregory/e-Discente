@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:mobx/mobx.dart';
 import 'package:e_discente/models/boletim.model.dart';
 import 'package:e_discente/repositories/notas.repository.dart';
@@ -7,16 +6,19 @@ part 'boletim.store.g.dart';
 class Boletim = _BoletimBase with _$Boletim;
 
 abstract class _BoletimBase with Store {
-  NotasRepository _notasRepository = NotasRepository();
+  final NotasRepository _notasRepository = NotasRepository();
+
+  bool firstRun = true;
 
   @observable
-  ObservableFuture<Map<String, List<BoletimModel>>> boletim;
+  ObservableFuture<Map<String, List<BoletimModel>>>? boletim;
 
   @action
   Future getBoletim() =>
       boletim = ObservableFuture(_notasRepository.getNotas());
 
   void loadBoletim() {
+    firstRun = false;
     getBoletim();
   }
 

@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/CustomIcons.ttf
 ///
-/// 
+///
 /// * Font Awesome, Copyright (C) 2016 by Dave Gandy
 ///         Author:    Dave Gandy
 ///         License:   SIL ()
@@ -24,5 +24,5 @@ class CustomIcons {
 
   static const _kFontFam = 'CustomIcons';
 
-  static const IconData whatsapp = const IconData(0xf232, fontFamily: _kFontFam);
+  static const IconData whatsapp = IconData(0xf232, fontFamily: _kFontFam);
 }

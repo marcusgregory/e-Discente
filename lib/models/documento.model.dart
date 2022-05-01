@@ -1,9 +1,9 @@
-// @dart=2.9
+
 class DocumentoModel {
-  String nome;
-  String id;
-  String formAva;
-  String key;
+  String? nome;
+  String? id;
+  String? formAva;
+  String? key;
 
   DocumentoModel({this.nome, this.id, this.formAva, this.key});
 

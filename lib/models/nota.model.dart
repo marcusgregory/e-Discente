@@ -1,9 +1,9 @@
-// @dart=2.9
+
 import 'dart:convert';
 
 class Nota {
-  String descricao;
-  String valor;
+  String? descricao;
+  String? valor;
 
   Nota({
     this.descricao,

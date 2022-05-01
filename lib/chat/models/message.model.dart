@@ -1,32 +1,30 @@
 import 'dart:convert';
 
-import '../app_instance.dart';
+import 'i_message.dart';
 
-class MessageModel implements Comparable {
-  String mid;
-  String gid;
+class MessageModel extends IMessage {
   String messageText;
-  DateTime sendAt;
-  String sendBy;
-  String profilePicUrl;
-  MessageState state;
   MessageModel({
-    required this.mid,
-    required this.gid,
+    String type = 'message',
+    required String mid,
+    required String gid,
     required this.messageText,
-    required this.sendAt,
-    required this.sendBy,
+    required DateTime sendAt,
+    required String sendBy,
     String? profilePicUrl,
-    this.state = MessageState.SENDING,
-  }) : profilePicUrl = profilePicUrl ??
-            '${AppInstance.apiURL}/user/profilepic/${sendBy.toLowerCase().trim()}';
+    MessageState? state,
+  }) : super(
+            type: type,
+            mid: mid,
+            gid: gid,
+            sendAt: sendAt,
+            sendBy: sendBy,
+            profilePicUrl: profilePicUrl,
+            state: state ?? MessageState.SENDING);
 
   @override
-  int compareTo(other) {
-    return sendAt.compareTo(other.sendAt);
-  }
-
   MessageModel copyWith({
+    String? type,
     String? mid,
     String? gid,
     String? messageText,
@@ -36,6 +34,7 @@ class MessageModel implements Comparable {
     MessageState? state,
   }) {
     return MessageModel(
+      type: type ?? this.type,
       mid: mid ?? this.mid,
       gid: gid ?? this.gid,
       messageText: messageText ?? this.messageText,
@@ -48,6 +47,7 @@ class MessageModel implements Comparable {
 
   Map<String, dynamic> toMap() {
     return {
+      'type': type,
       'mid': mid,
       'gid': gid,
       'messageText': messageText,
@@ -59,6 +59,7 @@ class MessageModel implements Comparable {
 
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
+      type: map['type'] ?? 'message',
       mid: map['mid'],
       gid: map['gid'],
       messageText: map['messageText'],
@@ -75,8 +76,6 @@ class MessageModel implements Comparable {
 
   @override
   String toString() {
-    return 'MessageModel(mid: $mid, gid: $gid, messageText: $messageText, sendAt: $sendAt, sendBy: $sendBy, profilePicUrl: $profilePicUrl, state: $state)';
+    return 'MessageModel(type: $type, mid: $mid, gid: $gid, messageText: $messageText, sendAt: $sendAt, sendBy: $sendBy, profilePicUrl: $profilePicUrl, state: $state)';
   }
 }
-
-enum MessageState { SENDED, SENDING, ERROR }

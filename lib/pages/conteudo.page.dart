@@ -1,20 +1,17 @@
-// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:e_discente/repositories/download.service.dart';
 import 'package:e_discente/models/documento.model.dart';
-import 'package:e_discente/util/toast.util.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ConteudoPage extends StatelessWidget {
   const ConteudoPage(this._numero, this._titulo, this._conteudo,
       this._documentos, this.idTurma);
   final String _numero;
-  final String _titulo;
+  final String? _titulo;
   final String _conteudo;
-  final String idTurma;
-  final List<DocumentoModel> _documentos;
+  final String? idTurma;
+  final List<DocumentoModel>? _documentos;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +43,7 @@ class ConteudoPage extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 20, right: 20),
                             child: Center(
                               child: Text(
-                                _titulo,
+                                _titulo!,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
@@ -94,22 +91,22 @@ class ConteudoPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         DownloadService(context)
-                            .downloadDocumento(idTurma, _documentos[index]);
+                            .downloadDocumento(idTurma, _documentos![index]);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 3, right: 3, bottom: 6, top: 6),
                         child: ListTile(
                           leading:
-                              balaoArquivo(_documentos[index].nome, context),
-                          title: Text(_documentos[index].nome,
+                              balaoArquivo(_documentos![index].nome!, context),
+                          title: Text(_documentos![index].nome!,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ),
                   ),
                 );
-              }, childCount: _documentos.length)),
+              }, childCount: _documentos!.length)),
               SliverList(
                 delegate: SliverChildListDelegate([
                   SizedBox(

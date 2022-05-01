@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:e_discente/chat/models/chat_item.model.dart';
 
-import '../app_instance.dart';
 import 'chat.page.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -22,7 +21,7 @@ class _ChatsPageState extends State<ChatsPage>
   @override
   void initState() {
     _chatsStore = GetIt.I<ChatsStore>();
-    _chatsStore.loadListChats();
+    if (_chatsStore.firstRun) _chatsStore.loadListChats();
     super.initState();
   }
 
@@ -38,7 +37,8 @@ class _ChatsPageState extends State<ChatsPage>
       height: double.infinity,
       width: double.infinity,
       child: Observer(builder: (_) {
-        switch (_chatsStore.chatsState) {
+        var state = _chatsStore.chatsState;
+        switch (state) {
           case ChatsState.LOADING:
             return const Center(
               child: CircularProgressIndicator.adaptive(),
@@ -70,13 +70,11 @@ class _ChatsPageState extends State<ChatsPage>
               ],
             );
         }
-        return Container();
       }),
     );
   }
 
   Widget buildItem(BuildContext context, ChatItemModel item) {
-    print(item.eventoDigitando);
     return chatItemTile(
         traling: Visibility(
             visible: item.unreadedCounter > 0,
@@ -90,14 +88,7 @@ class _ChatsPageState extends State<ChatsPage>
                     fit: BoxFit.cover,
                     image: AssetImage('assets/group_icon_grey_square.png')))),
         title: item.name,
-        subtitle: item.eventoDigitando == null
-            ? UserUtil.isYouOrUser(item.recentMessage.sendBy) +
-                ": " +
-                item.recentMessage.messageText
-            : item.eventoDigitando!.sendBy! +
-                " está digitando...", //item.messages.isNotEmpty
-        //     ? '${item.messages.last.sendBy}: ${item.messages.last.messageText}'
-        //     : '',
+        subtitle: _subtitle(item),
         item: item);
   }
 
@@ -130,7 +121,10 @@ class _ChatsPageState extends State<ChatsPage>
       onTap: () {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-          return ChatPage(item);
+          return ChatPage(
+            gid: item.gid,
+            groupName: item.name,
+          );
         }));
       },
       child: Padding(
@@ -177,4 +171,20 @@ class _ChatsPageState extends State<ChatsPage>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+_subtitle(ChatItemModel item) {
+  if (item.eventoDigitando == null) {
+    if (item.recentMessage.messageText.isNotEmpty &&
+        item.recentMessage.sendBy.isNotEmpty) {
+      return UserUtil.isYouOrUser(item.recentMessage.sendBy) +
+          ": " +
+          item.recentMessage.messageText;
+    } else {
+      return '';
+    }
+  } else {
+    return UserUtil.isYouOrUser(item.eventoDigitando!.sendBy!) +
+        " está digitando...";
+  }
 }

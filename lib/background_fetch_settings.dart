@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:convert';
 
 import 'package:background_fetch/background_fetch.dart';
@@ -19,15 +18,15 @@ void initBackgroundFetch() {
           requiresStorageNotLow: false,
           requiresDeviceIdle: false,
           requiredNetworkType: NetworkType.ANY),
-      backgroundFetchHeadlessTask);
+      backgroundFetchTask);
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
-void backgroundFetchHeadlessTask(String taskId) async {
+void backgroundFetchTask(String taskId) async {
   print('[BackgroundFetch] evento recebido.');
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<NoticiaModel> noticiasAtuais = await NoticiasRepository().getAll();
-  String noticiasPref = prefs.getString('noticias');
+  String? noticiasPref = prefs.getString('noticias');
   await prefs.setString('noticias', jsonEncode(noticiasAtuais));
   List<NoticiaModel> noticiasNovas = [];
   if (noticiasPref != null) {
@@ -38,11 +37,24 @@ void backgroundFetchHeadlessTask(String taskId) async {
     noticiasNovas = noticiasAtuais;
   }
   print(noticiasNovas.length);
-  if (noticiasNovas.length > 0) {
+  if (noticiasNovas.isNotEmpty) {
     print('[BackgroundFetch] novas noticias.');
-    noticiasNovas.forEach((noticia) {
+    for (var noticia in noticiasNovas) {
       NotificationAwesome.createNotificationBigPictureNoticia(noticia);
-    });
+    }
   }
   BackgroundFetch.finish(taskId);
+}
+
+void backgroundFetchHeadlessTask(HeadlessTask task) {
+  String taskId = task.taskId;
+  bool isTimeout = task.timeout;
+  if (isTimeout) {
+    // This task has exceeded its allowed running-time.  You must stop what you're doing and immediately .finish(taskId)
+    print("[BackgroundFetch] Headless task timed-out: $taskId");
+    BackgroundFetch.finish(taskId);
+    return;
+  }
+  print("[BackgroundFetch] Headless event received: $taskId");
+  backgroundFetchTask(taskId);
 }

@@ -1,11 +1,11 @@
-// @dart=2.9
+
 class TurmaModel {
-  String codigo;
-  String nomeTurma;
-  String docente;
-  String local;
-  String horario;
-  String idTurma;
+  String? codigo;
+  String? nomeTurma;
+  String? docente;
+  String? local;
+  String? horario;
+  String? idTurma;
 
   TurmaModel(
       {this.codigo,

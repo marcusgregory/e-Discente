@@ -1,8 +1,6 @@
-// @dart=2.9
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -17,7 +15,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class Noticia extends StatelessWidget {
   final NoticiaModel noticia;
-  Noticia(this.noticia);
+
+  const Noticia({Key? key, required this.noticia}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class Noticia extends StatelessWidget {
                     builder: (context) => Detalhe(
                         noticia.imagem,
                         noticia.titulo,
-                        DateUtil.getTimeElapsedByDate(noticia.data),
+                        DateUtil.getTimeElapsedByDate(noticia.data!),
                         noticia.conteudo,
                         noticia.url,
                         noticia.id)));
@@ -76,10 +75,10 @@ class Noticia extends StatelessWidget {
               width: 8,
             ),
             Text(
-              'Unilab  •  ${DateUtil.getTimeElapsedByDate(this.noticia.data)}',
+              'Unilab  •  ${DateUtil.getTimeElapsedByDate(this.noticia.data!)}',
               style: TextStyle(
                   fontSize: 11,
-                  color: Theme.of(context).textTheme.bodyText1.color),
+                  color: Theme.of(context).textTheme.bodyText1!.color),
             ),
             Expanded(
               child: Align(
@@ -91,12 +90,12 @@ class Noticia extends StatelessWidget {
                     child: Theme.of(context).platform == TargetPlatform.iOS
                         ? Icon(
                             Icons.more_horiz,
-                            color: Theme.of(context).textTheme.bodyText1.color,
+                            color: Theme.of(context).textTheme.bodyText1!.color,
                             size: 20,
                           )
                         : Icon(
                             Icons.more_vert,
-                            color: Theme.of(context).textTheme.bodyText1.color,
+                            color: Theme.of(context).textTheme.bodyText1!.color,
                             size: 20,
                           ),
                     onPressed: () {
@@ -130,7 +129,7 @@ class Noticia extends StatelessWidget {
         style: new TextStyle(
             fontSize: 17.9,
             fontWeight: FontWeight.w400,
-            color: Theme.of(context).textTheme.bodyText1.color),
+            color: Theme.of(context).textTheme.bodyText1!.color),
       ),
     );
   }
@@ -143,7 +142,7 @@ class Noticia extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style:
-            new TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+            new TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
       ),
     );
   }
@@ -235,7 +234,7 @@ class Noticia extends StatelessWidget {
                   height: 50,
                   child: InkWell(
                     onTap: () async {
-                      String url = noticia.url;
+                      String url = noticia.url!;
                       if (await canLaunch(url)) {
                         await launch(url);
                       } else {
@@ -286,14 +285,14 @@ class Noticia extends StatelessWidget {
 
   Widget _loadImage() {
     return Hero(
-      tag: noticia.id,
+      tag: noticia.id!,
       child: CachedNetworkImage(
           height: 185,
           width: 185,
           imageUrl: kIsWeb
               ? 'https://api.allorigins.win/raw?url=' +
-                  Uri.encodeComponent(this.noticia.imagem)
-              : this.noticia.imagem,
+                  Uri.encodeComponent(this.noticia.imagem!)
+              : this.noticia.imagem!,
           imageBuilder: (context, imageProvider) => Container(
                 width: 185,
                 height: 185,

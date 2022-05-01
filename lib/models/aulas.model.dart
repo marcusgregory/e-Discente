@@ -1,10 +1,10 @@
-// @dart=2.9
+
 import 'documento.model.dart';
 
 class AulaModel {
-  String titulo;
-  String conteudo;
-  List<DocumentoModel> documentos;
+  String? titulo;
+  String? conteudo;
+  List<DocumentoModel>? documentos;
 
   AulaModel({
     this.titulo,
@@ -22,6 +22,6 @@ class AulaModel {
   Map<String, dynamic> toJson() => {
         "titulo": titulo,
         "conteudo": conteudo,
-        "documentos": List<dynamic>.from(documentos.map((x) => x.toJson())),
+        "documentos": List<dynamic>.from(documentos!.map((x) => x.toJson())),
       };
 }

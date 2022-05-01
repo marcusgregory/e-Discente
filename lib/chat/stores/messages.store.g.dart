@@ -9,16 +9,31 @@ part of 'messages.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$MessagesStore on _MessagesStoreBase, Store {
+  final _$isLoadingMoreAtom = Atom(name: '_MessagesStoreBase.isLoadingMore');
+
+  @override
+  bool get isLoadingMore {
+    _$isLoadingMoreAtom.reportRead();
+    return super.isLoadingMore;
+  }
+
+  @override
+  set isLoadingMore(bool value) {
+    _$isLoadingMoreAtom.reportWrite(value, super.isLoadingMore, () {
+      super.isLoadingMore = value;
+    });
+  }
+
   final _$messagesAtom = Atom(name: '_MessagesStoreBase.messages');
 
   @override
-  ObservableList<MessageModel> get messages {
+  ObservableList<IMessage> get messages {
     _$messagesAtom.reportRead();
     return super.messages;
   }
 
   @override
-  set messages(ObservableList<MessageModel> value) {
+  set messages(ObservableList<IMessage> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
     });
@@ -61,6 +76,14 @@ mixin _$MessagesStore on _MessagesStoreBase, Store {
   Future<void> loadMessages({bool silent = false}) {
     return _$loadMessagesAsyncAction
         .run(() => super.loadMessages(silent: silent));
+  }
+
+  final _$loadMoreMessagesAsyncAction =
+      AsyncAction('_MessagesStoreBase.loadMoreMessages');
+
+  @override
+  Future<void> loadMoreMessages() {
+    return _$loadMoreMessagesAsyncAction.run(() => super.loadMoreMessages());
   }
 
   final _$_MessagesStoreBaseActionController =
@@ -114,6 +137,7 @@ mixin _$MessagesStore on _MessagesStoreBase, Store {
   @override
   String toString() {
     return '''
+isLoadingMore: ${isLoadingMore},
 messages: ${messages},
 messagesState: ${messagesState},
 typingState: ${typingState}

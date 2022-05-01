@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'aulas.store.dart';
 
@@ -13,13 +12,13 @@ mixin _$Aulas on _AulasBase, Store {
   final _$aulasAtom = Atom(name: '_AulasBase.aulas');
 
   @override
-  ObservableFuture<List<AulaModel>> get aulas {
+  ObservableFuture<List<AulaModel>>? get aulas {
     _$aulasAtom.reportRead();
     return super.aulas;
   }
 
   @override
-  set aulas(ObservableFuture<List<AulaModel>> value) {
+  set aulas(ObservableFuture<List<AulaModel>>? value) {
     _$aulasAtom.reportWrite(value, super.aulas, () {
       super.aulas = value;
     });
@@ -28,7 +27,7 @@ mixin _$Aulas on _AulasBase, Store {
   final _$_AulasBaseActionController = ActionController(name: '_AulasBase');
 
   @override
-  Future<dynamic> getAulas(String idTurma) {
+  Future<dynamic> getAulas(String? idTurma) {
     final _$actionInfo =
         _$_AulasBaseActionController.startAction(name: '_AulasBase.getAulas');
     try {

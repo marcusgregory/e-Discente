@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:io';
 import 'dart:math';
 
@@ -21,7 +20,7 @@ class DownloadService {
 
   DownloadService(this._context);
   Future<void> downloadDocumento(
-      String idTurma, DocumentoModel documento) async {
+      String? idTurma, DocumentoModel documento) async {
     String urlFile =
         'https://sig.unilab.edu.br/sigaa/verArquivo?idArquivo=${documento.id}&key=${documento.key}&salvar=false';
     if (kIsWeb) {
@@ -30,7 +29,7 @@ class DownloadService {
       if (Platform.isAndroid) {
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        int sdk = androidInfo.version.sdkInt;
+        int sdk = androidInfo.version.sdkInt!;
         if (sdk <= 28) {
           execute(idTurma, documento, urlFile);
         } else {
@@ -52,7 +51,7 @@ class DownloadService {
   }
 
   Future<void> execute(
-      String idTurma, DocumentoModel documento, String urlFile) async {
+      String? idTurma, DocumentoModel documento, String urlFile) async {
     try {
       _showMaterialDialog(_context);
       _isOpen = true;
@@ -63,7 +62,7 @@ class DownloadService {
       if (_permissionReady) {
         if (_localPath.contains('/storage/emulated/0')) {
           _localPath = '/storage/emulated/0/e-Discente/' +
-              Settings.usuario.nome.trim().replaceAll(' ', '_');
+              Settings.usuario!.nome!.trim().replaceAll(' ', '_');
           Directory d = Directory(_localPath);
           if (!d.existsSync()) {
             Directory(d.path).createSync(recursive: true);
@@ -105,7 +104,7 @@ class DownloadService {
             )));
         print(response.headers);
         _filename = response.headers
-            .value('content-disposition')
+            .value('content-disposition')!
             .split('=')[1]
             .replaceAll('"', '');
         print(_filename);
@@ -164,14 +163,14 @@ class DownloadService {
   }
 
   Future<String> _findLocalPath() async {
-    final directory = Theme.of(this._context).platform == TargetPlatform.android
-        ? await getExternalStorageDirectory()
+    final directory = Theme.of(_context).platform == TargetPlatform.android
+        ? await (getExternalStorageDirectory())
         : await getApplicationDocumentsDirectory();
-    return directory.path;
+    return directory!.path;
   }
 
   Future<bool> _checkPermission() async {
-    if (Theme.of(this._context).platform == TargetPlatform.android) {
+    if (Theme.of(_context).platform == TargetPlatform.android) {
       final status = await Permission.storage.status;
       if (status != PermissionStatus.granted) {
         final result = await Permission.storage.request();
@@ -191,7 +190,7 @@ class DownloadService {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => AlertDialog(
+        builder: (_) => const AlertDialog(
               title: Text("Fazendo Download"),
               content: LinearProgressIndicator(value: null),
             )).then((value) => _isOpen = false);
@@ -203,7 +202,7 @@ class DownloadService {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-              title: Text("Deseja abrir?"),
+              title: const Text("Deseja abrir?"),
               content: Text(
                   'O arquivo \"$fileName\" foi salvo no seu dispositivo\nTamanho: ${formatBytes(fileLength)}'),
               actions: [
@@ -211,13 +210,13 @@ class DownloadService {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Não')),
+                    child: const Text('Não')),
                 TextButton(
                     onPressed: () {
                       OpenFile.open(filePath);
                       Navigator.of(context).pop();
                     },
-                    child: Text('Sim'))
+                    child: const Text('Sim'))
               ],
             ));
   }

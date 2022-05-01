@@ -1,27 +1,34 @@
-// @dart=2.9
 import 'dart:async';
 
 import 'package:e_discente/models/turma.model.dart';
 import 'package:e_discente/repositories/turmas.repository.dart';
 
 class TurmasBloc {
-  TurmasBloc() {
-    load();
-  }
+  bool firstRun = true;
 
-  StreamController<List<TurmaModel>> _streamController = StreamController();
+  List<TurmaModel> list = [];
 
-  Stream<List<TurmaModel>> get turmaStream => _streamController.stream;
+  var turmasState = TurmasState.loading;
+
+  final StreamController<TurmasState> _streamController =
+      StreamController.broadcast();
+
+  Stream<TurmasState> get turmaStream => _streamController.stream;
 
   load({bool isRefreshIndicator = false}) async {
+    firstRun = false;
     if (!_streamController.isClosed) {
       try {
         if (!isRefreshIndicator) {
-          _streamController.sink.add(null);
+          turmasState = TurmasState.loading;
+          _streamController.sink.add(turmasState);
         }
-        List<TurmaModel> list = await TurmasRepository().getTurmas();
-        _streamController.sink.add(list);
+        list = await TurmasRepository().getTurmas();
+        turmasState = TurmasState.ready;
+        _streamController.sink.add(turmasState);
       } catch (e) {
+        turmasState = TurmasState.error;
+        _streamController.sink.add(turmasState);
         _streamController.addError(e);
       }
     }
@@ -31,3 +38,5 @@ class TurmasBloc {
     _streamController.close();
   }
 }
+
+enum TurmasState { loading, ready, error }

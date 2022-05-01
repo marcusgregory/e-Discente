@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,16 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:e_discente/util/toast.util.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Detalhe extends StatefulWidget {
-  final String _img;
-  final String _title;
+  final String? _img;
+  final String? _title;
   final String _date;
-  final String _description;
-  final String _url;
-  final int _id;
+  final String? _description;
+  final String? _url;
+  final int? _id;
 
   Detalhe(this._img, this._title, this._date, this._description, this._url,
       this._id);
@@ -32,12 +29,12 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
     return Scaffold(
         appBar: AppBar(
           systemOverlayStyle:
-              SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
           actions: <Widget>[
             IconButton(
               icon: Theme.of(context).platform == TargetPlatform.iOS
-                  ? Icon(CupertinoIcons.share)
-                  : Icon(Icons.share),
+                  ? const Icon(CupertinoIcons.share)
+                  : const Icon(Icons.share),
               onPressed: () {
                 Share.share(
                     'Veja esta notícia:\n*${widget._title}*\n${widget._url}');
@@ -55,7 +52,7 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
                   right: constraints.maxWidth <= 600
                       ? 5.0
                       : MediaQuery.of(context).size.width * 0.20),
-              margin: EdgeInsets.all(5.0),
+              margin: const EdgeInsets.all(5.0),
               child: SingleChildScrollView(
                 child: Card(
                   clipBehavior: Clip.antiAlias,
@@ -71,7 +68,7 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
                       children: <Widget>[
                         _getImageNetwork(widget._img),
                         _getBody(
-                            widget._title, widget._date, widget._description),
+                            widget._title!, widget._date, widget._description),
                       ],
                     ),
                   ),
@@ -97,15 +94,15 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
                 ),
               ),
           placeholder: (context, url) =>
-              Container(height: 200, child: Image.memory(kTransparentImage))),
-      tag: widget._id,
+              SizedBox(height: 200, child: Image.memory(kTransparentImage))),
+      tag: widget._id!,
     );
   }
 
-  Widget _getBody(String tittle, String date, String description) {
-    return new Container(
-      margin: new EdgeInsets.all(15.0),
-      child: new Column(
+  Widget _getBody(String tittle, String date, String? description) {
+    return Container(
+      margin: const EdgeInsets.all(15.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _getTittle(tittle),
@@ -117,26 +114,26 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
   }
 
   _getTittle(String tittle) {
-    return new Text(
+    return Text(
       tittle,
-      style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
     );
   }
 
   _getDate(String date) {
-    return new Container(
-        margin: new EdgeInsets.only(top: 5.0),
-        child: new Text(
+    return Container(
+        margin: const EdgeInsets.only(top: 5.0),
+        child: Text(
           date,
-          style: new TextStyle(fontSize: 10.0, color: Colors.grey),
+          style: const TextStyle(fontSize: 10.0, color: Colors.grey),
         ));
   }
 
-  _getDescription(String description) {
-    return new Container(
-      margin: new EdgeInsets.only(top: 20.0),
-      child: new Html(
-        data: this.widget._description,
+  _getDescription(String? description) {
+    return Container(
+      margin: const EdgeInsets.only(top: 20.0),
+      child: Html(
+        data: widget._description,
       ),
     );
   }

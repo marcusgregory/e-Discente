@@ -1,13 +1,13 @@
-// @dart=2.9
+
 import 'dart:convert';
 import 'nota.model.dart';
 
 class NotasTurmaModel {
-  String recuperacao;
-  String resultado;
-  String faltas;
-  String situacao;
-  List<Nota> notas;
+  String? recuperacao;
+  String? resultado;
+  String? faltas;
+  String? situacao;
+  List<Nota>? notas;
 
   NotasTurmaModel({
     this.recuperacao,
@@ -36,6 +36,6 @@ class NotasTurmaModel {
         "resultado": resultado,
         "faltas": faltas,
         "situacao": situacao,
-        "notas": List<dynamic>.from(notas.map((x) => x.toJson())),
+        "notas": List<dynamic>.from(notas!.map((x) => x.toJson())),
       };
 }

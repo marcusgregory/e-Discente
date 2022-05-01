@@ -1,8 +1,10 @@
 import 'package:e_discente/chat/app_instance.dart';
 import 'package:e_discente/chat/models/evento_digitando.model.dart';
+import 'package:e_discente/chat/models/i_message.dart';
 import 'package:e_discente/chat/stores/chats.store.dart';
 import 'package:e_discente/chat/stores/socket_io.store.dart';
 import 'package:e_discente/chat/utils/debouces.util.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 
@@ -19,8 +21,17 @@ abstract class _MessagesStoreBase with Store {
 
   var messagesRepository = MessagesRepository();
 
+  var firstRun = false;
+
+  var page = 1;
+
   @observable
-  var messages = ObservableList<MessageModel>();
+  var isLoadingMore = false;
+
+  var loadedAllMessages = false;
+
+  @observable
+  var messages = ObservableList<IMessage>.of([]);
 
   @observable
   var messagesState = MessagesState.LOADING;
@@ -33,11 +44,23 @@ abstract class _MessagesStoreBase with Store {
   @action
   Future<void> loadMessages({bool silent = false}) async {
     print('Obtendo mensagens do grupo ${gid} no servidor...');
-    if (silent = false) messagesState = messagesState = MessagesState.LOADING;
-    ;
+    firstRun = true;
+    if (silent == false) messagesState = messagesState = MessagesState.LOADING;
     try {
-      messages = (await messagesRepository.getMessages(gid)).asObservable();
-      GetIt.I<ChatsStore>().updateRecentMessage(messages.last);
+      var messagesChat =
+          (await messagesRepository.getMessages(gid)).asObservable();
+      if (messagesChat.isNotEmpty) {
+        messagesChat.forEach((element) {
+          if (!messages.contains(element)) {
+            messages.add(element);
+          }
+        });
+
+        GetIt.I<ChatsStore>().updateRecentMessage(messages.first);
+      }
+      if (page == 1 && !silent) {
+        page = 2;
+      }
     } catch (e) {
       messagesState = MessagesState.ERROR;
     }
@@ -45,17 +68,45 @@ abstract class _MessagesStoreBase with Store {
   }
 
   @action
+  Future<void> loadMoreMessages() async {
+    if (page > 1) {
+      print('Carregando mais mensagens do grupo $gid no servidor...');
+      try {
+        isLoadingMore = true;
+        var newMessages = await messagesRepository.getMessages(gid, page: page);
+        if (newMessages.isNotEmpty) {
+          messages.addAll(newMessages);
+          page++;
+        } else {
+          loadedAllMessages = true;
+          print(
+              'Não tem mais mensagens no grupo $gid para carregar no servidor...');
+        }
+      } catch (e) {
+        debugPrint('erro');
+      } finally {
+        isLoadingMore = false;
+      }
+    }
+  }
+
+  @action
   void sendMessage(MessageModel message) {
     messages.add(message);
     GetIt.I<ChatsStore>().sendMessage(message, (ack) {
-      messages[messages.indexOf(message)] =
-          message.copyWith(state: MessageState.SENDED);
+      var index = messages.indexOf(message);
+      messages.removeAt(index);
+      messages.insert(
+          index,
+          message.copyWith(
+              state: MessageState.SENDED,
+              sendAt: DateTime.parse(ack['server_time'])));
     });
   }
 
   @action
   void receiveMessage(MessageModel message) {
-    messages.add(message);
+    messages.add(message.copyWith(state: MessageState.SENDED));
   }
 
   var debouce = DeboucesUtil();
@@ -86,7 +137,9 @@ abstract class _MessagesStoreBase with Store {
 
   @action
   void reconnect() {
-    loadMessages(silent: true);
+    if (firstRun) {
+      loadMessages(silent: true);
+    }
   }
 }
 

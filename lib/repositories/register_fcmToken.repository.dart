@@ -10,7 +10,8 @@ class RegisterFcmTokenRepository {
     print(fcmToken);
     var url = '${AppInstance.apiURL}/user/setFcmToken';
     http.Response response = await http.post(Uri.parse(url),
-        body: {'fcmToken': fcmToken}, headers: {'jwt': Settings.usuario.token});
+        body: {'fcmToken': fcmToken},
+        headers: {'jwt': Settings.usuario!.token ?? ''});
     if (response.statusCode == 200) {
       print('Registro do fcmToken foi feito com sucesso!');
       Future.value('ok');

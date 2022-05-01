@@ -1,12 +1,11 @@
-// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:e_discente/models/participantes.model.dart';
 import 'package:e_discente/pages/widgets/participante.widget.dart';
 import 'dart:math' as math;
 
 class ParticipantesPage extends StatefulWidget {
-  final Future<ParticipantesModel> _participantesFuture;
-  final String _idTurma;
+  final Future<ParticipantesModel>? _participantesFuture;
+  final String? _idTurma;
   const ParticipantesPage(this._participantesFuture, this._idTurma);
   @override
   _ParticipantesPageState createState() => _ParticipantesPageState();
@@ -30,20 +29,18 @@ class _ParticipantesPageState extends State<ParticipantesPage>
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                   return Container();
-                  break;
                 case ConnectionState.waiting:
                   return Center(
                     child: CircularProgressIndicator.adaptive(),
                   );
-                  break;
                 case ConnectionState.active:
                   break;
                 case ConnectionState.done:
                   if (snapshot.hasData) {
-                    ParticipantesModel participantesModel = snapshot.data;
+                    ParticipantesModel participantesModel = snapshot.data!;
                     return CustomScrollView(
                       key: PageStorageKey<String>(
-                          'participantes:' + widget._idTurma),
+                          'participantes:' + widget._idTurma!),
                       slivers: <Widget>[
                         SliverOverlapInjector(
                             handle:
@@ -82,8 +79,8 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {
                           return ParticipanteWidget(
-                              participantesModel.docentes[index]);
-                        }, childCount: participantesModel.docentes.length)),
+                              participantesModel.docentes![index]);
+                        }, childCount: participantesModel.docentes!.length)),
                         SliverPersistentHeader(
                             pinned: true,
                             delegate: _SliverAppBarDelegate(
@@ -118,8 +115,8 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {
                           return ParticipanteWidget(
-                              participantesModel.discentes[index]);
-                        }, childCount: participantesModel.discentes.length))
+                              participantesModel.discentes![index]);
+                        }, childCount: participantesModel.discentes!.length))
                       ],
                     );
                   }
@@ -135,9 +132,9 @@ class _ParticipantesPageState extends State<ParticipantesPage>
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
-    @required this.minHeight,
-    @required this.maxHeight,
-    @required this.child,
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
   });
   final double minHeight;
   final double maxHeight;

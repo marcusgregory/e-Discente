@@ -1,14 +1,14 @@
-// @dart=2.9
+
 import 'package:e_discente/models/participante.model.dart';
 
 class DocenteModel extends ParticipanteModel {
-  String departamento;
-  String nivel;
+  String? departamento;
+  String? nivel;
   DocenteModel(
-      {String urlFoto,
-      String nome,
-      String usuario,
-      String email,
+      {String? urlFoto,
+      String? nome,
+      String? usuario,
+      String? email,
       this.departamento,
       this.nivel})
       : super(urlFoto, nome, usuario, email);

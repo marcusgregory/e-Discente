@@ -2,14 +2,13 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:awesome_notifications/src/enumerators/group_alert_behaviour.dart'
-    as Notifications;
 import 'package:e_discente/models/noticias.model.dart';
 
-import 'chat/app_instance.dart';
 import 'chat/models/message.model.dart';
 
 class NotificationAwesome {
+  static const Map<String, String> _payloadDefault = {};
+
   static void initNotificationAwesome() {
     AwesomeNotifications().initialize(
         // set the icon to null if you want to use the default app icon
@@ -25,18 +24,18 @@ class NotificationAwesome {
               enableVibration: true,
               groupKey: 'chat',
               defaultPrivacy: NotificationPrivacy.Public,
-              groupAlertBehavior: Notifications.GroupAlertBehavior.Children,
+              groupAlertBehavior: GroupAlertBehavior.Children,
               playSound: true,
               defaultColor: Colors.white,
-              ledColor: Color(0xFF00396A)),
+              ledColor: const Color(0xFF00396A)),
           NotificationChannel(
               channelKey: 'news_channel',
               channelName: 'Notícias',
               channelDescription: 'Notícias',
               defaultPrivacy: NotificationPrivacy.Public,
               importance: NotificationImportance.High,
-              defaultColor: Color(0xFF00396A),
-              ledColor: Color(0xFF00396A))
+              defaultColor: const Color(0xFF00396A),
+              ledColor: const Color(0xFF00396A))
         ]);
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
@@ -52,57 +51,64 @@ class NotificationAwesome {
       MessageModel message, String groupName,
       {bool showLargeIcon = false}) async {
     AwesomeNotifications().setChannel(
-        NotificationChannel(
-            channelKey: 'chat_channel',
-            channelName: 'Conversas',
-            channelDescription: 'Conversas',
-            importance: NotificationImportance.Max,
-            channelShowBadge: true,
-            enableVibration: true,
-            //groupKey: 'chat',
-            defaultPrivacy: NotificationPrivacy.Public,
-            groupAlertBehavior: Notifications.GroupAlertBehavior.Children,
-            playSound: true,
-            defaultColor: Color(0xFF00396A),
-            ledColor: Color(0xFF00396A)),
-        forceUpdate: true);
+      NotificationChannel(
+          channelKey: 'chat_channel',
+          channelName: 'Conversas',
+          channelDescription: 'Conversas',
+          importance: NotificationImportance.Max,
+          channelShowBadge: true,
+          enableVibration: true,
+          groupKey: message.gid,
+          defaultPrivacy: NotificationPrivacy.Private,
+          playSound: true,
+          defaultColor: const Color(0xFF00396A),
+          ledColor: const Color(0xFF00396A)),
+    );
     String nomeGrupo = groupName;
 
     await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: new Random().nextInt(100000),
-            channelKey: "chat_channel",
-            title: '$nomeGrupo',
-            body: '${message.sendBy}: ${message.messageText.trim()}',
-            largeIcon: showLargeIcon ? message.profilePicUrl : '',
-            ticker: "Nova mensagem",
-            notificationLayout: NotificationLayout.Messaging,
-            payload: {'uuid': 'uuid-test'}));
+      content: NotificationContent(
+          id: Random().nextInt(100000),
+          channelKey: "chat_channel",
+          title: nomeGrupo,
+          body: '${message.sendBy}: ${message.messageText.trim()}',
+          largeIcon: showLargeIcon ? message.profilePicUrl : '',
+          ticker: "Nova mensagem",
+          summary: 'Nova mensagem',
+          category: NotificationCategory.Message,
+          roundedLargeIcon: true,
+          notificationLayout: NotificationLayout.MessagingGroup,
+          payload: {
+            'type': 'new_message',
+            'gid': message.gid,
+            'groupName': nomeGrupo
+          }),
+    );
   }
 
   static void createNotificationLargeIconMessageData(
       String body, String title, String largeIcon) async {
     AwesomeNotifications().setChannel(
-        NotificationChannel(
-            channelKey: 'chat_channel',
-            channelName: 'Conversas',
-            channelDescription: 'Conversas',
-            importance: NotificationImportance.Max,
-            channelShowBadge: true,
-            enableVibration: true,
-            // groupKey: 'chat',
-            defaultPrivacy: NotificationPrivacy.Public,
-            groupAlertBehavior: Notifications.GroupAlertBehavior.Children,
-            playSound: true,
-            defaultColor: Color(0xFF00396A),
-            ledColor: Color(0xFF00396A)),
-        forceUpdate: true);
+      NotificationChannel(
+          channelKey: 'chat_channel',
+          channelName: 'Conversas',
+          channelDescription: 'Conversas',
+          importance: NotificationImportance.Max,
+          channelShowBadge: true,
+          enableVibration: true,
+          // groupKey: 'chat',
+          defaultPrivacy: NotificationPrivacy.Public,
+          groupAlertBehavior: GroupAlertBehavior.Children,
+          playSound: true,
+          defaultColor: const Color(0xFF00396A),
+          ledColor: const Color(0xFF00396A)),
+    );
 
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
-            id: new Random().nextInt(100000),
+            id: Random().nextInt(100000),
             channelKey: "chat_channel",
-            title: '$title',
+            title: title,
             body: body,
             largeIcon: largeIcon,
             ticker: "Nova mensagem",
@@ -113,13 +119,14 @@ class NotificationAwesome {
   static void createNotificationBigPictureNoticia(NoticiaModel noticia) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
-            id: noticia.id,
+            id: noticia.id ?? 0,
             channelKey: "news_channel",
             hideLargeIconOnExpand: true,
             title: noticia.titulo,
             body: noticia.resumo,
             largeIcon: noticia.imagem,
             bigPicture: noticia.imagem,
+            summary: 'Noticia',
             notificationLayout: NotificationLayout.BigPicture,
             payload: {'uuid': 'uuid-test'}));
   }

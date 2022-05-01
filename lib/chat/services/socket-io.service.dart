@@ -1,4 +1,4 @@
-//@dart=2.9
+
 import 'dart:convert';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -9,7 +9,7 @@ import 'package:e_discente/settings.dart';
 import '../app_instance.dart';
 
 class SocketIOService {
-  IO.Socket socket;
+  late IO.Socket socket;
 
   void initSocket() {
     //listChatsBloc = ListChatsBloc();
@@ -21,7 +21,7 @@ class SocketIOService {
             .enableForceNewConnection()
             .setTransports(['websocket']).setQuery({
           'token': AppInstance.token,
-          'usuario': json.encode(Settings.usuario.toJson())
+          'usuario': json.encode(Settings.usuario!.toJson())
         }).build());
     socket.connect();
     socket.onConnect((_) {

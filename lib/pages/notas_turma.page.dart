@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:e_discente/models/notas_turma.model.dart';
 import 'package:e_discente/pages/widgets/balao_resultado.widget.dart';
@@ -6,7 +5,7 @@ import 'package:e_discente/pages/widgets/item_nota.widget.dart';
 import 'package:e_discente/repositories/notas_turma.repository.dart';
 
 class NotasTurmaPage extends StatefulWidget {
-  final String idTurma;
+  final String? idTurma;
   const NotasTurmaPage(this.idTurma);
 
   @override
@@ -15,7 +14,7 @@ class NotasTurmaPage extends StatefulWidget {
 
 class _NotasTurmaPageState extends State<NotasTurmaPage>
     with AutomaticKeepAliveClientMixin {
-  Future<NotasTurmaModel> notasFuture;
+  Future<NotasTurmaModel?>? notasFuture;
 
   @override
   void initState() {
@@ -30,21 +29,19 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
         child: FutureBuilder(
             future: notasFuture,
             builder: (BuildContext context,
-                AsyncSnapshot<NotasTurmaModel> snapshot) {
+                AsyncSnapshot<NotasTurmaModel?> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                   return Container();
-                  break;
                 case ConnectionState.waiting:
                   return Center(
                     child: CircularProgressIndicator.adaptive(),
                   );
-                  break;
                 case ConnectionState.active:
                   break;
                 case ConnectionState.done:
                   if (snapshot.hasData) {
-                    NotasTurmaModel notas = snapshot.data;
+                    NotasTurmaModel notas = snapshot.data!;
                     return CustomScrollView(
                       slivers: <Widget>[
                         SliverList(
@@ -80,13 +77,13 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                     addAutomaticKeepAlives: true,
                                     shrinkWrap: true,
                                     physics: ClampingScrollPhysics(),
-                                    itemCount: notas.notas.length,
+                                    itemCount: notas.notas!.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: ItemNota(
-                                          notas.notas[index].descricao,
-                                          notas.notas[index].valor,
+                                          notas.notas![index].descricao!,
+                                          notas.notas![index].valor!,
                                           left: false,
                                         ),
                                       );
@@ -131,15 +128,15 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                   children: <Widget>[
                                     ItemNota(
                                       'Recuperação',
-                                      notas.recuperacao.isNotEmpty
-                                          ? notas.recuperacao
+                                      notas.recuperacao!.isNotEmpty
+                                          ? notas.recuperacao!
                                           : '--',
                                       left: false,
                                     ),
                                     ItemNota(
                                       "Resultado Final",
-                                      notas.resultado.isNotEmpty
-                                          ? notas.resultado
+                                      notas.resultado!.isNotEmpty
+                                          ? notas.resultado!
                                           : '--',
                                       left: false,
                                     ),
@@ -152,7 +149,8 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20),
                                       child: ListTile(
-                                        subtitle: BalaoSituacao(notas.situacao),
+                                        subtitle:
+                                            BalaoSituacao(notas.situacao!),
                                         title: Padding(
                                           padding:
                                               const EdgeInsets.only(bottom: 5),
@@ -177,7 +175,6 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                       child: Text('Ainda sem notas disponíveis.'),
                     );
                   }
-                  break;
               }
               return Container();
             }));

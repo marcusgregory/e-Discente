@@ -1,4 +1,4 @@
-// @dart=2.9
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,44 +15,44 @@ class ParticipanteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (participante is DocenteModel) {
-      DocenteModel docente = participante;
+      DocenteModel docente = participante as DocenteModel;
       return Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
           leading: imagemPerfil(
               kIsWeb
                   ? 'https://api.allorigins.win/raw?url=' +
-                      Uri.encodeComponent(docente.urlFoto)
-                  : docente.urlFoto,
+                      Uri.encodeComponent(docente.urlFoto!)
+                  : docente.urlFoto!,
               25),
           title: Text(
-            docente.nome,
+            docente.nome!,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            docente.departamento,
+            docente.departamento!,
             style: TextStyle(fontSize: 13.5),
           ),
         ),
       );
     } else {
-      DiscenteModel discente = participante;
+      DiscenteModel discente = participante as DiscenteModel;
       return ListTile(
         leading: imagemPerfil(
             kIsWeb
                 ? 'https://api.allorigins.win/raw?url=' +
-                    Uri.encodeComponent(discente.urlFoto)
-                : discente.urlFoto,
+                    Uri.encodeComponent(discente.urlFoto!)
+                : discente.urlFoto!,
             20),
         title: Text(
-          discente.nome,
+          discente.nome!,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14.8,
           ),
         ),
         subtitle: Text(
-          discente.email,
+          discente.email!,
           style: TextStyle(fontSize: 13.5),
         ),
       );

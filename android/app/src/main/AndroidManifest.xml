@@ -10,7 +10,8 @@
          <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
          <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        tools:replace="android:label"
+        android:name="${applicationName}" 
         android:label="e-Discente"
         android:icon="@mipmap/ic_launcher"
         >
@@ -21,6 +22,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

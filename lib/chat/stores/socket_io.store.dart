@@ -1,4 +1,3 @@
-//@dart=2.6
 import 'dart:async';
 import 'dart:convert';
 import 'package:e_discente/chat/stores/chats.store.dart';
@@ -17,7 +16,7 @@ part 'socket_io.store.g.dart';
 class SocketIOStore = _SocketIOStoreBase with _$SocketIOStore;
 
 abstract class _SocketIOStoreBase with Store {
-  socket_io.Socket socket;
+  late socket_io.Socket socket;
 
   @observable
   SocketState socketState = SocketState.DISCONNECTED;
@@ -25,7 +24,7 @@ abstract class _SocketIOStoreBase with Store {
   final _socketStateStream = StreamController<SocketState>.broadcast();
   Stream<SocketState> get socketStateStream => _socketStateStream.stream;
 
-  SocketIOMessageStore socketIOMessageStore;
+  late SocketIOMessageStore socketIOMessageStore;
 
   List<String> rooms = [];
 
@@ -49,7 +48,7 @@ abstract class _SocketIOStoreBase with Store {
             .enableForceNewConnection()
             .setTransports(['websocket']).setQuery({
           'token': AppInstance.token,
-          'usuario': json.encode(Settings.usuario.toJson())
+          'usuario': json.encode(Settings.usuario!.toJson())
         }).build());
     socket.connect();
     socket.onConnect((_) => _onConnect());

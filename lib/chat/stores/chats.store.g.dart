@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.6
 
 part of 'chats.store.dart';
 
@@ -62,7 +61,7 @@ mixin _$ChatsStore on _ChatsStoreBase, Store {
       ActionController(name: '_ChatsStoreBase');
 
   @override
-  void updateRecentMessage(MessageModel message) {
+  void updateRecentMessage(IMessage message) {
     final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.updateRecentMessage');
     try {
@@ -73,7 +72,7 @@ mixin _$ChatsStore on _ChatsStoreBase, Store {
   }
 
   @override
-  void sendMessage(MessageModel message, Function callback) {
+  void sendMessage(IMessage message, Function callback) {
     final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.sendMessage');
     try {
@@ -84,7 +83,7 @@ mixin _$ChatsStore on _ChatsStoreBase, Store {
   }
 
   @override
-  void receiveMessage(MessageModel message) {
+  void receiveMessage(IMessage message) {
     final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.receiveMessage');
     try {

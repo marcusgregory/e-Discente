@@ -1,10 +1,10 @@
-// @dart=2.9
+
 import 'discente.model.dart';
 import 'docente.model.dart';
 
 class ParticipantesModel {
-  List<DocenteModel> docentes;
-  List<DiscenteModel> discentes;
+  List<DocenteModel>? docentes;
+  List<DiscenteModel>? discentes;
 
   ParticipantesModel({
     this.docentes,
@@ -20,7 +20,7 @@ class ParticipantesModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "docentes": List<dynamic>.from(docentes.map((x) => x.toJson())),
-        "discentes": List<dynamic>.from(discentes.map((x) => x.toJson())),
+        "docentes": List<dynamic>.from(docentes!.map((x) => x.toJson())),
+        "discentes": List<dynamic>.from(discentes!.map((x) => x.toJson())),
       };
 }

@@ -1,4 +1,4 @@
-// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:e_discente/models/participantes.model.dart';
 import 'package:e_discente/pages/aulas.page.dart';
@@ -8,8 +8,8 @@ import 'package:e_discente/repositories/participantes.repository.dart';
 import 'package:e_discente/stores/aulas.store.dart';
 
 class TurmaPage extends StatefulWidget {
-  final String _titulo;
-  final String _idTurma;
+  final String? _titulo;
+  final String? _idTurma;
 
   const TurmaPage(this._titulo, this._idTurma);
 
@@ -20,9 +20,9 @@ class TurmaPage extends StatefulWidget {
 class _TurmaPageState extends State<TurmaPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   //TabController _tabController;
-  ScrollController _scrollViewController;
+  late ScrollController _scrollViewController;
   Aulas _aulasStore = Aulas();
-  Future<ParticipantesModel> _participantesFuture;
+  Future<ParticipantesModel>? _participantesFuture;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _TurmaPageState extends State<TurmaPage>
                     top: false,
                     sliver: SliverAppBar(
                       title: Text(
-                        widget._titulo,
+                        widget._titulo!,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 15),
                       ),

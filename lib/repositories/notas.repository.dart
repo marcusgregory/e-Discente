@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -11,14 +10,14 @@ class NotasRepository {
     try {
       var url = '${Settings.apiURL}/sigaa/notas';
       http.Response response = await http.get(Uri.parse(url), headers: {
-        'jwt': Settings.usuario.token
-      }).timeout(Duration(seconds: 50));
+        'jwt': Settings.usuario!.token!
+      }).timeout(const Duration(seconds: 50));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
 
         Map<String, List<BoletimModel>> boletim =
-            Map<String, List<BoletimModel>>();
+            <String, List<BoletimModel>>{};
         for (Map<String, dynamic> json in json['data']) {
           List<BoletimModel> notas = [];
           for (Map<String, dynamic> json2 in json.values.first) {

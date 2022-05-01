@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'perfil.store.dart';
 
@@ -13,13 +12,13 @@ mixin _$PerfilStore on _PerfilStore, Store {
   final _$perfilDiscenteAtom = Atom(name: '_PerfilStore.perfilDiscente');
 
   @override
-  ObservableFuture<PerfilModel> get perfilDiscente {
+  ObservableFuture<PerfilModel>? get perfilDiscente {
     _$perfilDiscenteAtom.reportRead();
     return super.perfilDiscente;
   }
 
   @override
-  set perfilDiscente(ObservableFuture<PerfilModel> value) {
+  set perfilDiscente(ObservableFuture<PerfilModel>? value) {
     _$perfilDiscenteAtom.reportWrite(value, super.perfilDiscente, () {
       super.perfilDiscente = value;
     });

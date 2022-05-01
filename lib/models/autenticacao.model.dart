@@ -1,7 +1,7 @@
-// @dart=2.9
+
 class AutenticacaoModel {
-  String usuario;
-  String senha;
+  String? usuario;
+  String? senha;
 
   AutenticacaoModel({this.usuario, this.senha});
 

@@ -1,16 +1,16 @@
-// @dart=2.9
+
 class BoletimModel {
-  String codigo;
-  String disciplina;
-  String nota1;
-  String nota2;
-  String nota3;
-  String nota4;
-  String nota5;
-  String recuperacao;
-  String resultado;
-  String faltas;
-  String situacao;
+  String? codigo;
+  String? disciplina;
+  String? nota1;
+  String? nota2;
+  String? nota3;
+  String? nota4;
+  String? nota5;
+  String? recuperacao;
+  String? resultado;
+  String? faltas;
+  String? situacao;
 
   BoletimModel(
       {this.codigo,

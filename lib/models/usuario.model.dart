@@ -1,12 +1,12 @@
-// @dart=2.9
+
 class UsuarioModel {
-  String nomeDeUsuario;
-  String nome;
-  String curso;
-  String numMatricula;
-  String urlImagemPerfil;
-  String cookie;
-  String token;
+  String? nomeDeUsuario;
+  String? nome;
+  String? curso;
+  String? numMatricula;
+  String? urlImagemPerfil;
+  String? cookie;
+  String? token;
 
   UsuarioModel(
       {this.nomeDeUsuario,
@@ -29,7 +29,7 @@ class UsuarioModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['nomeDeUsuario'] = this.nomeDeUsuario.toLowerCase().trim();
+    data['nomeDeUsuario'] = this.nomeDeUsuario!.toLowerCase().trim();
     data['nome'] = this.nome;
     data['curso'] = this.curso;
     data['numMatricula'] = this.numMatricula;

@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -9,12 +8,12 @@ import 'package:http/http.dart' as http;
 import '../settings.dart';
 
 class AulasRepository {
-  Future<List<AulaModel>> getAulas(String idTurma) async {
+  Future<List<AulaModel>> getAulas(String? idTurma) async {
     try {
       var url = '${Settings.apiURL}/sigaa/turma/$idTurma/aulas';
       http.Response response = await http.get(Uri.parse(url), headers: {
-        'jwt': Settings.usuario.token
-      }).timeout(Duration(seconds: 50));
+        'jwt': Settings.usuario!.token!
+      }).timeout(const Duration(seconds: 50));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));

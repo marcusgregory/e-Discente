@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:flutter/material.dart';
 import 'package:e_discente/blocs/usuario.bloc.dart';
 import 'package:e_discente/models/autenticacao.model.dart';
@@ -9,8 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'inicio.page.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title}) : super(key: key);
-  final String title;
+  LoginPage({Key? key, this.title}) : super(key: key);
+  final String? title;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -65,14 +64,14 @@ class _LoginPageState extends State<LoginPage> {
           //Navigator.of(context).pushNamed(HomePage.tag);
         },
         child: progressIndicator
-            ? SizedBox(
+            ? const SizedBox(
                 height: 20.0,
                 width: 20.0,
                 child: CircularProgressIndicator.adaptive(
-                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   strokeWidth: 3.0,
                 ))
-            : Text('Entrar',
+            : const Text('Entrar',
                 style: TextStyle(fontSize: 18, color: Colors.white)),
       ),
     );
@@ -81,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     void _onWidgetDidBuild(Function callback) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         callback();
       });
     }
@@ -138,10 +137,10 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ));
 
-    var forgotLabel = FlatButton(
+    var forgotLabel = TextButton(
       child: Text(
         'Esqueceu sua senha?',
-        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
       ),
       onPressed: () {
         _launchURL();
@@ -169,17 +168,15 @@ class _LoginPageState extends State<LoginPage> {
                 child: _isLogging
                     ? new FutureBuilder<UsuarioModel>(
                         future: bloc.autenticar(new AutenticacaoModel(
-                            usuario: email.controller.text,
-                            senha: password.controller.text)),
+                            usuario: email.controller!.text,
+                            senha: password.controller!.text)),
                         builder: (BuildContext context,
                             AsyncSnapshot<UsuarioModel> snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.none:
                               return loginButton(false);
-                              break;
                             case ConnectionState.waiting:
                               return loginButton(true);
-                              break;
                             case ConnectionState.active:
                               break;
                             case ConnectionState.done:
@@ -197,10 +194,8 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                                 return loginButton(false);
                               }
-
-                              break;
                           }
-                          return null;
+                          return Container();
                         })
                     : loginButton(false),
               ),

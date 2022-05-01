@@ -1,15 +1,15 @@
-// @dart=2.9
+
 class PerfilModel {
-  String nome;
-  String curso;
-  String numMatricula;
-  String urlImagemPerfil;
-  String nivel;
-  String situacao;
-  String semestreEntrada;
-  String iDE;
-  String integralizacao;
-  String cookie;
+  String? nome;
+  String? curso;
+  String? numMatricula;
+  String? urlImagemPerfil;
+  String? nivel;
+  String? situacao;
+  String? semestreEntrada;
+  String? iDE;
+  String? integralizacao;
+  String? cookie;
 
   PerfilModel(
       {this.nome,

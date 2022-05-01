@@ -1,11 +1,9 @@
-//@dart=2.6
 import 'dart:async';
 
 import 'package:e_discente/chat/models/evento_digitando.model.dart';
+import 'package:e_discente/chat/models/i_message.dart';
 import 'package:e_discente/chat/models/message.model.dart';
 import 'package:e_discente/chat/repositories/messages.repository.dart';
-import 'package:e_discente/chat/utils/debouces.util.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 
@@ -20,21 +18,24 @@ class ChatsStore = _ChatsStoreBase with _$ChatsStore;
 abstract class _ChatsStoreBase with Store {
   var listChatRepository = ListChatRepository();
   var messagesRepository = MessagesRepository();
-  var socketIOStore = GetIt.I<SocketIOStore>();
-  StreamSubscription subscription;
+  SocketIOStore? socketIOStore = GetIt.I<SocketIOStore>();
+  StreamSubscription? subscription;
 
   _ChatsStoreBase() {
     init();
   }
 
+  bool firstRun = true;
+
   void init() async {
     subscription =
-        socketIOStore.socketStateStream.listen((SocketState socketState) {
+        socketIOStore!.socketStateStream.listen((SocketState socketState) {
       switch (socketState) {
         case SocketState.RECONNECTED:
           reconnected();
           break;
         case SocketState.CONNECT:
+          connected();
           break;
         case SocketState.CONNECTING:
           break;
@@ -54,10 +55,27 @@ abstract class _ChatsStoreBase with Store {
 
   @action
   Future<void> loadListChats({bool silent = false}) async {
-    if (silent = false) chatsState = ChatsState.LOADING;
+    firstRun = false;
+    if (silent == false) chatsState = ChatsState.LOADING;
     try {
       listChats = (await listChatRepository.getChats()).asObservable();
-      socketIOStore.entrarNosGrupos(listChats);
+      // listChats = [
+      //   ChatItemModel(
+      //       gid: '18738',
+      //       name: "LINGUÍSTICA TEXTUAL",
+      //       recentMessage: MessageModel(
+      //           gid: '',
+      //           messageText: 'oiii',
+      //           mid: Uuid().v1(),
+      //           sendAt: DateTime.now(),
+      //           sendBy: 'marcus_gregory',
+      //           type: 'message'),
+      //       members: ['marcus_gregory'],
+      //       createdAt: DateTime.now(),
+      //       createdBy: 'ediscente',
+      //       modifiedAt: DateTime.now())
+      // ].asObservable();
+      socketIOStore!.entrarNosGrupos(listChats);
       chatsState = ChatsState.READY;
     } catch (e) {
       print(e);
@@ -66,33 +84,34 @@ abstract class _ChatsStoreBase with Store {
   }
 
   @action
-  void updateRecentMessage(MessageModel message) {
+  void updateRecentMessage(IMessage message) {
     listChats.forEach((chat) {
       if (chat.gid == message.gid) {
         listChats[listChats.indexOf(chat)] =
-            chat.copyWith(recentMessage: message);
+            chat.copyWith(recentMessage: message as MessageModel?);
       }
     });
   }
 
   @action
-  void sendMessage(MessageModel message, Function callback) {
+  void sendMessage(IMessage message, Function callback) {
     listChats.forEach((chat) {
       if (chat.gid == message.gid) {
         listChats[listChats.indexOf(chat)] =
-            chat.copyWith(recentMessage: message);
+            chat.copyWith(recentMessage: message as MessageModel?);
       }
     });
-    socketIOStore.enviarMensagem(message, callback);
+    socketIOStore!.enviarMensagem(message as MessageModel, callback);
   }
 
   @action
-  void receiveMessage(MessageModel message) {
+  void receiveMessage(IMessage message) {
     listChats.forEach((chat) {
       if (chat.gid == message.gid) {
         listChats[listChats.indexOf(chat)] = chat.copyWith(
-          recentMessage: message.copyWith(state: MessageState.SENDED),
-        )..messagesStore.receiveMessage(message);
+          recentMessage:
+              message.copyWith(state: MessageState.SENDED) as MessageModel?,
+        )..messagesStore!.receiveMessage(message as MessageModel);
       }
     });
   }
@@ -101,14 +120,16 @@ abstract class _ChatsStoreBase with Store {
   void receiveTypingEvent(EventoDigitandoModel typingEvent) {
     listChats.forEach((chat) {
       if (chat.gid == typingEvent.gid) {
-        chat.messagesStore.receiveTypingEvent(typingEvent, () {
+        chat.messagesStore!.receiveTypingEvent(typingEvent, () {
           int index = listChats.indexOf(chat);
           listChats.remove(chat);
           listChats.insert(index, chat.copyWith(eventoDigitando: typingEvent));
         }, () {
           int index = listChats.indexOf(chat);
           listChats.remove(chat);
-          listChats.insert(index, chat.copyWith(eventoDigitando: null));
+          if (index != -1) {
+            listChats.insert(index, chat.copyWith(eventoDigitando: null));
+          }
         });
       }
     });
@@ -125,15 +146,24 @@ abstract class _ChatsStoreBase with Store {
   @action
   Future<List<MessageModel>> loadMessagesChatByID(String gid) async {
     print('Obtendo mensagens do grupo ${gid} no servidor...');
-    return (await messagesRepository.getMessages(gid));
+    return (await (messagesRepository.getMessages(gid)
+        as FutureOr<List<MessageModel>>));
   }
 
   Future<void> reconnected() async {
     // await loadListChats(silent: true);
-    socketIOStore.entrarNosGrupos(listChats);
+    socketIOStore!.entrarNosGrupos(listChats);
     listChats.forEach((chat) {
-      chat.messagesStore.reconnect();
+      chat.messagesStore!.reconnect();
     });
+  }
+
+  Future<void> connected() async {
+    socketIOStore!.entrarNosGrupos(listChats);
+  }
+
+  void dispose() {
+    subscription?.cancel();
   }
 }
 
