@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:e_discente/models/noticias.model.dart';
 import 'package:e_discente/repositories/noticias.repository.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class NoticiasBloc {
   NoticiasBloc() {

@@ -28,9 +28,7 @@ class ChatItemModel {
       required this.modifiedAt,
       this.messagesStore,
       this.eventoDigitando}) {
-    messagesStore == null
-        ? messagesStore = MessagesStore(gid)
-        : this.messagesStore;
+    messagesStore ?? (messagesStore = MessagesStore(gid));
   }
 
   Map<String, dynamic> toMap() {

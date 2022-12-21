@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +26,11 @@ class ParticipanteWidget extends StatelessWidget {
               25),
           title: Text(
             docente.nome!,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
             docente.departamento!,
-            style: TextStyle(fontSize: 13.5),
+            style: const TextStyle(fontSize: 13.5),
           ),
         ),
       );
@@ -46,14 +45,14 @@ class ParticipanteWidget extends StatelessWidget {
             20),
         title: Text(
           discente.nome!,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14.8,
           ),
         ),
         subtitle: Text(
           discente.email!,
-          style: TextStyle(fontSize: 13.5),
+          style: const TextStyle(fontSize: 13.5),
         ),
       );
     }
@@ -96,7 +95,7 @@ class ParticipanteWidget extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: url,
                 imageBuilder: (context, imageProvider) => Material(
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                   clipBehavior: Clip.hardEdge,
                   color: Colors.transparent,
                   child: Ink.image(

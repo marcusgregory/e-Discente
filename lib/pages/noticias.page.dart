@@ -1,9 +1,9 @@
+import 'package:e_discente/pages/widgets/user_appbar.widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_discente/blocs/noticias.bloc.dart';
 import 'package:e_discente/models/noticias.model.dart';
 import 'package:e_discente/pages/widgets/noticia.widget.dart';
-import 'package:e_discente/util/toast.util.dart';
 
 class NoticiasPage extends StatefulWidget {
   final NoticiasBloc noticiasBloc;
@@ -19,12 +19,10 @@ class NoticiasPage extends StatefulWidget {
 
 class _NoticiasPageState extends State<NoticiasPage>
     with AutomaticKeepAliveClientMixin {
-  late Stream<NoticiaState> _noticiaStream;
   ScrollController controller = ScrollController();
 
   @override
   void initState() {
-    _noticiaStream = widget.noticiasBloc.noticiaStream;
     super.initState();
   }
 
@@ -39,46 +37,54 @@ class _NoticiasPageState extends State<NoticiasPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<NoticiaState>(
-      stream: widget.noticiasBloc.noticiaStream,
-      builder: (BuildContext context, snapshot) {
-        switch (widget.noticiasBloc.noticiaState) {
-          case NoticiaState.loading:
+    return Scaffold(
+      appBar: userAppBar(title: 'Notícias', context: context),
+      body: SafeArea(
+        child: StreamBuilder<NoticiaState>(
+          stream: widget.noticiasBloc.noticiaStream,
+          builder: (BuildContext context, snapshot) {
+            switch (widget.noticiasBloc.noticiaState) {
+              case NoticiaState.loading:
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              case NoticiaState.ready:
+                return getListView(widget.noticiasBloc.noticiasList);
+              case NoticiaState.error:
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {
+                          widget.noticiasBloc.load();
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
+                      const Text('Tentar novamente')
+                    ],
+                  ),
+                );
+              default:
+                Column(
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        widget.noticiasBloc.load();
+                      },
+                      icon: const Icon(Icons.refresh),
+                    ),
+                    const Text('Tentar novamente')
+                  ],
+                );
+            }
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
-          case NoticiaState.ready:
-            return getListView(widget.noticiasBloc.noticiasList);
-          case NoticiaState.error:
-            ToastUtil.showShortToast('${snapshot.error}');
-            return Column(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    widget.noticiasBloc.load();
-                  },
-                  icon: const Icon(Icons.refresh),
-                ),
-                const Text('Tentar novamente')
-              ],
-            );
-          default:
-            Column(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    widget.noticiasBloc.load();
-                  },
-                  icon: const Icon(Icons.refresh),
-                ),
-                const Text('Tentar novamente')
-              ],
-            );
-        }
-        return const Center(
-          child: CircularProgressIndicator.adaptive(),
-        );
-      },
+          },
+        ),
+      ),
     );
   }
 

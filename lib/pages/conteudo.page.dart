@@ -18,7 +18,7 @@ class ConteudoPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           systemOverlayStyle:
-              SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
           title: Text('$_numero° Conteúdo'),
         ),
         body: Container(
@@ -36,7 +36,7 @@ class ConteudoPage extends StatelessWidget {
                       elevation: 2.0,
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           Padding(
@@ -44,14 +44,14 @@ class ConteudoPage extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 _titulo!,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
                           ),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 16),
+                          const Padding(
+                              padding:
+                                  EdgeInsets.only(left: 20, right: 20, top: 16),
                               child: Divider()),
                           _conteudo.isNotEmpty
                               ? Column(
@@ -62,13 +62,13 @@ class ConteudoPage extends StatelessWidget {
                                         data: _conteudo,
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 15,
                                     ),
                                   ],
                                 )
-                              : Padding(
-                                  padding: const EdgeInsets.all(50.0),
+                              : const Padding(
+                                  padding: EdgeInsets.all(50.0),
                                   child: Center(
                                     child: Text('Sem conteúdo'),
                                   ),
@@ -100,7 +100,8 @@ class ConteudoPage extends StatelessWidget {
                           leading:
                               balaoArquivo(_documentos![index].nome!, context),
                           title: Text(_documentos![index].nome!,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ),
@@ -109,7 +110,7 @@ class ConteudoPage extends StatelessWidget {
               }, childCount: _documentos!.length)),
               SliverList(
                 delegate: SliverChildListDelegate([
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   )
                 ]),

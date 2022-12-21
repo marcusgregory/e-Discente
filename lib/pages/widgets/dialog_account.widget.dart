@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_discente/blocs/login.bloc.dart';
+import 'package:e_discente/pages/boletim.page.dart';
+import 'package:e_discente/pages/login_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:e_discente/blocs/usuario.bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../settings.dart';
-import '../login.page.dart';
+import '../../stores/boletim.store.dart';
 
 class DialogAccount extends StatelessWidget {
   const DialogAccount({Key? key}) : super(key: key);
@@ -128,6 +131,27 @@ class DialogAccount extends StatelessWidget {
                 const Divider(),
                 Flexible(
                   child: ListTile(
+                    leading: Theme.of(context).platform == TargetPlatform.iOS
+                        ? const Icon(CupertinoIcons.graph_square_fill)
+                        : const Icon(Icons.timeline),
+                    title: const Text(
+                      'Meu Boletim',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => BoletimPage(
+                            boletimStore: Boletim(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: ListTile(
                     leading: const Icon(Icons.web_sharp),
                     trailing: const Icon(Icons.open_in_new),
                     title: const Text(
@@ -180,11 +204,13 @@ class DialogAccount extends StatelessWidget {
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                     ),
                     onTap: () async {
-                      await UsuarioBloc().deslogar();
-                      Navigator.pushReplacement(
+                      await LoginBloc().deslogar();
+                      Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => LoginPage()));
+                              builder: (BuildContext context) =>
+                                  const LoginPageN()),
+                          (Route<dynamic> route) => false);
                     },
                   ),
                 ),
@@ -222,7 +248,7 @@ class DialogAccount extends StatelessWidget {
                         applicationVersion: '0.0.1-alpha',
                         applicationIcon: CircleAvatar(
                             child: ClipRRect(
-                                borderRadius: new BorderRadius.circular(100.0),
+                                borderRadius: BorderRadius.circular(100.0),
                                 child: Image.asset('assets/book.png'))),
                       );
                     },

@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:e_discente/models/discente.model.dart';
 import 'package:e_discente/pages/widgets/participante.widget.dart';
 
 class DiscentesPage extends StatefulWidget {
   final List<DiscenteModel> discentes;
-  DiscentesPage(this.discentes);
+  const DiscentesPage(this.discentes);
 
   @override
   _DiscentesPageState createState() => _DiscentesPageState();
@@ -24,7 +23,7 @@ class _DiscentesPageState extends State<DiscentesPage>
           return ParticipanteWidget(widget.discentes[position]);
         },
         shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
       ),
     );
   }

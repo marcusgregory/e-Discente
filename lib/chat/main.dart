@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(primaryColor: Colors.blue[900]),
-      home: ChatsPage(),
+      home: const ChatsPage(),
     );
   }
 }

@@ -25,7 +25,7 @@ enum ButtonMode {
 /// Callback function for when emoji is selected
 ///
 /// The function returns the selected [Emoji] as well as the [Category] from which it originated
-typedef void OnEmojiSelected(Emoji emoji, Category category);
+typedef OnEmojiSelected = void Function(Emoji emoji, Category category);
 
 /// The Emoji Keyboard widget
 ///
@@ -153,14 +153,14 @@ class _EmojiChooseState extends State<EmojiChoose> {
   List<String> allEmojis = List.empty(growable: true);
   List<String> recentEmojis = List.empty(growable: true);
 
-  Map<String, String> smileyMap = new Map();
-  Map<String, String> animalMap = new Map();
-  Map<String, String> foodMap = new Map();
-  Map<String, String> travelMap = new Map();
-  Map<String, String> activityMap = new Map();
-  Map<String, String> objectMap = new Map();
-  Map<String, String> symbolMap = new Map();
-  Map<String, String> flagMap = new Map();
+  Map<String, String> smileyMap = {};
+  Map<String, String> animalMap = {};
+  Map<String, String> foodMap = {};
+  Map<String, String> travelMap = {};
+  Map<String, String> activityMap = {};
+  Map<String, String> objectMap = {};
+  Map<String, String> symbolMap = {};
+  Map<String, String> flagMap = {};
 
   bool loaded = false;
 
@@ -198,7 +198,7 @@ class _EmojiChooseState extends State<EmojiChoose> {
             await platform.invokeMethod("checkAvailability", {'emoji': emoji});
         filtered = Map<String, String>.from(temp);
       } on PlatformException catch (_) {
-        filtered = Map<String, String>();
+        filtered = <String, String>{};
       }
       return filtered;
     } else {
@@ -252,7 +252,7 @@ class _EmojiChooseState extends State<EmojiChoose> {
     final prefs = await SharedPreferences.getInstance();
     String? emojiJson = prefs.getString(title);
     if (emojiJson == null) {
-      return Map<String, String>();
+      return <String, String>{};
     }
     Map<String, String> emojis =
         Map<String, String>.from(jsonDecode(emojiJson));
@@ -1383,7 +1383,7 @@ class _EmojiChooseState extends State<EmojiChoose> {
                             height: MediaQuery.of(context).size.width / 10,
                             child: widget.buttonMode == ButtonMode.MATERIAL
                                 ? FlatButton(
-                                    padding: EdgeInsets.all(0),
+                                    padding: const EdgeInsets.all(0),
                                     color: widget.selectedCategory ==
                                             Category.RECOMMENDED
                                         ? Colors.black12
@@ -1457,7 +1457,7 @@ class _EmojiChooseState extends State<EmojiChoose> {
                           (widget.recommendKeywords.isEmpty ? 9 : 10),
                       child: widget.buttonMode == ButtonMode.MATERIAL
                           ? FlatButton(
-                              padding: EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               color: widget.selectedCategory == Category.RECENT
                                   ? Colors.black12
                                   : Colors.transparent,
@@ -1685,7 +1685,7 @@ class _EmojiChooseState extends State<EmojiChoose> {
                             )
                           : CupertinoButton(
                               pressedOpacity: 0.4,
-                              padding: EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               color: widget.selectedCategory == Category.FOODS
                                   ? Colors.black12
                                   : Colors.transparent,
@@ -2121,7 +2121,7 @@ class _EmojiChooseState extends State<EmojiChoose> {
                 color: widget.indicatorColor,
               ),
             ),
-            Container(
+            SizedBox(
               height: 50,
               child: Row(
                 children: <Widget>[
@@ -2249,7 +2249,7 @@ class _ProgressPainter extends CustomPainter {
     }
     double indicatorPageWidth = size.width / pages[selectedCategory]!;
 
-    Rect bgRect = Offset(0, 0) & size;
+    Rect bgRect = const Offset(0, 0) & size;
 
     Rect indicator = Offset(max(0, offsetInPages * indicatorPageWidth), 0) &
         Size(

@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:e_discente/chat/models/chat_item.model.dart';
 
+import '../../pages/widgets/user_appbar.widget.dart';
 import 'chat.page.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -33,44 +34,49 @@ class _ChatsPageState extends State<ChatsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SizedBox(
-      height: double.infinity,
-      width: double.infinity,
-      child: Observer(builder: (_) {
-        var state = _chatsStore.chatsState;
-        switch (state) {
-          case ChatsState.LOADING:
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          case ChatsState.READY:
-            if (_chatsStore.listChats.isEmpty) {
-              return const Center(
-                child: Text('Você não tem chats'),
-              );
-            } else {
-              return ListView.builder(
-                  itemCount: _chatsStore.listChats.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return buildItem(context, _chatsStore.listChats[index]);
-                  });
+    return Scaffold(
+      appBar: userAppBar(title: 'Conversas', context: context),
+      body: SafeArea(
+        child: SizedBox(
+          height: double.infinity,
+          width: double.infinity,
+          child: Observer(builder: (_) {
+            var state = _chatsStore.chatsState;
+            switch (state) {
+              case ChatsState.LOADING:
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              case ChatsState.READY:
+                if (_chatsStore.listChats.isEmpty) {
+                  return const Center(
+                    child: Text('Você não tem chats'),
+                  );
+                } else {
+                  return ListView.builder(
+                      itemCount: _chatsStore.listChats.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildItem(context, _chatsStore.listChats[index]);
+                      });
+                }
+              case ChatsState.ERROR:
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        _chatsStore.loadListChats();
+                      },
+                      icon: const Icon(Icons.refresh),
+                    ),
+                    const Text('Tentar novamente')
+                  ],
+                );
             }
-          case ChatsState.ERROR:
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    _chatsStore.loadListChats();
-                  },
-                  icon: const Icon(Icons.refresh),
-                ),
-                const Text('Tentar novamente')
-              ],
-            );
-        }
-      }),
+          }),
+        ),
+      ),
     );
   }
 

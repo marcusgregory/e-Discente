@@ -11,6 +11,7 @@ import 'package:e_discente/pages/widgets/photo_view.widget.dart';
 import 'package:e_discente/stores/perfil.store.dart';
 import 'package:e_discente/util/toast.util.dart';
 import '../settings.dart';
+import 'widgets/user_appbar.widget.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({Key? key, required this.perfilStore}) : super(key: key);
@@ -22,59 +23,74 @@ class PerfilScreen extends StatefulWidget {
 class _PerfilScreenState extends State<PerfilScreen>
     with AutomaticKeepAliveClientMixin {
   late PerfilStore store;
+  late ScrollController scrollController;
   @override
   void initState() {
+    scrollController = ScrollController();
     store = widget.perfilStore;
     if (store.firstRun) store.loadPerfil();
     super.initState();
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scrollbar(
-      child: ListView(
-        key: const PageStorageKey('Perfil-header'),
-        primary: false,
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          getHeaderProfile(),
-          Observer(builder: (BuildContext context) {
-            final future = store.perfilDiscente!;
-            switch (future.status) {
-              case FutureStatus.pending:
-                return Column(
-                  children: const [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CircularProgressIndicator.adaptive(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text('Carregando mais informações...'),
-                  ],
-                );
-              case FutureStatus.rejected:
-                return Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        store.loadPerfil();
-                      },
-                      icon: const Icon(Icons.refresh),
-                    ),
-                    const Text('Tentar novamente')
-                  ],
-                );
-              case FutureStatus.fulfilled:
-                return widgetPerfil(future.result);
-            }
-          }),
-        ],
+    return Scaffold(
+      appBar: userAppBar(title: 'Perfil', context: context),
+      body: SafeArea(
+        child: Scrollbar(
+          controller: scrollController,
+          child: ListView(
+            controller: scrollController,
+            key: const PageStorageKey('Perfil-header'),
+            primary: false,
+            scrollDirection: Axis.vertical,
+            children: <Widget>[
+              getHeaderProfile(),
+              Observer(builder: (BuildContext context) {
+                final future = store.perfilDiscente!;
+                switch (future.status) {
+                  case FutureStatus.pending:
+                    return Column(
+                      children: const [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CircularProgressIndicator.adaptive(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Carregando mais informações...'),
+                      ],
+                    );
+                  case FutureStatus.rejected:
+                    return Column(
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            store.loadPerfil();
+                          },
+                          icon: const Icon(Icons.refresh),
+                        ),
+                        const Text('Tentar novamente')
+                      ],
+                    );
+                  case FutureStatus.fulfilled:
+                    return widgetPerfil(future.result);
+                }
+              }),
+            ],
+          ),
+        ),
       ),
     );
   }

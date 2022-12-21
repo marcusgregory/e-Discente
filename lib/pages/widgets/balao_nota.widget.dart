@@ -5,7 +5,7 @@ class BalaoNota extends StatelessWidget {
   const BalaoNota(this.nota);
   @override
   Widget build(BuildContext context) {
-   return Stack(
+    return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Container(
@@ -21,7 +21,8 @@ class BalaoNota extends StatelessWidget {
           ),
         ),
         Text(nota,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }

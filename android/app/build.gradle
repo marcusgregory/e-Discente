@@ -43,6 +43,26 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "app"
+    productFlavors {
+ 
+        dev {
+            dimension "app"
+            applicationId "br.com.marcusgregory.e_discente.development"
+            versionCode flutterVersionCode.toInteger()
+            versionName flutterVersionName
+            versionNameSuffix "--dev"
+        }
+ 
+        prod {
+            dimension "app"
+            applicationId "br.com.marcusgregory.e_discente"
+            versionCode flutterVersionCode.toInteger()
+            versionName flutterVersionName
+            versionNameSuffix "--prod"
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.

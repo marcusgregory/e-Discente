@@ -1,12 +1,17 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+
 import 'package:e_discente/models/participantes.model.dart';
 import 'package:e_discente/pages/widgets/participante.widget.dart';
-import 'dart:math' as math;
 
 class ParticipantesPage extends StatefulWidget {
   final Future<ParticipantesModel>? _participantesFuture;
   final String? _idTurma;
-  const ParticipantesPage(this._participantesFuture, this._idTurma);
+  const ParticipantesPage(
+    this._participantesFuture,
+    this._idTurma,
+  );
   @override
   _ParticipantesPageState createState() => _ParticipantesPageState();
 }
@@ -30,7 +35,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                 case ConnectionState.none:
                   return Container();
                 case ConnectionState.waiting:
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator.adaptive(),
                   );
                 case ConnectionState.active:
@@ -66,8 +71,8 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                                 .bodyText2,
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
+                                        const Padding(
+                                          padding: EdgeInsets.only(
                                               left: 20, right: 20),
                                           child: Divider(),
                                         )
@@ -102,8 +107,8 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                                                 .bodyText2,
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
+                                        const Padding(
+                                          padding: EdgeInsets.only(
                                               left: 20, right: 20),
                                           child: Divider(),
                                         )
@@ -146,7 +151,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new SizedBox.expand(child: child);
+    return SizedBox.expand(child: child);
   }
 
   @override

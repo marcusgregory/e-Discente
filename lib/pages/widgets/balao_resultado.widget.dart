@@ -5,7 +5,7 @@ class BalaoSituacao extends StatelessWidget {
   const BalaoSituacao(this.situacao);
   @override
   Widget build(BuildContext context) {
-   return Stack(
+    return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Container(
@@ -21,7 +21,8 @@ class BalaoSituacao extends StatelessWidget {
           ),
         ),
         Text(situacao,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }

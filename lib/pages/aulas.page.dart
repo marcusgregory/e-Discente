@@ -10,7 +10,7 @@ import 'conteudo.page.dart';
 class AulasPage extends StatefulWidget {
   final Aulas _aulasStore;
   final String? _idTurma;
-  AulasPage(this._aulasStore, this._idTurma);
+  const AulasPage(this._aulasStore, this._idTurma);
   @override
   _AulasPageState createState() => _AulasPageState();
 }
@@ -29,12 +29,12 @@ class _AulasPageState extends State<AulasPage>
       bottom: false,
       top: false,
       child: Container(
-          margin: EdgeInsets.only(bottom: 10),
+          margin: const EdgeInsets.only(bottom: 10),
           child: Observer(builder: (_) {
             final future = widget._aulasStore.aulas!;
             switch (future.status) {
               case FutureStatus.pending:
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator.adaptive(),
                 );
               case FutureStatus.rejected:
@@ -46,9 +46,9 @@ class _AulasPageState extends State<AulasPage>
                       onPressed: () {
                         widget._aulasStore.loadAulas(widget._idTurma);
                       },
-                      icon: Icon(Icons.refresh),
+                      icon: const Icon(Icons.refresh),
                     ),
-                    Text('Tentar novamente')
+                    const Text('Tentar novamente')
                   ],
                 );
                 break;
@@ -81,9 +81,9 @@ class _AulasPageState extends State<AulasPage>
                       onPressed: () {
                         widget._aulasStore.loadAulas(widget._idTurma);
                       },
-                      icon: Icon(Icons.refresh),
+                      icon: const Icon(Icons.refresh),
                     ),
-                    Text('Tentar novamente')
+                    const Text('Tentar novamente')
                   ],
                 ),
               ),
@@ -114,7 +114,7 @@ class _AulasPageState extends State<AulasPage>
                 ),
                 title: Text(
                   titulo!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -128,10 +128,10 @@ class _AulasPageState extends State<AulasPage>
               )
             : ListTile(
                 leading: balao(numero),
-                subtitle: Text('Não há conteúdo'),
+                subtitle: const Text('Não há conteúdo'),
                 title: Text(
                   titulo!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -151,7 +151,8 @@ class _AulasPageState extends State<AulasPage>
           ),
         ),
         Text(numero + "°",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }

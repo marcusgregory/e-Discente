@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_discente/chat/utils/user_color.util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:linkwell/linkwell.dart';
@@ -17,10 +18,10 @@ class MessageBubbleTextWidget extends StatelessWidget {
   const MessageBubbleTextWidget({
     Key? key,
     required this.message,
-    required this.context,
     this.isOwn = true,
     this.showAvatar = false,
     this.showUserName = false,
+    required this.context,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,13 @@ class MessageBubbleTextWidget extends StatelessWidget {
                   child: Text(
                     message.sendBy,
                     style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? UserColorUtil.getRandomColorsByUserName(
+                                    message.sendBy)
+                                .dark
+                            : UserColorUtil.getRandomColorsByUserName(
+                                    message.sendBy)
+                                .light,
                         fontWeight: FontWeight.bold,
                         fontSize:
                             Theme.of(context).textTheme.caption!.fontSize! *

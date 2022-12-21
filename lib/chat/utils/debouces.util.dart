@@ -15,7 +15,7 @@ class DeboucesUtil {
       _timer2!.cancel();
       //clear timer
     }
-    _timer2 = new Timer(duration, () {
+    _timer2 = Timer(duration, () {
       _timer!.cancel();
       _timer = null;
     });
@@ -29,6 +29,6 @@ class DeboucesUtil {
       //clear timer
       functionInit();
     }
-    _timer3 = new Timer(duration, () => functionFinal());
+    _timer3 = Timer(duration, () => functionFinal());
   }
 }

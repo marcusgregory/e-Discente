@@ -1,4 +1,3 @@
-
 class UsuarioModel {
   String? nomeDeUsuario;
   String? nome;
@@ -28,14 +27,14 @@ class UsuarioModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['nomeDeUsuario'] = this.nomeDeUsuario!.toLowerCase().trim();
-    data['nome'] = this.nome;
-    data['curso'] = this.curso;
-    data['numMatricula'] = this.numMatricula;
-    data['urlImagemPerfil'] = this.urlImagemPerfil;
-    data['cookie'] = this.cookie;
-    data['token'] = this.token;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['nomeDeUsuario'] = nomeDeUsuario!.toLowerCase().trim();
+    data['nome'] = nome;
+    data['curso'] = curso;
+    data['numMatricula'] = numMatricula;
+    data['urlImagemPerfil'] = urlImagemPerfil;
+    data['cookie'] = cookie;
+    data['token'] = token;
     return data;
   }
 }

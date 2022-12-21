@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "538421444332",
+    "project_id": "e-discente-dev",
+    "storage_bucket": "e-discente-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538421444332:android:8177c96fbfcfcc24ceefc9",
+        "android_client_info": {
+          "package_name": "br.com.marcusgregory.e_discente.development"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538421444332-bpkjnt2gu019veajdo78skplcpiot4bo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-2vCE46A9nHwWMAE0YXrXREebnmXlcgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538421444332-bpkjnt2gu019veajdo78skplcpiot4bo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

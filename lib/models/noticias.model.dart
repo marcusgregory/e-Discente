@@ -1,4 +1,3 @@
-
 class NoticiaModel {
   int? id;
   String? url;
@@ -38,14 +37,14 @@ class NoticiaModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['url'] = this.url;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['url'] = url;
     data['data'] = this.data;
-    data['titulo'] = this.titulo;
-    data['conteudo'] = this.conteudo;
-    data['resumo'] = this.resumo;
-    data['imagem'] = this.imagem;
+    data['titulo'] = titulo;
+    data['conteudo'] = conteudo;
+    data['resumo'] = resumo;
+    data['imagem'] = imagem;
     return data;
   }
 }

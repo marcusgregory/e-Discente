@@ -1,4 +1,3 @@
-
 class AutenticacaoModel {
   String? usuario;
   String? senha;
@@ -11,9 +10,9 @@ class AutenticacaoModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['usuario'] = this.usuario;
-    data['senha'] = this.senha;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['usuario'] = usuario;
+    data['senha'] = senha;
     return data;
   }
 }

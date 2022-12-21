@@ -12,8 +12,8 @@ class PhotoViewWidget extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle:
-            SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-        title: Text('Foto de Perfil'),
+            const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+        title: const Text('Foto de Perfil'),
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.black,
@@ -23,8 +23,8 @@ class PhotoViewWidget extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: kIsWeb
                   ? 'https://api.allorigins.win/raw?url=' +
-                      Uri.encodeComponent(this.url)
-                  : this.url,
+                      Uri.encodeComponent(url)
+                  : url,
               imageBuilder: (context, imageProvider) {
                 return Container(
                   decoration: BoxDecoration(

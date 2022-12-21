@@ -43,18 +43,18 @@ abstract class _MessagesStoreBase with Store {
 
   @action
   Future<void> loadMessages({bool silent = false}) async {
-    print('Obtendo mensagens do grupo ${gid} no servidor...');
+    print('Obtendo mensagens do grupo $gid no servidor...');
     firstRun = true;
     if (silent == false) messagesState = messagesState = MessagesState.LOADING;
     try {
       var messagesChat =
           (await messagesRepository.getMessages(gid)).asObservable();
       if (messagesChat.isNotEmpty) {
-        messagesChat.forEach((element) {
+        for (var element in messagesChat) {
           if (!messages.contains(element)) {
             messages.add(element);
           }
-        });
+        }
 
         GetIt.I<ChatsStore>().updateRecentMessage(messages.first);
       }
@@ -132,7 +132,6 @@ abstract class _MessagesStoreBase with Store {
           gid: gid,
           sendBy: AppInstance.nomeUsuario.toLowerCase().trim()));
     });
-    ;
   }
 
   @action
@@ -144,4 +143,5 @@ abstract class _MessagesStoreBase with Store {
 }
 
 enum MessagesState { LOADING, READY, ERROR }
+
 enum TypingState { TYPING, NOTHING }

@@ -6,6 +6,7 @@ import 'package:e_discente/pages/widgets/item_nota.widget.dart';
 import 'package:e_discente/stores/boletim.store.dart';
 
 import 'widgets/balao_nota.widget.dart';
+import 'widgets/user_appbar.widget.dart';
 
 class BoletimPage extends StatefulWidget {
   const BoletimPage({Key? key, required this.boletimStore}) : super(key: key);
@@ -27,59 +28,64 @@ class _BoletimPageState extends State<BoletimPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      child: Observer(builder: (_) {
-        final future = _boletimStore.boletim!;
-        switch (future.status) {
-          case FutureStatus.pending:
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          case FutureStatus.rejected:
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    _boletimStore.loadBoletim();
-                  },
-                  icon: const Icon(Icons.refresh),
-                ),
-                const Text('Tentar novamente')
-              ],
-            );
-          case FutureStatus.fulfilled:
-
-            // print(future.result[_boletimStore.valores[_boletimStore.index]]);
-            return Scrollbar(
-              child: ListView(
-                key: const PageStorageKey('Boletim-header'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Meu Boletim'),
+      ),
+      body: SafeArea(
+        child: Observer(builder: (_) {
+          final future = _boletimStore.boletim!;
+          switch (future.status) {
+            case FutureStatus.pending:
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            case FutureStatus.rejected:
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  myDropDownButtonBuilder(future.result),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 15, right: 15),
-                    child: Divider(
-                      color: Colors.black45,
-                    ),
-                  ),
-                  ListView.builder(
-                    key: const PageStorageKey('Boletim'),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: future
-                        .result[_boletimStore.valores[_boletimStore.index]]
-                        .length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return myExpansionTile(future.result[
-                          _boletimStore.valores[_boletimStore.index]][index]);
+                  IconButton(
+                    onPressed: () {
+                      _boletimStore.loadBoletim();
                     },
-                  )
+                    icon: const Icon(Icons.refresh),
+                  ),
+                  const Text('Tentar novamente')
                 ],
-              ),
-            );
-        }
-      }),
+              );
+            case FutureStatus.fulfilled:
+
+              // print(future.result[_boletimStore.valores[_boletimStore.index]]);
+              return Scrollbar(
+                child: ListView(
+                  key: const PageStorageKey('Boletim-header'),
+                  children: <Widget>[
+                    myDropDownButtonBuilder(future.result),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 15, right: 15),
+                      child: Divider(
+                        color: Colors.black45,
+                      ),
+                    ),
+                    ListView.builder(
+                      key: const PageStorageKey('Boletim'),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: future
+                          .result[_boletimStore.valores[_boletimStore.index]]
+                          .length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return myExpansionTile(future.result[
+                            _boletimStore.valores[_boletimStore.index]][index]);
+                      },
+                    )
+                  ],
+                ),
+              );
+          }
+        }),
+      ),
     );
   }
 

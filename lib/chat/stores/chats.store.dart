@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:e_discente/chat/models/evento_digitando.model.dart';
 import 'package:e_discente/chat/models/i_message.dart';
@@ -10,6 +11,7 @@ import 'package:mobx/mobx.dart';
 import 'package:e_discente/chat/models/chat_item.model.dart';
 import 'package:e_discente/chat/repositories/list-chat.repository.dart';
 import 'package:e_discente/chat/stores/socket_io.store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chats.store.g.dart';
 
@@ -26,6 +28,7 @@ abstract class _ChatsStoreBase with Store {
   }
 
   bool firstRun = true;
+  bool _loadOffline = false;
 
   void init() async {
     subscription =
@@ -55,10 +58,19 @@ abstract class _ChatsStoreBase with Store {
 
   @action
   Future<void> loadListChats({bool silent = false}) async {
+    var _prefs = await SharedPreferences.getInstance();
     firstRun = false;
     if (silent == false) chatsState = ChatsState.LOADING;
     try {
+      Iterable i = jsonDecode(_prefs.getString('chats') ?? '');
+      listChats =
+          i.map((chat) => ChatItemModel.fromJson(chat)).toList().asObservable();
+      _loadOffline = true;
+      chatsState = ChatsState.READY;
+      socketIOStore!.entrarNosGrupos(listChats);
+
       listChats = (await listChatRepository.getChats()).asObservable();
+      await _prefs.setString('chats', jsonEncode(listChats.toList()));
       // listChats = [
       //   ChatItemModel(
       //       gid: '18738',
@@ -79,46 +91,49 @@ abstract class _ChatsStoreBase with Store {
       chatsState = ChatsState.READY;
     } catch (e) {
       print(e);
-      chatsState = ChatsState.ERROR;
+      if (!_loadOffline) {
+        chatsState = ChatsState.ERROR;
+        _loadOffline = false;
+      }
     }
   }
 
   @action
   void updateRecentMessage(IMessage message) {
-    listChats.forEach((chat) {
+    for (var chat in listChats) {
       if (chat.gid == message.gid) {
         listChats[listChats.indexOf(chat)] =
             chat.copyWith(recentMessage: message as MessageModel?);
       }
-    });
+    }
   }
 
   @action
   void sendMessage(IMessage message, Function callback) {
-    listChats.forEach((chat) {
+    for (var chat in listChats) {
       if (chat.gid == message.gid) {
         listChats[listChats.indexOf(chat)] =
             chat.copyWith(recentMessage: message as MessageModel?);
       }
-    });
+    }
     socketIOStore!.enviarMensagem(message as MessageModel, callback);
   }
 
   @action
   void receiveMessage(IMessage message) {
-    listChats.forEach((chat) {
+    for (var chat in listChats) {
       if (chat.gid == message.gid) {
         listChats[listChats.indexOf(chat)] = chat.copyWith(
           recentMessage:
               message.copyWith(state: MessageState.SENDED) as MessageModel?,
         )..messagesStore!.receiveMessage(message as MessageModel);
       }
-    });
+    }
   }
 
   @action
   void receiveTypingEvent(EventoDigitandoModel typingEvent) {
-    listChats.forEach((chat) {
+    for (var chat in listChats) {
       if (chat.gid == typingEvent.gid) {
         chat.messagesStore!.receiveTypingEvent(typingEvent, () {
           int index = listChats.indexOf(chat);
@@ -132,7 +147,7 @@ abstract class _ChatsStoreBase with Store {
           }
         });
       }
-    });
+    }
   }
   // @action
   // void loadAllMessagesChat() {
@@ -145,7 +160,7 @@ abstract class _ChatsStoreBase with Store {
 
   @action
   Future<List<MessageModel>> loadMessagesChatByID(String gid) async {
-    print('Obtendo mensagens do grupo ${gid} no servidor...');
+    print('Obtendo mensagens do grupo $gid no servidor...');
     return (await (messagesRepository.getMessages(gid)
         as FutureOr<List<MessageModel>>));
   }
@@ -153,9 +168,9 @@ abstract class _ChatsStoreBase with Store {
   Future<void> reconnected() async {
     // await loadListChats(silent: true);
     socketIOStore!.entrarNosGrupos(listChats);
-    listChats.forEach((chat) {
+    for (var chat in listChats) {
       chat.messagesStore!.reconnect();
-    });
+    }
   }
 
   Future<void> connected() async {

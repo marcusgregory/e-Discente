@@ -96,7 +96,7 @@ class _ChatPageState extends State<ChatPage>
     });
     focusNode.addListener(onFocusChange);
 
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -123,7 +123,7 @@ class _ChatPageState extends State<ChatPage>
       AppInstance.currentChatPageOpenId = '';
     }
 
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     AppInstance.currentPageLastOpenedId = '';
     super.dispose();
   }
@@ -585,7 +585,7 @@ class _ChatPageState extends State<ChatPage>
                           .trim(),
                       sendAt: DateTime.now(),
                       sendBy: AppInstance.nomeUsuario.toLowerCase().trim(),
-                      mid: Uuid().v1()));
+                      mid: const Uuid().v1()));
 
                   listScrollController.animateTo(0.0,
                       duration: const Duration(milliseconds: 300),

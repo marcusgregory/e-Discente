@@ -1,28 +1,19 @@
 import 'package:animations/animations.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_discente/blocs/noticias.bloc.dart';
 import 'package:e_discente/blocs/turmas.bloc.dart';
-import 'package:e_discente/chat/app_instance.dart';
-import 'package:e_discente/chat/models/chat_item.model.dart';
+import 'package:e_discente/pages/home.page.dart';
 import 'package:e_discente/stores/perfil.store.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:e_discente/chat/pages/chats.page.dart';
 import 'package:e_discente/chat/stores/socket_io.store.dart';
-import 'package:e_discente/pages/boletim.page.dart';
 import 'package:e_discente/pages/noticias.page.dart';
 import 'package:e_discente/pages/perfil.page.dart';
 import 'package:e_discente/pages/turmas.page.dart';
-import 'package:e_discente/pages/widgets/dialog_account.widget.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobx/mobx.dart';
-import '../chat/pages/chat.page.dart';
 import '../chat/stores/chats.store.dart';
-import '../main.dart';
-import '../settings.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import '../repositories/register_fcmToken.repository.dart';
 
 import '../stores/boletim.store.dart';
 import 'inicio_controller.dart';
@@ -58,6 +49,12 @@ class _InicioPageState extends State<InicioPage> {
         items: [
           BottomNavigationBarItem(
               icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? const Icon(CupertinoIcons.home)
+                  : const Icon(Icons.web),
+              label: 'Inicio',
+              backgroundColor: Colors.green),
+          BottomNavigationBarItem(
+              icon: Theme.of(context).platform == TargetPlatform.iOS
                   ? const Icon(CupertinoIcons.news_solid)
                   : const Icon(Icons.web),
               label: 'Notícias',
@@ -68,12 +65,6 @@ class _InicioPageState extends State<InicioPage> {
                   : const Icon(Icons.school),
               label: 'Turmas',
               backgroundColor: Colors.blue),
-          BottomNavigationBarItem(
-              icon: Theme.of(context).platform == TargetPlatform.iOS
-                  ? const Icon(CupertinoIcons.graph_square_fill)
-                  : const Icon(Icons.timeline),
-              label: 'Boletim',
-              backgroundColor: Colors.orange),
           BottomNavigationBarItem(
               icon: Theme.of(context).platform == TargetPlatform.iOS
                   ? const Icon(CupertinoIcons.chat_bubble_2_fill)
@@ -101,6 +92,10 @@ class _InicioPageState extends State<InicioPage> {
           selectedIndex: currentIndex,
           destinations: const [
             NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home),
+                label: 'Início'),
+            NavigationDestination(
                 icon: Icon(Icons.newspaper),
                 selectedIcon: Icon(Icons.newspaper_outlined),
                 label: 'Notícias'),
@@ -108,10 +103,6 @@ class _InicioPageState extends State<InicioPage> {
                 icon: Icon(Icons.school_outlined),
                 selectedIcon: Icon(Icons.school),
                 label: 'Turmas'),
-            NavigationDestination(
-                icon: Icon(Icons.timeline),
-                selectedIcon: Icon(Icons.timeline_outlined),
-                label: 'Boletim'),
             NavigationDestination(
                 icon: Icon(Icons.chat_outlined),
                 selectedIcon: Icon(Icons.chat),
@@ -123,89 +114,53 @@ class _InicioPageState extends State<InicioPage> {
           ],
         ),
       );
+
   @override
   void initState() {
-    GetIt.I<SocketIOStore>().initSocket();
+    registerSingletons();
+    registerFirebaseToken();
     noticiasBloc = NoticiasBloc();
     turmasBloc = TurmasBloc();
-    boletimStore = Boletim();
     perfilStore = PerfilStore();
-
     _children.addAll([
+      HomePage(),
       NoticiasPage(
         noticiasBloc: noticiasBloc,
       ),
       TurmasPage(turmasBloc: turmasBloc),
-      BoletimPage(
-        boletimStore: boletimStore,
-      ),
       const ChatsPage(),
       PerfilScreen(
         perfilStore: perfilStore,
       ),
     ]);
 
-    AwesomeNotifications()
-        .actionStream
-        .listen((ReceivedNotification receivedNotification) {
-      var payload = receivedNotification.payload;
-      controller.setPageIndex(3);
-      if (payload != null) {
-        if (payload.isNotEmpty) {
-          switch (payload['type']) {
-            case 'new_message':
-              var chatsStore = GetIt.I<ChatsStore>();
-              if (chatsStore.chatsState == ChatsState.LOADING) {
-                _onLoading();
-              }
-              when((_) => chatsStore.chatsState == ChatsState.READY, () {
-                if (payload['gid'] != AppInstance.currentPageLastOpenedId) {
-                  MyApp.navigatorKey.currentState
-                      ?.popUntil((route) => route.isFirst);
-                  MyApp.navigatorKey.currentState
-                      ?.push(MaterialPageRoute(builder: (BuildContext context) {
-                    return ChatPage(
-                      gid: (payload['gid'] ?? '').trim(),
-                      groupName: (payload['groupName'] ?? '').trim(),
-                    );
-                  }));
-                }
-              });
-
-              break;
-            default:
-          }
-        }
-      }
-    });
     super.initState();
   }
 
-  void _onLoading() {
-    when((_) => GetIt.I<ChatsStore>().chatsState != ChatsState.LOADING, () {
-      Navigator.of(context).pop();
-    });
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: () async => false,
-            child: AlertDialog(
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  CircularProgressIndicator.adaptive(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text('Carregando conversas...')
-                ],
-              ),
-            ));
-      },
+  void registerSingletons() {
+    if (GetIt.I.isRegistered<SocketIOStore>(instance: SocketIOStore())) {
+      GetIt.I.unregister<SocketIOStore>(
+        disposingFunction: (p0) => p0.dispose(),
+      );
+    }
+    GetIt.I.registerSingleton<SocketIOStore>(SocketIOStore());
+    GetIt.I<SocketIOStore>().initSocket();
+
+    if (GetIt.I.isRegistered<ChatsStore>(instance: ChatsStore())) {
+      GetIt.I.unregister<ChatsStore>(
+        disposingFunction: (p0) => p0.dispose(),
+      );
+    }
+
+    GetIt.I.registerLazySingleton(() => ChatsStore());
+  }
+
+  void unregisterSingletons() {
+    GetIt.I.unregister<ChatsStore>(
+      disposingFunction: (p0) => p0.dispose(),
+    );
+    GetIt.I.unregister<SocketIOStore>(
+      disposingFunction: (p0) => p0.dispose(),
     );
   }
 
@@ -213,6 +168,8 @@ class _InicioPageState extends State<InicioPage> {
   void dispose() {
     noticiasBloc.dispose();
     turmasBloc.dispose();
+    controller.dispose();
+    unregisterSingletons();
     super.dispose();
   }
 
@@ -220,74 +177,9 @@ class _InicioPageState extends State<InicioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldStateKey,
-        appBar: AppBar(
-          systemOverlayStyle:
-              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-          title: StreamBuilder(
-            stream: controller.stream,
-            builder: (context, snapshot) {
-              int indexPage = controller.pageIndex;
-              return GestureDetector(
-                child: Text([
-                  'Notícias',
-                  'Turmas',
-                  'Boletim',
-                  'Conversas',
-                  'Perfil'
-                ][indexPage]),
-                onDoubleTap: () {},
-              );
-            },
-          ),
-          elevation: 1.0,
-          actions: <Widget>[
-            IconButton(
-              icon: Hero(
-                tag: 'icon_book',
-                child: CircleAvatar(
-                  radius: 13,
-                  backgroundColor: Colors.transparent,
-                  child: CachedNetworkImage(
-                    imageUrl: kIsWeb
-                        ? 'https://api.allorigins.win/raw?url=' +
-                            Uri.encodeComponent(
-                                Settings.usuario!.urlImagemPerfil!)
-                        : Settings.usuario!.urlImagemPerfil!,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
-                    ),
-                    placeholder: (context, url) => Icon(
-                      Icons.account_circle,
-                      color: Colors.grey[200],
-                    ),
-                    errorWidget: (context, url, error) =>
-                        Icon(Icons.account_circle, color: Colors.grey[200]),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                //   return DialogAccount();
-                // }));
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        // ignore: prefer_const_constructors
-                        child: DialogAccount());
-                  },
-                );
-              },
-            ),
-          ],
-        ),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.primary,
         body: SafeArea(
           child: StreamBuilder(
               stream: controller.stream,
@@ -323,5 +215,12 @@ class _InicioPageState extends State<InicioPage> {
             },
           ),
         ));
+  }
+}
+
+Future<void> registerFirebaseToken() async {
+  String fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+  if (fcmToken.isNotEmpty) {
+    RegisterFcmTokenRepository().register(fcmToken);
   }
 }

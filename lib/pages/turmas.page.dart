@@ -3,10 +3,14 @@ import 'package:e_discente/blocs/turmas.bloc.dart';
 import 'package:e_discente/models/turma.model.dart';
 import 'package:e_discente/util/toast.util.dart';
 import 'widgets/turma.widget.dart';
+import 'widgets/user_appbar.widget.dart';
 
 class TurmasPage extends StatefulWidget {
-  const TurmasPage({Key? key, required this.turmasBloc}) : super(key: key);
+  const TurmasPage(
+      {Key? key, required this.turmasBloc, this.showProfileMenu = true})
+      : super(key: key);
   final TurmasBloc turmasBloc;
+  final bool showProfileMenu;
   @override
   _TurmasPageState createState() => _TurmasPageState();
 }
@@ -33,33 +37,42 @@ class _TurmasPageState extends State<TurmasPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<TurmasState>(
-        stream: _turmasStream,
-        builder: (BuildContext context, snapshot) {
-          switch (_turmasBloc.turmasState) {
-            case TurmasState.loading:
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            case TurmasState.ready:
-              return getListView(_turmasBloc.list);
-            case TurmasState.error:
-              ToastUtil.showShortToast('${snapshot.error}');
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      _turmasBloc.load();
-                    },
-                    icon: const Icon(Icons.refresh),
-                  ),
-                  const Text('Tentar novamente')
-                ],
-              );
-          }
-        });
+    return Scaffold(
+      appBar: widget.showProfileMenu
+          ? userAppBar(title: 'Turmas', context: context)
+          : AppBar(
+              title: const Text('Turmas'),
+            ),
+      body: SafeArea(
+        child: StreamBuilder<TurmasState>(
+            stream: _turmasStream,
+            builder: (BuildContext context, snapshot) {
+              switch (_turmasBloc.turmasState) {
+                case TurmasState.loading:
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                case TurmasState.ready:
+                  return getListView(_turmasBloc.list);
+                case TurmasState.error:
+                  ToastUtil.showShortToast('${snapshot.error}');
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {
+                          _turmasBloc.load();
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
+                      const Text('Tentar novamente')
+                    ],
+                  );
+              }
+            }),
+      ),
+    );
   }
 
   Widget getListView(List<TurmaModel> turmas) {

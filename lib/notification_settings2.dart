@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:e_discente/models/noticias.model.dart';
 
 import 'chat/models/message.model.dart';
+import 'models/portal.model.dart';
 
 class NotificationAwesome {
   static const Map<String, String> _payloadDefault = {};
@@ -34,6 +35,28 @@ class NotificationAwesome {
               channelDescription: 'Notícias',
               defaultPrivacy: NotificationPrivacy.Public,
               importance: NotificationImportance.High,
+              defaultColor: const Color(0xFF00396A),
+              ledColor: const Color(0xFF00396A)),
+          NotificationChannel(
+              channelKey: 'tasks_channel',
+              channelName: 'Atividades',
+              channelDescription: 'Atividades',
+              channelShowBadge: true,
+              enableVibration: true,
+              defaultPrivacy: NotificationPrivacy.Public,
+              importance: NotificationImportance.Max,
+              playSound: true,
+              defaultColor: const Color(0xFF00396A),
+              ledColor: const Color(0xFF00396A)),
+          NotificationChannel(
+              channelKey: 'portal_updates_channel',
+              channelName: 'Atualizacções das Turmas',
+              channelDescription: 'Atualizacções das Turmas',
+              channelShowBadge: true,
+              enableVibration: true,
+              defaultPrivacy: NotificationPrivacy.Public,
+              importance: NotificationImportance.Max,
+              playSound: true,
               defaultColor: const Color(0xFF00396A),
               ledColor: const Color(0xFF00396A))
         ]);
@@ -129,5 +152,37 @@ class NotificationAwesome {
             summary: 'Noticia',
             notificationLayout: NotificationLayout.BigPicture,
             payload: {'uuid': 'uuid-test'}));
+  }
+
+  static void createNotificationNewTask(Atividade atividade) async {
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: atividade.idAtividade.hashCode,
+            channelKey: "tasks_channel",
+            title: 'Nova Tarefa: ' + atividade.nomeDisciplina,
+            body: atividade.conteudo,
+            summary: 'Nova Tarefa',
+            notificationLayout: NotificationLayout.Default,
+            payload: {
+          'type': 'new_task',
+          'idAtividade': atividade.idAtividade,
+          'idTurma': atividade.idTurma
+        }));
+  }
+
+  static void createNotificationNewUpdatePortal(
+      AtualizacoesTurma atualizacaoTurma) async {
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: atualizacaoTurma.hashCode,
+            channelKey: "portal_updates_channel",
+            title: 'Nova Atualização: ${atualizacaoTurma.nomeDisciplina}',
+            body: atualizacaoTurma.conteudo,
+            summary: 'Nova Atualização da Turma',
+            notificationLayout: NotificationLayout.Default,
+            payload: {
+          'type': 'new_portal_update',
+          'idTurma': atualizacaoTurma.idTurma,
+        }));
   }
 }

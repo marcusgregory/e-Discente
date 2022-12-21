@@ -150,7 +150,7 @@ class DownloadService {
               _context, _filename, _localPath + '/' + _filename, _fileLength);
         } else {
           ToastUtil.showLongToast(
-              'Download do arquivo \"$_filename\" foi concluido\nTamanho: ${formatBytes(_fileLength)}');
+              'Download do arquivo "$_filename" foi concluido\nTamanho: ${formatBytes(_fileLength)}');
         }
       }
     } catch (e) {
@@ -204,7 +204,7 @@ class DownloadService {
         builder: (_) => AlertDialog(
               title: const Text("Deseja abrir?"),
               content: Text(
-                  'O arquivo \"$fileName\" foi salvo no seu dispositivo\nTamanho: ${formatBytes(fileLength)}'),
+                  'O arquivo "$fileName" foi salvo no seu dispositivo\nTamanho: ${formatBytes(fileLength)}'),
               actions: [
                 TextButton(
                     onPressed: () {

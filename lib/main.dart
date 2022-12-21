@@ -18,13 +18,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveTheme(
         light: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF00396A),
-                primary: const Color(0xFF00396A),
-                secondary: Colors.blue),
-            useMaterial3: true),
+                colorScheme: ColorScheme.fromSeed(
+                    seedColor: const Color(0xFF0D294D),
+                    primary: const Color(0xFF0D294D),
+                    secondary: Colors.blue),
+                useMaterial3: false)
+            .copyWith(primaryColor: const Color(0xFF0D294D)),
         dark: ThemeData(
-            colorSchemeSeed: const Color(0xFF00396A),
+            colorSchemeSeed: const Color(0xFF0D294D),
             useMaterial3: true,
             brightness: Brightness.dark),
         initial: savedThemeMode ?? AdaptiveThemeMode.light,
@@ -45,8 +46,11 @@ void main() async {
     statusBarColor: Colors.transparent,
   ));
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  initialize();
   runApp(MyApp(savedThemeMode: savedThemeMode));
-  setup();
+}
+
+void initialize() {
   if (!kIsWeb) {
     if (Platform.isAndroid || Platform.isIOS) {
       NotificationAwesome.initNotificationAwesome();
@@ -55,5 +59,3 @@ void main() async {
     }
   }
 }
-
-void setup() {}

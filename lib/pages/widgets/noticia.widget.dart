@@ -22,7 +22,8 @@ class Noticia extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10.0, top: 10.0),
+      margin:
+          const EdgeInsets.only(left: 10, right: 10, bottom: 10.0, top: 10.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
       elevation: 2.0,
       child: InkWell(
@@ -55,8 +56,8 @@ class Noticia extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             _loadImage(),
-            _getColumText(this.noticia.titulo, this.noticia.data,
-                this.noticia.resumo, context),
+            _getColumText(
+                noticia.titulo, noticia.data, noticia.resumo, context),
           ],
         ),
         Row(
@@ -71,11 +72,11 @@ class Noticia extends StatelessWidget {
                     child: Image.asset('assets/logo_unilab.png'),
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               width: 8,
             ),
             Text(
-              'Unilab  •  ${DateUtil.getTimeElapsedByDate(this.noticia.data!)}',
+              'Unilab  •  ${DateUtil.getTimeElapsedByDate(noticia.data!)}',
               style: TextStyle(
                   fontSize: 11,
                   color: Theme.of(context).textTheme.bodyText1!.color),
@@ -126,7 +127,7 @@ class Noticia extends StatelessWidget {
       child: Text(
         curencyName,
         maxLines: 4,
-        style: new TextStyle(
+        style: TextStyle(
             fontSize: 17.9,
             fontWeight: FontWeight.w400,
             color: Theme.of(context).textTheme.bodyText1!.color),
@@ -141,8 +142,7 @@ class Noticia extends StatelessWidget {
         description,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style:
-            new TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
       ),
     );
   }
@@ -157,7 +157,7 @@ class Noticia extends StatelessWidget {
   void _showModalBottomSheet(context) {
     showModalBottomSheet(
         elevation: 10,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         context: context,
@@ -167,21 +167,21 @@ class Noticia extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
-                  child: Container(
+                  child: SizedBox(
                     height: 50,
                     child: InkWell(
                       onTap: () => Share.share(
-                          'Veja esta notícia:\n${this.noticia.titulo}\n${this.noticia.url}'),
+                          'Veja esta notícia:\n${noticia.titulo}\n${noticia.url}'),
                       child: Row(
                         children: <Widget>[
-                          SizedBox(
+                          const SizedBox(
                             width: 17,
                           ),
                           Icon(Icons.share, size: 20, color: Colors.grey[600]),
-                          SizedBox(
+                          const SizedBox(
                             width: 15,
                           ),
-                          Text(
+                          const Text(
                             'Compartilhar',
                             style: TextStyle(fontSize: 14),
                           ),
@@ -190,13 +190,13 @@ class Noticia extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 50,
                   child: InkWell(
                     onTap: () async {
                       if (Platform.isIOS) {
                         String url =
-                            'https://wa.me/?text=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
+                            'https://wa.me/?text=Veja esta notícia:\n*${noticia.titulo}*\n${noticia.url}';
                         url = Uri.encodeFull(url);
                         if (await canLaunch(url)) {
                           await launch(url);
@@ -206,7 +206,7 @@ class Noticia extends StatelessWidget {
                         }
                       } else {
                         String url =
-                            'https://wa.me/?text=Veja esta notícia:\n*${this.noticia.titulo}*\n${this.noticia.url}';
+                            'https://wa.me/?text=Veja esta notícia:\n*${noticia.titulo}*\n${noticia.url}';
                         if (await canLaunch(url)) {
                           await launch(url);
                         }
@@ -214,15 +214,15 @@ class Noticia extends StatelessWidget {
                     },
                     child: Row(
                       children: <Widget>[
-                        SizedBox(
+                        const SizedBox(
                           width: 17,
                         ),
                         Icon(CustomIcons.whatsapp,
                             size: 20, color: Colors.grey[600]),
-                        SizedBox(
+                        const SizedBox(
                           width: 15,
                         ),
-                        Text(
+                        const Text(
                           'Enviar via WhatsApp',
                           style: TextStyle(fontSize: 14),
                         ),
@@ -230,7 +230,7 @@ class Noticia extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 50,
                   child: InkWell(
                     onTap: () async {
@@ -244,15 +244,15 @@ class Noticia extends StatelessWidget {
                     },
                     child: Row(
                       children: <Widget>[
-                        SizedBox(
+                        const SizedBox(
                           width: 17,
                         ),
                         Icon(Icons.open_in_browser,
                             size: 20, color: Colors.grey[600]),
-                        SizedBox(
+                        const SizedBox(
                           width: 15,
                         ),
-                        Text(
+                        const Text(
                           'Abrir no Navegador',
                           style: TextStyle(fontSize: 14),
                         ),
@@ -260,16 +260,16 @@ class Noticia extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
+                const Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20),
                   child: Divider(),
                 ),
                 SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: TextButton(
-                    style: ButtonStyle(),
-                    child: Text(
+                    style: const ButtonStyle(),
+                    child: const Text(
                       "Fechar",
                     ),
                     onPressed: () {
@@ -291,8 +291,8 @@ class Noticia extends StatelessWidget {
           width: 185,
           imageUrl: kIsWeb
               ? 'https://api.allorigins.win/raw?url=' +
-                  Uri.encodeComponent(this.noticia.imagem!)
-              : this.noticia.imagem!,
+                  Uri.encodeComponent(noticia.imagem!)
+              : noticia.imagem!,
           imageBuilder: (context, imageProvider) => Container(
                 width: 185,
                 height: 185,
@@ -301,7 +301,7 @@ class Noticia extends StatelessWidget {
                       DecorationImage(image: imageProvider, fit: BoxFit.cover),
                 ),
               ),
-          placeholder: (context, url) => Container(
+          placeholder: (context, url) => SizedBox(
               height: 185, width: 185, child: Image.memory(kTransparentImage))),
     );
 

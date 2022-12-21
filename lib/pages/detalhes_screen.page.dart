@@ -15,8 +15,8 @@ class Detalhe extends StatefulWidget {
   final String? _url;
   final int? _id;
 
-  Detalhe(this._img, this._title, this._date, this._description, this._url,
-      this._id);
+  const Detalhe(this._img, this._title, this._date, this._description,
+      this._url, this._id);
 
   @override
   _DetalheState createState() => _DetalheState();

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:e_discente/models/participantes.model.dart';
 import 'package:e_discente/pages/aulas.page.dart';
@@ -21,7 +20,7 @@ class _TurmaPageState extends State<TurmaPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   //TabController _tabController;
   late ScrollController _scrollViewController;
-  Aulas _aulasStore = Aulas();
+  final Aulas _aulasStore = Aulas();
   Future<ParticipantesModel>? _participantesFuture;
 
   @override
@@ -58,14 +57,14 @@ class _TurmaPageState extends State<TurmaPage>
                       title: Text(
                         widget._titulo!,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                       pinned: true,
                       floating: true,
                       snap: true,
                       primary: true,
                       forceElevated: boxIsScrolled,
-                      bottom: TabBar(
+                      bottom: const TabBar(
                         isScrollable: true,
                         tabs: [
                           Tab(
@@ -86,8 +85,8 @@ class _TurmaPageState extends State<TurmaPage>
             },
             body: TabBarView(
               children: [
-                AulasPage(this._aulasStore, widget._idTurma),
-                ParticipantesPage(this._participantesFuture, widget._idTurma),
+                AulasPage(_aulasStore, widget._idTurma),
+                ParticipantesPage(_participantesFuture, widget._idTurma),
                 NotasTurmaPage(widget._idTurma)
               ],
             ),

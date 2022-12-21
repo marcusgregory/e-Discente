@@ -34,7 +34,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                 case ConnectionState.none:
                   return Container();
                 case ConnectionState.waiting:
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator.adaptive(),
                   );
                 case ConnectionState.active:
@@ -46,7 +46,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                       slivers: <Widget>[
                         SliverList(
                             delegate: SliverChildListDelegate([
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           Card(
@@ -61,22 +61,21 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                             elevation: 2.0,
                             child: Column(
                               children: <Widget>[
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
                                   'Notas',
                                   style: Theme.of(context).textTheme.bodyText2,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20),
                                   child: Divider(),
                                 ),
                                 ListView.builder(
                                     addAutomaticKeepAlives: true,
                                     shrinkWrap: true,
-                                    physics: ClampingScrollPhysics(),
+                                    physics: const ClampingScrollPhysics(),
                                     itemCount: notas.notas!.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
@@ -88,13 +87,13 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                         ),
                                       );
                                     }),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 )
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Card(
@@ -109,22 +108,21 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                             elevation: 2.0,
                             child: Column(
                               children: <Widget>[
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
                                   'Resultados',
                                   style: Theme.of(context).textTheme.bodyText2,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20),
                                   child: Divider(),
                                 ),
                                 ListView(
                                   shrinkWrap: true,
                                   addAutomaticKeepAlives: true,
-                                  physics: ClampingScrollPhysics(),
+                                  physics: const ClampingScrollPhysics(),
                                   children: <Widget>[
                                     ItemNota(
                                       'Recuperação',
@@ -140,9 +138,9 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                           : '--',
                                       left: false,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 20, right: 20),
                                       child: Divider(),
                                     ),
                                     Padding(
@@ -151,15 +149,14 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                       child: ListTile(
                                         subtitle:
                                             BalaoSituacao(notas.situacao!),
-                                        title: Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 5),
+                                        title: const Padding(
+                                          padding: EdgeInsets.only(bottom: 5),
                                           child:
                                               Center(child: Text('Situação')),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 10,
                                     ),
                                   ],
@@ -171,7 +168,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                       ],
                     );
                   } else {
-                    return Center(
+                    return const Center(
                       child: Text('Ainda sem notas disponíveis.'),
                     );
                   }

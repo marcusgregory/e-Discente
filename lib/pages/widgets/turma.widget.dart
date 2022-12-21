@@ -7,7 +7,7 @@ import 'package:e_discente/pages/turma.page.dart';
 class Turma extends StatelessWidget {
   final TurmaModel turma;
 
-  Turma(this.turma);
+  const Turma(this.turma);
 
   @override
   Widget build(BuildContext context) {
