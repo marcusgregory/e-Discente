@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +12,7 @@ import 'package:e_discente/models/perfil.model.dart';
 import 'package:e_discente/pages/widgets/photo_view.widget.dart';
 import 'package:e_discente/stores/perfil.store.dart';
 import 'package:e_discente/util/toast.util.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../settings.dart';
 import 'widgets/user_appbar.widget.dart';
 
@@ -46,49 +49,61 @@ class _PerfilScreenState extends State<PerfilScreen>
       body: SafeArea(
         child: Scrollbar(
           controller: scrollController,
-          child: ListView(
-            controller: scrollController,
-            key: const PageStorageKey('Perfil-header'),
-            primary: false,
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              getHeaderProfile(),
-              Observer(builder: (BuildContext context) {
-                final future = store.perfilDiscente!;
-                switch (future.status) {
-                  case FutureStatus.pending:
-                    return Column(
-                      children: const [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CircularProgressIndicator.adaptive(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text('Carregando mais informações...'),
-                      ],
-                    );
-                  case FutureStatus.rejected:
-                    return Column(
-                      children: <Widget>[
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            store.loadPerfil();
-                          },
-                          icon: const Icon(Icons.refresh),
-                        ),
-                        const Text('Tentar novamente')
-                      ],
-                    );
-                  case FutureStatus.fulfilled:
-                    return widgetPerfil(future.result);
-                }
-              }),
-            ],
+          child: RefreshIndicator.adaptive(
+            onRefresh: () => store.loadPerfil(),
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                  PointerDeviceKind.trackpad
+                },
+              ),
+              child: ListView(
+                controller: scrollController,
+                key: const PageStorageKey('Perfil-header'),
+                primary: false,
+                scrollDirection: Axis.vertical,
+                children: <Widget>[
+                  getHeaderProfile(),
+                  Observer(builder: (BuildContext context) {
+                    final future = store.perfilDiscente!;
+                    switch (future.status) {
+                      case FutureStatus.pending:
+                        return Skeletonizer(
+                            enabled: true,
+                            child: widgetPerfil(PerfilModel(
+                              curso: 'CURSO TESTE - TESTE TESTE - CIDADE',
+                              iDE: '10.0',
+                              integralizacao: '100',
+                              nome: 'Aluno Teste da Silva',
+                              nivel: 'GRADUAÇÃO',
+                              numMatricula: '0000000000',
+                              semestreEntrada: '0000.0',
+                              situacao: 'ATIVO',
+                            )));
+                      case FutureStatus.rejected:
+                        return Column(
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                store.loadPerfil();
+                              },
+                              icon: const Icon(Icons.refresh),
+                            ),
+                            const Text('Tentar novamente')
+                          ],
+                        );
+                      case FutureStatus.fulfilled:
+                        return widgetPerfil(future.result);
+                    }
+                  }),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -123,8 +138,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               tag: url,
               child: CachedNetworkImage(
                 imageUrl: kIsWeb
-                    ? 'https://api.allorigins.win/raw?url=' +
-                        Uri.encodeComponent(url)
+                    ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(url)}'
                     : url,
                 imageBuilder: (context, imageProvider) => Material(
                   shape: const CircleBorder(),
@@ -165,7 +179,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                 return CircularPercentIndicator(
                   radius: 66,
                   lineWidth: 5.0,
-                  center: getProfilePic(Settings.usuario!.urlImagemPerfil!),
+                  center: getProfilePic(Settings.usuario!.urlImagemPerfil),
                   percent: 0.0,
                   animation: true,
                   animationDuration: 500,
@@ -176,7 +190,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                 return CircularPercentIndicator(
                   radius: 66,
                   lineWidth: 5.0,
-                  center: getProfilePic(Settings.usuario!.urlImagemPerfil!),
+                  center: getProfilePic(Settings.usuario!.urlImagemPerfil),
                   percent: int.parse(future.result.integralizacao) / 100,
                   animation: true,
                   animationDuration: 800,
@@ -185,7 +199,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                   backgroundColor: Colors.transparent,
                 );
               case FutureStatus.rejected:
-                return getProfilePic(Settings.usuario!.urlImagemPerfil!);
+                return getProfilePic(Settings.usuario!.urlImagemPerfil);
             }
           }),
         ),
@@ -196,7 +210,7 @@ class _PerfilScreenState extends State<PerfilScreen>
         Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Text(
-            Settings.usuario!.nome!,
+            Settings.usuario!.nome,
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
@@ -207,7 +221,7 @@ class _PerfilScreenState extends State<PerfilScreen>
         Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Text(
-            Settings.usuario!.curso!,
+            Settings.usuario!.curso,
             style: const TextStyle(fontSize: 14),
             textAlign: TextAlign.center,
           ),
@@ -242,7 +256,8 @@ class _PerfilScreenState extends State<PerfilScreen>
                   : const Icon(Icons.school),
               subtitle: Text(perfilModel.curso!),
               onTap: () {
-                Clipboard.setData(ClipboardData(text: Settings.usuario!.curso));
+                Clipboard.setData(
+                    ClipboardData(text: Settings.usuario?.curso ?? ''));
                 ToastUtil.showShortToast(
                     'Curso copiado para área de transferência.');
               },
@@ -255,7 +270,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               leading: Theme.of(context).platform == TargetPlatform.iOS
                   ? const Icon(CupertinoIcons.checkmark_shield_fill)
                   : const Icon(Icons.offline_pin),
-              subtitle: Text(Settings.usuario!.numMatricula!),
+              subtitle: Text(Settings.usuario!.numMatricula),
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: Settings.usuario!.numMatricula));
@@ -271,10 +286,10 @@ class _PerfilScreenState extends State<PerfilScreen>
               leading: Theme.of(context).platform == TargetPlatform.iOS
                   ? const Icon(CupertinoIcons.chart_bar_square_fill)
                   : const Icon(Icons.insert_chart),
-              subtitle: Text(perfilModel.integralizacao! + '%'),
+              subtitle: Text('${perfilModel.integralizacao!}%'),
               onTap: () {
                 Clipboard.setData(
-                    ClipboardData(text: perfilModel.integralizacao));
+                    ClipboardData(text: perfilModel.integralizacao ?? ''));
                 ToastUtil.showShortToast(
                     'Integralização copiado para área de transferência.');
               },
@@ -289,7 +304,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                   : const Icon(Icons.assistant),
               subtitle: Text(perfilModel.nivel!),
               onTap: () {
-                Clipboard.setData(ClipboardData(text: perfilModel.nivel));
+                Clipboard.setData(ClipboardData(text: perfilModel.nivel ?? ''));
                 ToastUtil.showShortToast(
                     'Nível copiado para área de transferência.');
               },
@@ -304,7 +319,8 @@ class _PerfilScreenState extends State<PerfilScreen>
                   : const Icon(Icons.assignment),
               subtitle: Text(perfilModel.situacao!),
               onTap: () {
-                Clipboard.setData(ClipboardData(text: perfilModel.situacao));
+                Clipboard.setData(
+                    ClipboardData(text: perfilModel.situacao ?? ''));
                 ToastUtil.showShortToast(
                     'Situação copiada para área de transferência.');
               },
@@ -320,7 +336,7 @@ class _PerfilScreenState extends State<PerfilScreen>
               subtitle: Text(perfilModel.semestreEntrada!),
               onTap: () {
                 Clipboard.setData(
-                    ClipboardData(text: perfilModel.semestreEntrada));
+                    ClipboardData(text: perfilModel.semestreEntrada ?? ''));
                 ToastUtil.showShortToast(
                     'Semestre copiado para área de transferência.');
               },
@@ -335,7 +351,7 @@ class _PerfilScreenState extends State<PerfilScreen>
                   : const Icon(Icons.timeline),
               subtitle: Text(perfilModel.iDE!),
               onTap: () {
-                Clipboard.setData(ClipboardData(text: perfilModel.iDE));
+                Clipboard.setData(ClipboardData(text: perfilModel.iDE ?? ''));
                 ToastUtil.showShortToast(
                     'IDE copiado para área de transferência.');
               },

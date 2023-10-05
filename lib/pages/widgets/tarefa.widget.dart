@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 import '../../models/portal.model.dart';
 
@@ -13,49 +12,27 @@ class TarefaWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat formatterComplete = DateFormat('dd/MM/yyyy hh:mm');
-    final DateFormat formatterDate = DateFormat('dd/MM/yyyy');
-    late DateTime date;
-    if (atividade.hora.trim().isEmpty) {
-      date = formatterDate.parse(atividade.data.trim());
-    } else {
-      date = formatterComplete
-          .parse('${atividade.data.trim()} ${atividade.hora.trim()}');
-    }
-
-    var diffDays = date.difference(DateTime.now()).inDays;
-    late TaskPriority priority;
     late Color color;
-    String textTaskLeft = '$diffDays dias faltando';
-    if (diffDays > 3) {
-      priority = TaskPriority.low;
-      color = const Color(0xFFD2ECC9);
-    }
-    if (diffDays <= 3 && diffDays > 1) {
-      priority = TaskPriority.medium;
-      color = const Color(0xFFECEAB6);
-    }
-    if (diffDays <= 1) {
-      priority = TaskPriority.high;
-      color = const Color(0xFFF9D0D0);
-      textTaskLeft = 'Amanhã';
-    }
-    if (diffDays == 0) {
-      textTaskLeft = 'Hoje';
-    }
-    if (diffDays.isNegative) {
-      priority = TaskPriority.none;
-      color = Colors.grey[200] ?? Colors.grey;
-      textTaskLeft = 'Tarefa expirada';
+    switch (atividade.priority) {
+      case TaskPriority.low:
+        color = const Color(0xFFD2ECC9);
+        break;
+      case TaskPriority.medium:
+        color = const Color(0xFFECEAB6);
+        break;
+      case TaskPriority.high:
+        color = const Color(0xFFF9D0D0);
+        break;
+      case TaskPriority.none:
+        color = Colors.grey[200] ?? Colors.grey;
+        break;
     }
 
     return Container(
-      height: 160,
-      width: 180,
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(30))),
       child: Card(
-        elevation: 0,
+        elevation: 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -73,11 +50,13 @@ class TarefaWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      circle(priority),
+                      circle(atividade.priority),
                       const SizedBox(
                         width: 5,
                       ),
-                      Text(textTaskLeft,
+                      Text(atividade.textTaskLeft,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.darkerGrotesque(
                               fontSize: 14, fontWeight: FontWeight.w600)),
                     ],
@@ -89,7 +68,7 @@ class TarefaWidget extends StatelessWidget {
                           fontSize: 14, fontWeight: FontWeight.w900)),
                   Text(atividade.conteudo,
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
+                      maxLines: 2,
                       style: GoogleFonts.darkerGrotesque(
                           fontSize: 14, fontWeight: FontWeight.w600)),
                 ],
@@ -101,7 +80,9 @@ class TarefaWidget extends StatelessWidget {
                           fontSize: 11.5, fontWeight: FontWeight.w600)),
                   Visibility(
                       visible: atividade.hora.isNotEmpty,
-                      child: Text(' - ' + atividade.hora,
+                      child: Text(' - ${atividade.hora}',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                           style: GoogleFonts.darkerGrotesque(
                               fontSize: 11.5, fontWeight: FontWeight.w600))),
                 ],

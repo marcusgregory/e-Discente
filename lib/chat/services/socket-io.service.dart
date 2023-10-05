@@ -15,7 +15,7 @@ class SocketIOService {
 
     print('initSocket');
     socket = IO.io(
-        AppInstance.apiURL,
+        "http://165.232.156.1",
         IO.OptionBuilder()
             .enableForceNewConnection()
             .setTransports(['websocket']).setQuery({

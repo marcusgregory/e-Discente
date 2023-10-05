@@ -11,13 +11,19 @@ class TurmasCalendarioRepository {
     try {
       var url = '${Settings.apiURL}/sigaa/turmas?showCalendar=true';
       http.Response response = await http.get(Uri.parse(url), headers: {
-        'jwt': Settings.usuario!.token!
-      }).timeout(const Duration(seconds: 50));
+        'jwt': Settings.usuario!.token
+      }).timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable turmas = json['data'];
-        return turmas.map((model) => TurmaCalendario.fromJson(model)).toList();
+
+        var turmasResponse =
+            turmas.map((model) => TurmaCalendario.fromJson(model)).toList();
+        for (var element in turmasResponse) {
+          element.local = element.local.replaceAll('', '-');
+        }
+        return turmasResponse;
       } else if (response.statusCode == 400) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         return Future.error(json['message']);

@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/autenticacao.model.dart';
 import '../util/toast.util.dart';
-import 'inicio.page.dart';
 
 class LoginPageN extends StatefulWidget {
   const LoginPageN({Key? key}) : super(key: key);
@@ -206,7 +205,7 @@ class _LoginPageNState extends State<LoginPageN> {
       child: Text(
         'Esqueceu sua senha?',
         style: GoogleFonts.darkerGrotesque(
-            color: Theme.of(context).textTheme.bodyText1!.color,
+            color: Theme.of(context).textTheme.bodyLarge!.color,
             fontSize: 18,
             fontWeight: FontWeight.w700),
       ),

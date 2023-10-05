@@ -10,7 +10,6 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:e_discente/chat/external/emoji_chooser/emoji_choose.dart';
 import 'package:e_discente/chat/models/i_message.dart';
 import 'package:e_discente/chat/models/message.model.dart';
 import 'package:e_discente/chat/stores/chats.store.dart';
@@ -181,7 +180,7 @@ class _ChatPageState extends State<ChatPage>
                                 JumpingDotsProgressIndicator(
                                     color: Theme.of(context)
                                             .textTheme
-                                            .bodyText1!
+                                            .bodyLarge!
                                             .backgroundColor ??
                                         Colors.grey[200] ??
                                         Colors.grey)
@@ -271,7 +270,7 @@ class _ChatPageState extends State<ChatPage>
                                                       fontSize:
                                                           Theme.of(context)
                                                                   .textTheme
-                                                                  .caption!
+                                                                  .bodySmall!
                                                                   .fontSize! *
                                                               0.9,
                                                       color: Colors.white,
@@ -398,18 +397,7 @@ class _ChatPageState extends State<ChatPage>
 
   Widget _emojiPicker() {
     if (kIsWeb) {
-      return EmojiChoose(
-        onEmojiSelected: (category, emoji) {
-          textEditingController
-            ..text += category.emoji
-            ..selection = TextSelection.fromPosition(
-                TextPosition(offset: textEditingController.text.length));
-        },
-        recommendKeywords: const [''],
-        columns: 8,
-        rows: 4,
-        noRecentsText: 'Sem emojis recentes',
-      );
+      return Container();
     } else {
       return emoji_picker.EmojiPicker(
         onBackspacePressed: () {
@@ -516,12 +504,12 @@ class _ChatPageState extends State<ChatPage>
     return Row(
       children: <Widget>[
         // Button send image
-        Material(
-          child: IconButton(
-            icon: const Icon(Icons.image_outlined),
-            onPressed: () => {},
-          ),
-        ),
+        // Material(
+        //   child: IconButton(
+        //     icon: const Icon(Icons.image_outlined),
+        //     onPressed: () => {},
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Material(

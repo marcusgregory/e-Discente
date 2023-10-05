@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:e_discente/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:e_discente/background_fetch_settings.dart';
-import 'package:e_discente/notification_settings2.dart';
+import 'package:e_discente/notification_awesome.dart';
 import 'package:flutter/services.dart';
+import 'firebase_options.dart';
 import 'pages/splash_screen.page.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
@@ -45,7 +47,14 @@ void main() async {
     systemNavigationBarColor: Colors.transparent,
     statusBarColor: Colors.transparent,
   ));
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   initialize();
   runApp(MyApp(savedThemeMode: savedThemeMode));
 }

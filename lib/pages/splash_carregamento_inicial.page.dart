@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../blocs/carregamento.bloc.dart';
+import '../blocs/login.bloc.dart';
 import 'inicio.page.dart';
+import 'login_page.dart';
 
 class SplashCarregamentoInicialPage extends StatefulWidget {
   const SplashCarregamentoInicialPage({Key? key}) : super(key: key);
@@ -161,7 +163,7 @@ class _SplashCarregamentoInicialPageState
                           (_) => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => InicioPage()),
+                                    builder: (context) => const InicioPage()),
                               ));
                       return Column(
                         children: const [
@@ -201,6 +203,24 @@ class _SplashCarregamentoInicialPageState
                             icon:
                                 const Icon(Icons.refresh, color: Colors.white),
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextButton(
+                              onPressed: () async {
+                                await LoginBloc().deslogar();
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            const LoginPageN()),
+                                    (Route<dynamic> route) => false);
+                              },
+                              child: const Text('Sair',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)))
                         ],
                       );
                     case CarregamentoState.loadingChats:

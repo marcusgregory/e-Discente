@@ -7,7 +7,7 @@ import 'package:e_discente/pages/turma.page.dart';
 class Turma extends StatelessWidget {
   final TurmaModel turma;
 
-  const Turma(this.turma);
+  const Turma(this.turma, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class Turma extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 15,
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
+                                  Theme.of(context).textTheme.bodyLarge!.color,
                               fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 5),
@@ -67,7 +67,7 @@ class Turma extends StatelessWidget {
                             Icon(
                               Icons.assignment_ind,
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
+                                  Theme.of(context).textTheme.bodyLarge!.color,
                               size: 18,
                             ),
                             const SizedBox(width: 5),
@@ -81,7 +81,7 @@ class Turma extends StatelessWidget {
                                   style: TextStyle(
                                       color: Theme.of(context)
                                           .textTheme
-                                          .bodyText1!
+                                          .bodyLarge!
                                           .color,
                                       fontWeight: FontWeight.w500)),
                             ),
@@ -96,7 +96,7 @@ class Turma extends StatelessWidget {
                               Icon(Icons.account_balance,
                                   color: Theme.of(context)
                                       .textTheme
-                                      .bodyText1!
+                                      .bodyLarge!
                                       .color,
                                   size: 18),
                               const SizedBox(width: 5),
@@ -107,7 +107,7 @@ class Turma extends StatelessWidget {
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .textTheme
-                                            .bodyText1!
+                                            .bodyLarge!
                                             .color,
                                         fontWeight: FontWeight.w500)),
                               ),
@@ -123,19 +123,19 @@ class Turma extends StatelessWidget {
                               Icon(Icons.date_range,
                                   color: Theme.of(context)
                                       .textTheme
-                                      .bodyText1!
+                                      .bodyLarge!
                                       .color,
                                   size: 18),
                               const SizedBox(width: 5),
                               Expanded(
                                 child: Text(
-                                    '${HorariosUtil.parse(turma.horario ?? '')}\n(${turma.horario!})',
+                                    '(${turma.horario!}) - ${HorariosUtil.parse(turma.horario ?? '')}',
                                     maxLines: 5,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .textTheme
-                                            .bodyText1!
+                                            .bodyLarge!
                                             .color,
                                         fontWeight: FontWeight.w500)),
                               ),
@@ -148,7 +148,7 @@ class Turma extends StatelessWidget {
                 ),
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: Theme.of(context).textTheme.bodyText1!.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                   size: 15,
                 ),
                 const SizedBox(

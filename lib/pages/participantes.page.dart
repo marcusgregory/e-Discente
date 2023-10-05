@@ -8,10 +8,8 @@ import 'package:e_discente/pages/widgets/participante.widget.dart';
 class ParticipantesPage extends StatefulWidget {
   final Future<ParticipantesModel>? _participantesFuture;
   final String? _idTurma;
-  const ParticipantesPage(
-    this._participantesFuture,
-    this._idTurma,
-  );
+  const ParticipantesPage(this._participantesFuture, this._idTurma,
+      {super.key});
   @override
   _ParticipantesPageState createState() => _ParticipantesPageState();
 }
@@ -19,14 +17,10 @@ class ParticipantesPage extends StatefulWidget {
 class _ParticipantesPageState extends State<ParticipantesPage>
     with AutomaticKeepAliveClientMixin {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
+        padding: const EdgeInsets.only(top: 5),
         child: FutureBuilder(
             future: widget._participantesFuture,
             builder: (BuildContext context,
@@ -54,30 +48,27 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                         SliverPersistentHeader(
                             delegate: _SliverAppBarDelegate(
                                 minHeight: 42,
-                                maxHeight: 42,
+                                maxHeight: 82,
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: Theme.of(context).canvasColor),
-                                  child: Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Text(
-                                            'Docentes',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Divider(),
-                                        )
-                                      ],
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        'Docentes',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Divider(),
+                                      )
+                                    ],
                                   ),
                                 ))),
                         SliverList(
@@ -90,30 +81,27 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                             pinned: true,
                             delegate: _SliverAppBarDelegate(
                                 minHeight: 42,
-                                maxHeight: 42,
+                                maxHeight: 82,
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: Theme.of(context).canvasColor),
-                                  child: Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Text(
-                                            'Discentes',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Divider(),
-                                        )
-                                      ],
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        'Discentes',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Divider(),
+                                      )
+                                    ],
                                   ),
                                 ))),
                         SliverList(

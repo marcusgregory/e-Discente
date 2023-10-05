@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:e_discente/firebase_messaging.dart';
 import 'package:e_discente/models/turma.model.dart';
 import 'package:e_discente/repositories/turmas.repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,8 +19,8 @@ class TurmasBloc {
 
   Stream<TurmasState> get turmaStream => _streamController.stream;
 
-  load({bool isRefreshIndicator = false}) async {
-    var _prefs = await SharedPreferences.getInstance();
+  Future<void> load({bool isRefreshIndicator = false}) async {
+    var prefs = await SharedPreferences.getInstance();
     firstRun = false;
     if (!_streamController.isClosed) {
       try {
@@ -27,15 +28,18 @@ class TurmasBloc {
           turmasState = TurmasState.loading;
           _streamController.sink.add(turmasState);
         }
-        Iterable i = jsonDecode(_prefs.getString('classes') ?? '');
+        Iterable i = jsonDecode(prefs.getString('classes') ?? '');
         list = i.map((turma) => TurmaModel.fromJson(turma)).toList();
         list.sort();
         turmasState = TurmasState.ready;
         _loadOffline = true;
         _streamController.sink.add(turmasState);
         list = await TurmasRepository().getTurmas();
-        await _prefs.setString('classes', jsonEncode(list));
+        await prefs.setString('classes', jsonEncode(list));
         list.sort();
+        for (var element in list) {
+          await subscribeToTopic(element.idTurma ?? '');
+        }
         turmasState = TurmasState.ready;
         _streamController.sink.add(turmasState);
       } catch (e) {

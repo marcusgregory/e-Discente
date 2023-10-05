@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:e_discente/models/noticias.model.dart';
 import 'package:e_discente/repositories/noticias.repository.dart';
 
+import '../firebase_messaging.dart';
+
 class NoticiasBloc {
   NoticiasBloc() {
     load();
@@ -17,6 +19,7 @@ class NoticiasBloc {
   Stream<NoticiaState> get noticiaStream => _streamController.stream;
 
   load({bool isRefreshIndicator = false}) async {
+    await subscribeToTopic('news');
     if (!_streamController.isClosed) {
       if (true == true) {
         try {

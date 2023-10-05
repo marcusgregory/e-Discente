@@ -57,7 +57,7 @@ class JumpingDotsProgressIndicator extends StatefulWidget {
   final double endTweenValue = 8.0;
 
   /// Creates a jumping do progress indicator.
-  const JumpingDotsProgressIndicator({
+  const JumpingDotsProgressIndicator({super.key, 
     this.numberOfDots = 3,
     this.fontSize = 10.0,
     this.color = Colors.black,

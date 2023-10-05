@@ -10,18 +10,13 @@ import 'conteudo.page.dart';
 class AulasPage extends StatefulWidget {
   final Aulas _aulasStore;
   final String? _idTurma;
-  const AulasPage(this._aulasStore, this._idTurma);
+  const AulasPage(this._aulasStore, this._idTurma, {super.key});
   @override
   _AulasPageState createState() => _AulasPageState();
 }
 
 class _AulasPageState extends State<AulasPage>
     with AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -55,7 +50,7 @@ class _AulasPageState extends State<AulasPage>
               case FutureStatus.fulfilled:
                 List<AulaModel> aulas = future.result;
                 return CustomScrollView(
-                  key: PageStorageKey('aulas:' + widget._idTurma!),
+                  key: PageStorageKey('aulas:${widget._idTurma!}'),
                   slivers: <Widget>[
                     SliverOverlapInjector(
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
@@ -109,7 +104,7 @@ class _AulasPageState extends State<AulasPage>
                 leading: balao(numero),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
-                  color: Theme.of(context).textTheme.bodyText1!.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                   size: 15,
                 ),
                 title: Text(
@@ -150,7 +145,7 @@ class _AulasPageState extends State<AulasPage>
             shape: BoxShape.circle,
           ),
         ),
-        Text(numero + "°",
+        Text("$numero°",
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold))
       ],

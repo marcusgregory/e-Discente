@@ -43,9 +43,10 @@ abstract class _SocketIOStoreBase with Store {
   void initSocket() {
     print('initSocket');
     socket = socket_io.io(
-        AppInstance.apiURL,
+        AppInstance.socketUrl,
         socket_io.OptionBuilder()
             .enableForceNewConnection()
+            .setPath('/socket')
             .setTransports(['websocket']).setQuery({
           'token': AppInstance.token,
           'usuario': json.encode(Settings.usuario!.toJson())

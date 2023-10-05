@@ -6,7 +6,7 @@ import 'package:e_discente/repositories/portal.repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:e_discente/models/noticias.model.dart';
 import 'models/portal.model.dart';
-import 'notification_settings2.dart';
+import 'notification_awesome.dart';
 import 'repositories/noticias.repository.dart';
 
 void initBackgroundFetch() {
@@ -28,8 +28,8 @@ void initBackgroundFetch() {
 
 void backgroundFetchTask(String taskId) async {
   print('[BackgroundFetch] evento recebido.');
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await Future.wait([getNews(prefs), getTasksUpdate(prefs)]);
+  //SharedPreferences prefs = await SharedPreferences.getInstance();
+  //await getNews(prefs);
   BackgroundFetch.finish(taskId);
 }
 
@@ -70,31 +70,29 @@ Future<void> getNews(SharedPreferences prefs) async {
 Future<void> getTasksUpdate(SharedPreferences prefs) async {
   var usuario = await UsuarioBloc().loadUsuario(delayed: false);
   if (usuario != null) {
-    if (usuario.token != null) {
-      if ((prefs.containsKey('tasks'))) {
-        Portal portalAtual = (await PortalRepository()
-            .getAtualizacoesPortal(token: usuario.token ?? ''));
-        Portal portalAntigo = portalFromJson(prefs.getString('tasks') ?? '');
-        await prefs.setString('tasks', jsonEncode(portalAtual));
-        List<Atividade> atividadesNovas = [];
-        portalAntigo.atividades.forEach(portalAtual.atividades.remove);
-        atividadesNovas = portalAtual.atividades;
-        if (atividadesNovas.isNotEmpty) {
-          print('[BackgroundFetch] novas atividades.');
-          for (var atividade in atividadesNovas) {
-            NotificationAwesome.createNotificationNewTask(atividade);
-          }
+    if ((prefs.containsKey('tasks'))) {
+      Portal portalAtual = (await PortalRepository()
+          .getAtualizacoesPortal(token: usuario.token));
+      Portal portalAntigo = portalFromJson(prefs.getString('tasks') ?? '');
+      await prefs.setString('tasks', jsonEncode(portalAtual));
+      List<Atividade> atividadesNovas = [];
+      portalAntigo.atividades.forEach(portalAtual.atividades.remove);
+      atividadesNovas = portalAtual.atividades;
+      if (atividadesNovas.isNotEmpty) {
+        print('[BackgroundFetch] novas atividades.');
+        for (var atividade in atividadesNovas) {
+          NotificationAwesome.createNotificationNewTask(atividade);
         }
-        List<AtualizacoesTurma> atualizacoesTurmasNovas = [];
-        portalAntigo.atualizacoesTurmas
-            .forEach(portalAtual.atualizacoesTurmas.remove);
-        atualizacoesTurmasNovas = portalAtual.atualizacoesTurmas;
-        if (atualizacoesTurmasNovas.isNotEmpty) {
-          print('[BackgroundFetch] novas atualizacoes das turmas.');
-          for (var atualizacaoTurma in atualizacoesTurmasNovas) {
-            NotificationAwesome.createNotificationNewUpdatePortal(
-                atualizacaoTurma);
-          }
+      }
+      List<AtualizacoesTurma> atualizacoesTurmasNovas = [];
+      portalAntigo.atualizacoesTurmas
+          .forEach(portalAtual.atualizacoesTurmas.remove);
+      atualizacoesTurmasNovas = portalAtual.atualizacoesTurmas;
+      if (atualizacoesTurmasNovas.isNotEmpty) {
+        print('[BackgroundFetch] novas atualizacoes das turmas.');
+        for (var atualizacaoTurma in atualizacoesTurmasNovas) {
+          NotificationAwesome.createNotificationNewUpdatePortal(
+              atualizacaoTurma);
         }
       }
     }

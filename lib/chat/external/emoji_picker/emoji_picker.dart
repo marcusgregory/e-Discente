@@ -80,10 +80,10 @@ enum ButtonMode {
 ///
 /// The function returns the selected [Emoji] as well
 /// as the [Category] from which it originated
-typedef void OnEmojiSelected(Category category, Emoji emoji);
+typedef OnEmojiSelected = void Function(Category category, Emoji emoji);
 
 /// Callback function for backspace button
-typedef void OnBackspacePressed();
+typedef OnBackspacePressed = void Function();
 
 /// Callback function for custom view
 typedef EmojiViewBuilder = Widget Function(Config config, EmojiViewState state);
@@ -97,7 +97,7 @@ typedef EmojiViewBuilder = Widget Function(Config config, EmojiViewState state);
 /// and allow the user to quickly switch to that [Category]
 class EmojiPicker extends StatefulWidget {
   /// EmojiPicker for flutter
-  EmojiPicker({
+  const EmojiPicker({
     Key? key,
     required this.onEmojiSelected,
     this.onBackspacePressed,
@@ -225,15 +225,16 @@ class EmojiPickerState extends State<EmojiPicker> {
     availableCategoryEmoji.forEach((category, emojis) async {
       _categoryEmoji.add(
         CategoryEmoji(
-            category as Category,
+            category,
             emojis.entries.map((emoji) {
               var _emoji = Emoji(emoji.key, emoji.value);
               // Emoji with skin tone are only in SMILEY & ACTIVITIES category
               if (category == Category.SMILEYS ||
                   category == Category.ACTIVITIES) {
                 return _updateSkinToneSupport(_emoji);
-              } else
+              } else {
                 return _emoji;
+              }
             }).toList()),
       );
     });

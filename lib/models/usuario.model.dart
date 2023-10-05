@@ -1,23 +1,23 @@
 class UsuarioModel {
-  String? nomeDeUsuario;
-  String? nome;
-  String? curso;
-  String? numMatricula;
-  String? urlImagemPerfil;
-  String? cookie;
-  String? token;
+  late String nomeDeUsuario;
+  late String nome;
+  late String curso;
+  late String numMatricula;
+  late String urlImagemPerfil;
+  late String cookie;
+  late String token;
 
   UsuarioModel(
-      {this.nomeDeUsuario,
-      this.nome,
-      this.curso,
-      this.numMatricula,
-      this.urlImagemPerfil,
-      this.cookie,
-      this.token});
+      {required this.nomeDeUsuario,
+      required this.nome,
+      required this.curso,
+      required this.numMatricula,
+      required this.urlImagemPerfil,
+      required this.cookie,
+      required this.token});
 
   UsuarioModel.fromJson(Map<String, dynamic> json) {
-    nomeDeUsuario = json['nomeDeUsuario'];
+    nomeDeUsuario = json['nomeDeUsuario'] ?? '';
     nome = json['nome'];
     curso = json['curso'];
     numMatricula = json['numMatricula'];
@@ -28,7 +28,7 @@ class UsuarioModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['nomeDeUsuario'] = nomeDeUsuario!.toLowerCase().trim();
+    data['nomeDeUsuario'] = nomeDeUsuario.toLowerCase().trim();
     data['nome'] = nome;
     data['curso'] = curso;
     data['numMatricula'] = numMatricula;

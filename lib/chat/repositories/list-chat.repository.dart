@@ -11,7 +11,7 @@ class ListChatRepository {
       var url = '${AppInstance.apiURL}/chats';
       http.Response response = await http.get(Uri.parse(url), headers: {
         'jwt': AppInstance.token
-      }).timeout(const Duration(seconds: 50));
+      }).timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));

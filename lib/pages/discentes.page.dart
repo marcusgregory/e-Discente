@@ -4,7 +4,7 @@ import 'package:e_discente/pages/widgets/participante.widget.dart';
 
 class DiscentesPage extends StatefulWidget {
   final List<DiscenteModel> discentes;
-  const DiscentesPage(this.discentes);
+  const DiscentesPage(this.discentes, {super.key});
 
   @override
   _DiscentesPageState createState() => _DiscentesPageState();

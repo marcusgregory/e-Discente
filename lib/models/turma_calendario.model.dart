@@ -23,7 +23,7 @@ class TurmaCalendario implements Comparable {
       TurmaCalendario(
         codigo: json["codigo"],
         nomeTurma: json["nomeTurma"],
-        docente: json["docente"],
+        docente: json["docente"] ?? '',
         local: json["local"],
         horario: json["horario"],
         idTurma: json["idTurma"],

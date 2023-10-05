@@ -11,7 +11,7 @@ class NoticiasRepository {
     try {
       var url = '${Settings.apiURL}/unilab/noticias';
       http.Response response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 30));
+          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable noticias = json['data'];

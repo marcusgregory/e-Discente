@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class BalaoSituacao extends StatelessWidget {
   final String situacao;
-  const BalaoSituacao(this.situacao);
+  const BalaoSituacao(this.situacao, {super.key});
   @override
   Widget build(BuildContext context) {
     return Stack(

@@ -12,7 +12,7 @@ import 'package:e_discente/models/documento.model.dart';
 import 'package:e_discente/settings.dart';
 import 'package:e_discente/util/toast.util.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DownloadService {
   final BuildContext _context;
@@ -29,49 +29,61 @@ class DownloadService {
       if (Platform.isAndroid) {
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        int sdk = androidInfo.version.sdkInt!;
+        int sdk = androidInfo.version.sdkInt;
         if (sdk <= 28) {
-          execute(idTurma, documento, urlFile);
+          _showDialogOpenExternalLinkOrDownload(_context, () {
+            openUrl(urlFile);
+          }, () {
+            _executeDownload(_context, idTurma, documento, urlFile);
+          });
         } else {
-          openUrl(urlFile);
+          _showDialogOpenExternalLink(
+            _context,
+            () {
+              openUrl(urlFile);
+            },
+          );
         }
       } else {
-        execute(idTurma, documento, urlFile);
+        _showDialogOpenExternalLink(
+          _context,
+          () {
+            openUrl(urlFile);
+          },
+        );
       }
     }
   }
 
   Future<void> openUrl(String urlFile) async {
     String url = Uri.encodeFull(urlFile);
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await launchUrlString(url, mode: LaunchMode.externalApplication)) {
     } else {
       ToastUtil.showShortToast("Não foi possível abrir o documento");
     }
   }
 
-  Future<void> execute(
-      String? idTurma, DocumentoModel documento, String urlFile) async {
+  Future<void> execute(String? idTurma, DocumentoModel documento,
+      String urlFile, Function(double) percent) async {
     try {
-      _showMaterialDialog(_context);
       _isOpen = true;
-      var _permissionReady = await _checkPermission();
-      var _localPath = (await _findLocalPath());
+      var permissionReady = await _checkPermission();
+      var localPath = (await _findLocalPath());
 
-      var _filename = 'documento_turma_$idTurma.pdf';
-      if (_permissionReady) {
-        if (_localPath.contains('/storage/emulated/0')) {
-          _localPath = '/storage/emulated/0/e-Discente/' +
-              Settings.usuario!.nome!.trim().replaceAll(' ', '_');
-          Directory d = Directory(_localPath);
+      var filename = 'documento_turma_$idTurma.pdf';
+      if (permissionReady) {
+        if (localPath.contains('/storage/emulated/0')) {
+          localPath =
+              '/storage/emulated/0/e-Discente/${Settings.usuario!.nome.trim().replaceAll(' ', '_')}';
+          Directory d = Directory(localPath);
           if (!d.existsSync()) {
             Directory(d.path).createSync(recursive: true);
           }
         }
-        print(_localPath);
+        print(localPath);
         // var sessaoDownloadModel =
         //     await SessaoDownload().requestSessaoDownload(idTurma);
-        var _dio = Dio();
+        var dio = Dio();
         // final response =
         //     await _dio.post('https://sig.unilab.edu.br/sigaa/ava/index.jsf',
         //         data: {
@@ -96,19 +108,19 @@ class DownloadService {
         //     .split('=')[1]
         //     .replaceAll('"', '');
 
-        final response = await _dio.get(urlFile,
+        final response = await dio.get(urlFile,
             options: (Options(
               contentType: Headers.formUrlEncodedContentType,
               headers: {'User-Agent': 'Mozilla/5.0'},
               followRedirects: false,
             )));
         print(response.headers);
-        _filename = response.headers
+        filename = response.headers
             .value('content-disposition')!
             .split('=')[1]
             .replaceAll('"', '');
-        print(_filename);
-        int _fileLength = 0;
+        print(filename);
+        int fileLength = 0;
         // await _dio.download('https://sig.unilab.edu.br/sigaa/ava/index.jsf',
         //     _localPath + '/' + _filename,
         //     data: {
@@ -130,7 +142,7 @@ class DownloadService {
         //   print(formatBytes(rec));
         //   _fileLength = rec;
         // });
-        await _dio.download(urlFile, _localPath + '/' + _filename,
+        await dio.download(urlFile, '$localPath/$filename',
             options: Options(
                 contentType: Headers.formUrlEncodedContentType,
                 headers: {'User-Agent': 'Mozilla/5.0'},
@@ -139,18 +151,19 @@ class DownloadService {
           print(formatBytes(received));
           int percentage = ((received / total) * 100).floor();
           print('${percentage.toDouble()} %');
+          percent(percentage.toDouble() / 100.0);
 
-          _fileLength = received;
+          fileLength = received;
         });
 
         print(_isOpen);
         if (_isOpen) {
           Navigator.of(_context).pop();
           _showCompleteDialog(
-              _context, _filename, _localPath + '/' + _filename, _fileLength);
+              _context, filename, '$localPath/$filename', fileLength);
         } else {
           ToastUtil.showLongToast(
-              'Download do arquivo "$_filename" foi concluido\nTamanho: ${formatBytes(_fileLength)}');
+              'Download do arquivo "$filename" foi concluido\nTamanho: ${formatBytes(fileLength)}');
         }
       }
     } catch (e) {
@@ -186,14 +199,39 @@ class DownloadService {
     return false;
   }
 
-  _showMaterialDialog(BuildContext context) {
+  _executeDownload(BuildContext context, String? idTurma,
+      DocumentoModel documento, String urlFile) {
+    double? percent;
+    StateSetter? setState;
+    execute(idTurma, documento, urlFile, (percent) {
+      if (setState != null) {
+        setState(() {
+          percent = percent;
+        });
+      }
+    });
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => const AlertDialog(
-              title: Text("Fazendo Download"),
-              content: LinearProgressIndicator(value: null),
-            )).then((value) => _isOpen = false);
+        builder: (_) => StatefulBuilder(builder: (context, setState) {
+              setState = setState;
+
+              return AlertDialog(
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text('Fazendo Download'),
+                    Visibility(
+                        visible: percent != null,
+                        child: Text(percent != null
+                            ? ' (${(percent * 100).floor()}%)'
+                            : '')),
+                  ],
+                ),
+                content: LinearProgressIndicator(value: percent),
+              );
+            })).then((value) => _isOpen = false);
   }
 
   _showCompleteDialog(
@@ -221,12 +259,60 @@ class DownloadService {
             ));
   }
 
+  _showDialogOpenExternalLinkOrDownload(
+      BuildContext context, Function open, Function download) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+              title: const Text("Deseja baixar ou abrir?"),
+              content: const Text(
+                  'Você deseja baixar o arquivo em seu dispositivo ou abrir em seu navegador?'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      download();
+                    },
+                    child: const Text('Baixar')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      open();
+                    },
+                    child: const Text('Abrir'))
+              ],
+            ));
+  }
+
+  _showDialogOpenExternalLink(BuildContext context, Function open) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+              title: const Text("Deseja abrir?"),
+              content:
+                  const Text('Você deseja abrir o arquivo em seu navegador?'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancelar')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      open();
+                    },
+                    child: const Text('Abrir'))
+              ],
+            ));
+  }
+
   static String formatBytes(int bytes, {int decimals = 2}) {
     if (bytes <= 0) return "0 B";
     const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
     var i = (log(bytes) / log(1024)).floor();
-    return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) +
-        ' ' +
-        suffixes[i];
+    return '${(bytes / pow(1024, i)).toStringAsFixed(decimals)} ${suffixes[i]}';
   }
 }

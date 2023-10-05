@@ -58,19 +58,37 @@ abstract class _ChatsStoreBase with Store {
 
   @action
   Future<void> loadListChats({bool silent = false}) async {
-    var _prefs = await SharedPreferences.getInstance();
+    var prefs = await SharedPreferences.getInstance();
     firstRun = false;
     if (silent == false) chatsState = ChatsState.LOADING;
     try {
-      Iterable i = jsonDecode(_prefs.getString('chats') ?? '');
+      Iterable i = jsonDecode(prefs.getString('chats') ?? '');
       listChats =
           i.map((chat) => ChatItemModel.fromJson(chat)).toList().asObservable();
       _loadOffline = true;
+
       chatsState = ChatsState.READY;
       socketIOStore!.entrarNosGrupos(listChats);
 
       listChats = (await listChatRepository.getChats()).asObservable();
-      await _prefs.setString('chats', jsonEncode(listChats.toList()));
+
+      await prefs.setString('chats', jsonEncode(listChats.toList()));
+      // listChats.add(ChatItemModel(
+      //     gid: 'teste',
+      //     name: 'Teste',
+      //     members: [],
+      //     createdAt: DateTime.now(),
+      //     createdBy: '',
+      //     modifiedAt: DateTime.now(),
+      //     recentMessage: MessageModel(
+      //         gid: 'teste',
+      //         messageText: 'oi',
+      //         mid: "6546546",
+      //         sendAt: DateTime.now(),
+      //         sendBy: 'marcus_gregory',
+      //         profilePicUrl: '',
+      //         state: MessageState.SENDED,
+      //         type: 'messageText')));
       // listChats = [
       //   ChatItemModel(
       //       gid: '18738',
@@ -87,6 +105,7 @@ abstract class _ChatsStoreBase with Store {
       //       createdBy: 'ediscente',
       //       modifiedAt: DateTime.now())
       // ].asObservable();
+
       socketIOStore!.entrarNosGrupos(listChats);
       chatsState = ChatsState.READY;
     } catch (e) {

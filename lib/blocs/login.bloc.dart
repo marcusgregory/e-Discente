@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/usuario.model.dart';
 import '../repositories/conta.repository.dart';
-import '../repositories/register_fcmToken.repository.dart';
+import '../repositories/register_fcm_token.repository.dart';
 import '../settings.dart';
 
 class LoginBloc {
@@ -36,7 +36,7 @@ class LoginBloc {
       repository.autenticar(event.auth).then((value) async {
         usuario = value;
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        usuario?.nomeDeUsuario = event.auth.usuario?.toLowerCase().trim();
+        usuario?.nomeDeUsuario = event.auth.usuario!.toLowerCase().trim();
         await prefs.setString('usuario', jsonEncode(usuario));
         Settings.usuario = usuario;
         registerTokenInitFirebase();

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_discente/pages/widgets/photo_view.widget.dart';
+import 'package:e_discente/settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CicleAvatarWidget extends StatelessWidget {
@@ -14,7 +16,9 @@ class CicleAvatarWidget extends StatelessWidget {
         radius: radius,
         backgroundColor: Colors.grey[200],
         child: CachedNetworkImage(
-          imageUrl: url,
+          imageUrl: (kIsWeb)
+              ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(url)}'
+              : url,
           placeholder: (context, url) {
             return Container(
               decoration: BoxDecoration(

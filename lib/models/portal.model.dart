@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:e_discente/pages/widgets/tarefa.widget.dart';
+import 'package:intl/intl.dart';
+
 Portal portalFromJson(String str) => Portal.fromJson(json.decode(str));
 
 String portalToJson(Portal data) => json.encode(data.toJson());
@@ -28,16 +31,44 @@ class Portal {
       };
 }
 
-class Atividade {
-  Atividade({
-    required this.idTurma,
-    required this.idAtividade,
-    required this.nomeDisciplina,
-    required this.expirada,
-    required this.data,
-    required this.hora,
-    required this.conteudo,
-  });
+class Atividade implements Comparable {
+  Atividade(
+      {required this.idTurma,
+      required this.idAtividade,
+      required this.nomeDisciplina,
+      required this.expirada,
+      required this.data,
+      required this.hora,
+      required this.conteudo}) {
+    final DateFormat formatterComplete = DateFormat('dd/MM/yyyy hh:mm');
+    final DateFormat formatterDate = DateFormat('dd/MM/yyyy');
+    late DateTime date;
+    if (hora.trim().isEmpty) {
+      date = formatterDate.parse(data.trim());
+    } else {
+      date = formatterComplete.parse('${data.trim()} ${hora.trim()}');
+    }
+
+    daysLeft = date.difference(DateTime.now()).inDays;
+    textTaskLeft = '$daysLeft dias faltando';
+    if (daysLeft > 3) {
+      priority = TaskPriority.low;
+    }
+    if (daysLeft <= 3 && daysLeft > 1) {
+      priority = TaskPriority.medium;
+    }
+    if (daysLeft <= 1) {
+      priority = TaskPriority.high;
+      textTaskLeft = 'Amanhã';
+    }
+    if (daysLeft == 0) {
+      textTaskLeft = 'Hoje';
+    }
+    if (daysLeft.isNegative) {
+      priority = TaskPriority.none;
+      textTaskLeft = 'Tarefa expirada';
+    }
+  }
 
   String idTurma;
   String idAtividade;
@@ -46,6 +77,9 @@ class Atividade {
   String data;
   String hora;
   String conteudo;
+  TaskPriority priority = TaskPriority.none;
+  String textTaskLeft = '';
+  int daysLeft = 0;
 
   factory Atividade.fromJson(Map<String, dynamic> json) => Atividade(
         idTurma: json["idTurma"],
@@ -77,6 +111,14 @@ class Atividade {
 
   @override
   int get hashCode => idAtividade.hashCode + idTurma.hashCode;
+
+  @override
+  int compareTo(other) {
+    if (daysLeft < 0) {
+      return -1;
+    }
+    return daysLeft.compareTo(other.daysLeft);
+  }
 }
 
 class AtualizacoesTurma {

@@ -1,9 +1,6 @@
-import 'package:e_discente/pages/login_page.dart';
-import 'package:e_discente/pages/splash_carregamento_inicial.page.dart';
+import 'package:e_discente/pages/request_notification_permission_web.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:e_discente/blocs/usuario.bloc.dart';
-import 'package:e_discente/models/usuario.model.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -15,7 +12,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    _loadUser();
+    _delay();
     super.initState();
   }
 
@@ -52,19 +49,15 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  void _loadUser() async {
-    UsuarioModel? usuario = await UsuarioBloc().loadUsuario();
-    await initializeDateFormatting('pt_Br', null);
+  void _delay() async {
     await Future.delayed(const Duration(milliseconds: 1000));
-    if (usuario != null) {
+    if (kIsWeb) {
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const SplashCarregamentoInicialPage()),
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => const RequestNotificationPermissionWeb()));
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const LoginPageN()));
+      await RequestNotificationPermissionWeb.loadUser(context);
     }
   }
 }

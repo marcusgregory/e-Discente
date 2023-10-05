@@ -65,7 +65,7 @@ class MessageBubbleTextWidget extends StatelessWidget {
                                 .light,
                         fontWeight: FontWeight.bold,
                         fontSize:
-                            Theme.of(context).textTheme.caption!.fontSize! *
+                            Theme.of(context).textTheme.bodySmall!.fontSize! *
                                 1.3),
                   ),
                 ),
@@ -75,20 +75,20 @@ class MessageBubbleTextWidget extends StatelessWidget {
                 LinkWell(message.messageText,
                     linkStyle: TextStyle(
                         fontSize:
-                            Theme.of(context).textTheme.caption!.fontSize! *
+                            Theme.of(context).textTheme.bodySmall!.fontSize! *
                                 1.15,
                         color: Colors.blue),
                     style: TextStyle(
                         fontSize:
-                            Theme.of(context).textTheme.caption!.fontSize! *
+                            Theme.of(context).textTheme.bodySmall!.fontSize! *
                                 1.15,
                         color: Theme.of(context).brightness == Brightness.light
-                            ? Theme.of(context).textTheme.bodyText1!.color
+                            ? Theme.of(context).textTheme.bodyLarge!.color
                             : isOwn
                                 ? Colors.black
                                 : Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .color)),
                 const SizedBox(
                   height: 5,
@@ -113,7 +113,7 @@ class MessageBubbleTextWidget extends StatelessWidget {
                                 ? null
                                 : Colors.grey[700],
                         fontSize:
-                            Theme.of(context).textTheme.caption!.fontSize),
+                            Theme.of(context).textTheme.bodySmall!.fontSize),
                   ),
                 ],
               ),
@@ -151,19 +151,19 @@ class MessageBubbleTextWidget extends StatelessWidget {
     switch (message.state) {
       case MessageState.SENDED:
         return Icon(Icons.check_rounded,
-            size: Theme.of(context).textTheme.caption!.fontSize! * 1.2,
+            size: Theme.of(context).textTheme.bodySmall!.fontSize! * 1.2,
             color: Theme.of(context).brightness == Brightness.light
                 ? null
                 : Colors.black);
       case MessageState.SENDING:
         return Icon(Icons.access_time_rounded,
-            size: Theme.of(context).textTheme.caption!.fontSize,
+            size: Theme.of(context).textTheme.bodySmall!.fontSize,
             color: Theme.of(context).brightness == Brightness.light
                 ? null
                 : Colors.black);
       case MessageState.ERROR:
         return Icon(Icons.access_time_rounded,
-            size: Theme.of(context).textTheme.caption!.fontSize,
+            size: Theme.of(context).textTheme.bodySmall!.fontSize,
             color: Theme.of(context).brightness == Brightness.light
                 ? null
                 : Colors.black);

@@ -62,45 +62,45 @@ mixin _$ChatsStore on _ChatsStoreBase, Store {
 
   @override
   void updateRecentMessage(IMessage message) {
-    final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
+    final $actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.updateRecentMessage');
     try {
       return super.updateRecentMessage(message);
     } finally {
-      _$_ChatsStoreBaseActionController.endAction(_$actionInfo);
+      _$_ChatsStoreBaseActionController.endAction($actionInfo);
     }
   }
 
   @override
   void sendMessage(IMessage message, Function callback) {
-    final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
+    final $actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.sendMessage');
     try {
       return super.sendMessage(message, callback);
     } finally {
-      _$_ChatsStoreBaseActionController.endAction(_$actionInfo);
+      _$_ChatsStoreBaseActionController.endAction($actionInfo);
     }
   }
 
   @override
   void receiveMessage(IMessage message) {
-    final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
+    final $actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.receiveMessage');
     try {
       return super.receiveMessage(message);
     } finally {
-      _$_ChatsStoreBaseActionController.endAction(_$actionInfo);
+      _$_ChatsStoreBaseActionController.endAction($actionInfo);
     }
   }
 
   @override
   void receiveTypingEvent(EventoDigitandoModel typingEvent) {
-    final _$actionInfo = _$_ChatsStoreBaseActionController.startAction(
+    final $actionInfo = _$_ChatsStoreBaseActionController.startAction(
         name: '_ChatsStoreBase.receiveTypingEvent');
     try {
       return super.receiveTypingEvent(typingEvent);
     } finally {
-      _$_ChatsStoreBaseActionController.endAction(_$actionInfo);
+      _$_ChatsStoreBaseActionController.endAction($actionInfo);
     }
   }
 

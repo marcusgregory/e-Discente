@@ -6,7 +6,7 @@ import 'package:e_discente/models/documento.model.dart';
 
 class ConteudoPage extends StatelessWidget {
   const ConteudoPage(this._numero, this._titulo, this._conteudo,
-      this._documentos, this.idTurma);
+      this._documentos, this.idTurma, {super.key});
   final String _numero;
   final String? _titulo;
   final String _conteudo;

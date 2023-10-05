@@ -6,10 +6,12 @@ import 'package:e_discente/models/docente.model.dart';
 import 'package:e_discente/models/participante.model.dart';
 import 'package:e_discente/pages/widgets/photo_view.widget.dart';
 
+import '../../settings.dart';
+
 class ParticipanteWidget extends StatelessWidget {
   final ParticipanteModel participante;
 
-  const ParticipanteWidget(this.participante);
+  const ParticipanteWidget(this.participante, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,7 @@ class ParticipanteWidget extends StatelessWidget {
         child: ListTile(
           leading: imagemPerfil(
               kIsWeb
-                  ? 'https://api.allorigins.win/raw?url=' +
-                      Uri.encodeComponent(docente.urlFoto!)
+                  ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(docente.urlFoto!)}'
                   : docente.urlFoto!,
               25),
           title: Text(
@@ -39,8 +40,7 @@ class ParticipanteWidget extends StatelessWidget {
       return ListTile(
         leading: imagemPerfil(
             kIsWeb
-                ? 'https://api.allorigins.win/raw?url=' +
-                    Uri.encodeComponent(discente.urlFoto!)
+                ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(discente.urlFoto!)}'
                 : discente.urlFoto!,
             20),
         title: Text(

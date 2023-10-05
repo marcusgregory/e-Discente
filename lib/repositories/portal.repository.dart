@@ -9,12 +9,12 @@ import 'package:e_discente/settings.dart';
 class PortalRepository {
   Future<Portal> getAtualizacoesPortal({String token = ''}) async {
     if (token.isEmpty) {
-      token = Settings.usuario!.token!;
+      token = Settings.usuario!.token;
     }
     try {
       var url = '${Settings.apiURL}/sigaa/portal';
       http.Response response = await http.get(Uri.parse(url),
-          headers: {'jwt': token}).timeout(const Duration(seconds: 30));
+          headers: {'jwt': token}).timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));

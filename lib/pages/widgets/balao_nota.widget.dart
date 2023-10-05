@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class BalaoNota extends StatelessWidget {
   final String nota;
-  const BalaoNota(this.nota);
+  const BalaoNota(this.nota, {super.key});
   @override
   Widget build(BuildContext context) {
     return Stack(

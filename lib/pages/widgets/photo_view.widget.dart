@@ -3,10 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../settings.dart';
+
 class PhotoViewWidget extends StatelessWidget {
   final String url;
   final String tag;
-  const PhotoViewWidget(this.url, {this.tag = ''});
+  const PhotoViewWidget(this.url, {super.key, this.tag = ''});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +22,10 @@ class PhotoViewWidget extends StatelessWidget {
       body: Container(
         child: Center(
           child: Hero(
+            tag: tag == '' ? url : tag,
             child: CachedNetworkImage(
               imageUrl: kIsWeb
-                  ? 'https://api.allorigins.win/raw?url=' +
-                      Uri.encodeComponent(url)
+                  ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(url)}'
                   : url,
               imageBuilder: (context, imageProvider) {
                 return Container(
@@ -33,7 +35,6 @@ class PhotoViewWidget extends StatelessWidget {
                 );
               },
             ),
-            tag: tag == '' ? url : tag,
           ),
         ),
       ),

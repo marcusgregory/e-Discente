@@ -14,7 +14,7 @@ import 'triangle_shape.dart';
 /// Default EmojiPicker Implementation
 class DefaultEmojiPickerView extends EmojiPickerBuilder {
   /// Constructor
-  DefaultEmojiPickerView(Config config, EmojiViewState state)
+  const DefaultEmojiPickerView(Config config, EmojiViewState state, {super.key})
       : super(config, state);
 
   @override
@@ -176,7 +176,7 @@ class _DefaultEmojiPickerViewState extends State<DefaultEmojiPickerView>
           primary: false,
           padding: const EdgeInsets.all(0),
           itemCount: categoryEmoji.emoji.length,
-          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             // number of items on a row
             crossAxisCount: widget.config.columns,
             // horizontal spacing between items
@@ -186,19 +186,19 @@ class _DefaultEmojiPickerViewState extends State<DefaultEmojiPickerView>
           ),
           itemBuilder: (BuildContext context, int index) {
             final emoji = categoryEmoji.emoji[index];
-            final onPressed = () {
+            onPressed() {
               _closeSkinToneDialog();
               widget.state.onEmojiSelected(categoryEmoji.category, emoji);
-            };
+            }
 
-            final onLongPressed = () {
+            onLongPressed() {
               if (!emoji.hasSkinTone || !widget.config.enableSkinTones) {
                 _closeSkinToneDialog();
                 return;
               }
               _closeSkinToneDialog();
               _openSkinToneDialog(emoji, emojiSize, categoryEmoji, index);
-            };
+            }
 
             return _buildButtonWidget(
               onPressed: onPressed,

@@ -6,7 +6,7 @@ import 'package:e_discente/repositories/notas_turma.repository.dart';
 
 class NotasTurmaPage extends StatefulWidget {
   final String? idTurma;
-  const NotasTurmaPage(this.idTurma);
+  const NotasTurmaPage(this.idTurma, {super.key});
 
   @override
   _NotasTurmaPageState createState() => _NotasTurmaPageState();
@@ -66,7 +66,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                 ),
                                 Text(
                                   'Notas',
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 const Padding(
                                   padding: EdgeInsets.only(left: 20, right: 20),
@@ -113,7 +113,7 @@ class _NotasTurmaPageState extends State<NotasTurmaPage>
                                 ),
                                 Text(
                                   'Resultados',
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 const Padding(
                                   padding: EdgeInsets.only(left: 20, right: 20),

@@ -11,7 +11,7 @@ class RandomColor {
   // color dictionary that save all the colors
   static final Map<ColorType?, DefinedColor> _colorDictionary =
       <ColorType?, DefinedColor>{};
-  static math.Random _random = math.Random(); //seed data
+//seed data
 
 // get random colors based on options provided
   static getColor(Options options) {
@@ -41,10 +41,8 @@ class RandomColor {
   // generate a random value
   static void seed(int seed) {
     if (seed == null) {
-      _random = math.Random();
       return;
     }
-    _random = math.Random(seed);
   }
 
   // define the color based on provided hue and lowerBounds
@@ -117,16 +115,18 @@ class RandomColor {
     Range saturationRange = _getColorInfo(hue).saturationRange!;
     var sMin = saturationRange.lower;
     var sMax = saturationRange.upper;
-    var luminosBright = () {
+    luminosBright() {
       sMin = 55;
-    };
-    var luminosDark = () {
-      sMin = sMax! - 10;
-    };
+    }
 
-    var luminoslight = () {
+    luminosDark() {
+      sMin = sMax! - 10;
+    }
+
+    luminoslight() {
       sMax = 55;
-    };
+    }
+
     switch (luminosity) {
       case Luminosity.bright:
         luminosBright();

@@ -1,24 +1,29 @@
 import 'package:animations/animations.dart';
-import 'package:e_discente/blocs/noticias.bloc.dart';
-import 'package:e_discente/blocs/turmas.bloc.dart';
-import 'package:e_discente/pages/home.page.dart';
-import 'package:e_discente/stores/perfil.store.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+
+import 'package:e_discente/blocs/noticias.bloc.dart';
+import 'package:e_discente/blocs/turmas.bloc.dart';
 import 'package:e_discente/chat/pages/chats.page.dart';
 import 'package:e_discente/chat/stores/socket_io.store.dart';
+import 'package:e_discente/pages/home.page.dart';
 import 'package:e_discente/pages/noticias.page.dart';
 import 'package:e_discente/pages/perfil.page.dart';
 import 'package:e_discente/pages/turmas.page.dart';
-import 'package:get_it/get_it.dart';
-import '../chat/stores/chats.store.dart';
-import '../repositories/register_fcmToken.repository.dart';
+import 'package:e_discente/stores/perfil.store.dart';
 
+import '../chat/stores/chats.store.dart';
+import '../repositories/register_fcm_token.repository.dart';
 import '../stores/boletim.store.dart';
 import 'inicio_controller.dart';
 
 class InicioPage extends StatefulWidget {
+  const InicioPage({super.key});
+
   @override
   _InicioPageState createState() => _InicioPageState();
 }
@@ -50,7 +55,7 @@ class _InicioPageState extends State<InicioPage> {
           BottomNavigationBarItem(
               icon: Theme.of(context).platform == TargetPlatform.iOS
                   ? const Icon(CupertinoIcons.home)
-                  : const Icon(Icons.web),
+                  : const Icon(Icons.home),
               label: 'Inicio',
               backgroundColor: Colors.green),
           BottomNavigationBarItem(
@@ -66,9 +71,11 @@ class _InicioPageState extends State<InicioPage> {
               label: 'Turmas',
               backgroundColor: Colors.blue),
           BottomNavigationBarItem(
-              icon: Theme.of(context).platform == TargetPlatform.iOS
-                  ? const Icon(CupertinoIcons.chat_bubble_2_fill)
-                  : const Icon(Icons.chat),
+              icon: MyBadge(
+                child: (Theme.of(context).platform == TargetPlatform.iOS
+                    ? const Icon(CupertinoIcons.chat_bubble_2_fill)
+                    : const Icon(Icons.chat)),
+              ),
               label: 'Conversas',
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
@@ -104,8 +111,8 @@ class _InicioPageState extends State<InicioPage> {
                 selectedIcon: Icon(Icons.school),
                 label: 'Turmas'),
             NavigationDestination(
-                icon: Icon(Icons.chat_outlined),
-                selectedIcon: Icon(Icons.chat),
+                icon: MyBadge(child: Icon(Icons.chat_outlined)),
+                selectedIcon: MyBadge(child: Icon(Icons.chat)),
                 label: 'Conversas'),
             NavigationDestination(
                 icon: Icon(Icons.account_circle_outlined),
@@ -208,10 +215,11 @@ class _InicioPageState extends State<InicioPage> {
           child: StreamBuilder(
             stream: controller.stream,
             builder: (context, widget) {
-              return Theme.of(context).platform == TargetPlatform.iOS
-                  ? _bottomNavigationBar(controller.pageIndex, _onItemTapped)
-                  : _bottomNavigationBarAndroid(
-                      controller.pageIndex, _onItemTapped);
+              // return Theme.of(context).platform == TargetPlatform.iOS
+              //     ? _bottomNavigationBar(controller.pageIndex, _onItemTapped)
+              //     : _bottomNavigationBarAndroid(
+              //         controller.pageIndex, _onItemTapped);
+              return _bottomNavigationBar(controller.pageIndex, _onItemTapped);
             },
           ),
         ));
@@ -219,8 +227,52 @@ class _InicioPageState extends State<InicioPage> {
 }
 
 Future<void> registerFirebaseToken() async {
-  String fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+  late String fcmToken;
+  if (kIsWeb) {
+    fcmToken = await FirebaseMessaging.instance.getToken(
+            vapidKey:
+                'BGEfEWSlW911r314_XEFQ8CjZ0d3AUK4xHq4-Q3fwjwz3icOyFxAJsn_58chvVO9h3Cf9VOGJM4e8Q3Z58pu3eE') ??
+        '';
+  } else {
+    fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+  }
+
   if (fcmToken.isNotEmpty) {
     RegisterFcmTokenRepository().register(fcmToken);
+  }
+}
+
+class MyBadge extends StatelessWidget {
+  final Widget child;
+
+  const MyBadge({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return badges.Badge(
+        badgeStyle: badges.BadgeStyle(
+          shape: badges.BadgeShape.square,
+          borderRadius: BorderRadius.circular(5),
+          padding: const EdgeInsets.all(2),
+          badgeGradient: const badges.BadgeGradient.linear(
+            colors: [
+              Colors.purple,
+              Colors.blue,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        position: badges.BadgePosition.topEnd(top: -12, end: -20),
+        badgeContent: const Text(
+          'PREVIEW',
+          style: TextStyle(
+              color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+        ),
+        showBadge: true,
+        child: child);
   }
 }

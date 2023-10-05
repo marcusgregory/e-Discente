@@ -1,24 +1,31 @@
+import 'dart:ui';
+
+import 'package:e_discente/blocs/saldo.bloc.dart';
 import 'package:e_discente/blocs/turmas_calendario.bloc.dart';
+import 'package:e_discente/pages/tarefas.page.dart';
+import 'package:e_discente/pages/widgets/card_ru.dart';
 import 'package:e_discente/pages/widgets/cicle_avatar.widget.dart';
+import 'package:e_discente/pages/widgets/portal_atividades.widget.dart';
+import 'package:e_discente/pages/widgets/sync.widgets.dart';
 import 'package:e_discente/pages/widgets/story_item.widget.dart.dart';
+import 'package:e_discente/pages/widgets/turmas_calendario.widget.dart';
 import 'package:e_discente/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../blocs/portal.bloc.dart';
-import '../blocs/turmas.bloc.dart';
-import '../models/turma_calendario.model.dart';
 import '../util/toast.util.dart';
-import 'turma.page.dart';
-import 'turmas.page.dart';
-import 'widgets/tarefa.widget.dart';
+import 'turmas_semana.page.dart';
 
 class HomePage extends StatelessWidget {
   static const double radius = 63;
+  final SaldoBloc _saldoBloc = SaldoBloc()..load();
   final TurmasCalendarioBloc _turmasCalendarioBloc = TurmasCalendarioBloc()
     ..load();
   final PortalBloc _portalBloc = PortalBloc()..load();
+
   static const itens = [
     StoryCircle(
         radius: radius,
@@ -126,7 +133,7 @@ class HomePage extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Olá, ${toBeginningOfSentenceCase(Settings.usuario?.nome?.split(' ')[0].toLowerCase())}',
+                  'Olá, ${toBeginningOfSentenceCase(Settings.usuario?.nome.split(' ')[0].toLowerCase())}',
                   maxLines: 2,
                   overflow: TextOverflow
                       .ellipsis, //${toBeginningOfSentenceCase(Settings.usuario?.nome?.split(' ')[0].toLowerCase())}',
@@ -181,382 +188,356 @@ class HomePage extends StatelessWidget {
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(30), topRight: Radius.circular(30)),
       ),
-      child: CustomScrollView(slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.only(left: 24, right: 24, top: 20),
-          sliver: SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+      child: RefreshIndicator.adaptive(
+        onRefresh: () {
+          return Future.wait([
+            _portalBloc.load(),
+            _turmasCalendarioBloc.load(),
+            _saldoBloc.load()
+          ]);
+        },
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad
+            },
+          ),
+          child: CustomScrollView(slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 20),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('AULAS HOJE',
-                        style: GoogleFonts.darkerGrotesque(
-                            fontSize: 18, fontWeight: FontWeight.w900)),
-                    const SizedBox(
-                      width: 5,
+                    Row(
+                      children: [
+                        Text('MEU SALDO',
+                            style: GoogleFonts.darkerGrotesque(
+                                fontSize: 18, fontWeight: FontWeight.w900)),
+                      ],
                     ),
-                    StreamBuilder(
-                        stream: _turmasCalendarioBloc.turmaStream,
-                        builder: (context, snapshot) {
-                          return Visibility(
-                            visible: _turmasCalendarioBloc.turmasState ==
-                                    TurmasCalendarioState.ready &&
-                                _turmasCalendarioBloc.list.isNotEmpty,
-                            child: Text(
-                                '(${_turmasCalendarioBloc.list.length})',
-                                style: GoogleFonts.darkerGrotesque(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.grey)),
-                          );
-                        }),
                   ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TurmasPage(
-                                  turmasBloc: TurmasBloc(),
-                                  showProfileMenu: false,
-                                )));
-                  },
-                  child: Text('Ver todas',
-                      style: GoogleFonts.darkerGrotesque(
-                          color:
-                              Theme.of(context).brightness == Brightness.light
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 18.7,
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              sliver: StreamBuilder(
+                  stream: _saldoBloc.saldoStream,
+                  builder: (context, snapshot) {
+                    switch (_saldoBloc.saldoState) {
+                      case SaldoState.initial:
+                        return const SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 50,
+                            child: Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                          ),
+                        );
+                      case SaldoState.loading:
+                        return SliverToBoxAdapter(
+                          child: Skeletonizer(
+                              enabled: true,
+                              child: CardRu(saldo: '00,00', reload: () {})),
+                        );
+                      case SaldoState.ready:
+                        return SliverToBoxAdapter(
+                          child: CardRu(
+                              saldo: _saldoBloc.saldo, reload: _saldoBloc.load),
+                        );
+
+                      case SaldoState.error:
+                        ToastUtil.showShortToast('${snapshot.error}');
+                        return SliverToBoxAdapter(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                onPressed: () {
+                                  _saldoBloc.load();
+                                },
+                                icon: const Icon(Icons.refresh),
+                              ),
+                              const Text('Tentar novamente')
+                            ],
+                          ),
+                        );
+                      case SaldoState.loadingInitial:
+                        return const SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 50,
+                            child: Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                          ),
+                        );
+                    }
+                  }),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 20),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text('AULAS HOJE',
+                            style: GoogleFonts.darkerGrotesque(
+                                fontSize: 18, fontWeight: FontWeight.w900)),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        StreamBuilder(
+                            stream: _turmasCalendarioBloc.turmaStream,
+                            builder: (context, snapshot) {
+                              return Visibility(
+                                visible: _turmasCalendarioBloc.turmasState ==
+                                        TurmasCalendarioState.ready &&
+                                    _turmasCalendarioBloc.list.isNotEmpty,
+                                child: Text(
+                                    '(${_turmasCalendarioBloc.list.length})',
+                                    style: GoogleFonts.darkerGrotesque(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.grey)),
+                              );
+                            }),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TurmasSemanaPage(
+                                      turmasCalendario: _turmasCalendarioBloc,
+                                    )));
+                      },
+                      child: Text('Ver todas',
+                          style: GoogleFonts.darkerGrotesque(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
                                   ? const Color(0xFF0D294D)
                                   : null,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900)),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900)),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 18.7,
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.only(left: 24, right: 24),
-          sliver: StreamBuilder(
-              stream: _turmasCalendarioBloc.turmaStream,
-              builder: (context, snapshot) {
-                switch (_turmasCalendarioBloc.turmasState) {
-                  case TurmasCalendarioState.loading:
-                    return const SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 200,
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 18.7,
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              sliver: StreamBuilder(
+                  stream: _turmasCalendarioBloc.turmaStream,
+                  builder: (context, snapshot) {
+                    switch (_turmasCalendarioBloc.turmasState) {
+                      case TurmasCalendarioState.loading:
+                        return const SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                          ),
+                        );
+                      case TurmasCalendarioState.ready:
+                        return TurmasCalendarioWidget(
+                            list: _turmasCalendarioBloc.list);
+                      case TurmasCalendarioState.error:
+                        ToastUtil.showShortToast('${snapshot.error}');
+                        return SliverToBoxAdapter(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                onPressed: () {
+                                  _turmasCalendarioBloc.load();
+                                },
+                                icon: const Icon(Icons.refresh),
+                              ),
+                              const Text('Tentar novamente')
+                            ],
+                          ),
+                        );
+                      case TurmasCalendarioState.synchronizing:
+                        return TurmasCalendarioWidget(
+                          list: _turmasCalendarioBloc.list,
+                          isSync: true,
+                        );
+                      case TurmasCalendarioState.syncError:
+                        return TurmasCalendarioWidget(
+                          list: _turmasCalendarioBloc.list,
+                          isSync: false,
+                          isError: true,
+                        );
+                    }
+                  }),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 20,
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 20),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text('MINHAS TAREFAS',
+                            style: GoogleFonts.darkerGrotesque(
+                                fontSize: 18, fontWeight: FontWeight.w900)),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        StreamBuilder(
+                            stream: _portalBloc.portalStream,
+                            builder: (context, snapshot) {
+                              return Visibility(
+                                visible: _portalBloc.portalState ==
+                                        PortalState.ready &&
+                                    _portalBloc.portal != null,
+                                child: Text(
+                                    '(${_portalBloc.portal?.atividades.length})',
+                                    style: GoogleFonts.darkerGrotesque(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.grey)),
+                              );
+                            }),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TarefasPage(
+                                      portalBloc: _portalBloc,
+                                    )));
+                      },
+                      child: Text('Ver todas',
+                          style: GoogleFonts.darkerGrotesque(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? const Color(0xFF0D294D)
+                                  : null,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: StreamBuilder(
+                  stream: _portalBloc.portalStream,
+                  builder: (context, snapshot) {
+                    if (_portalBloc.portalState == PortalState.synchronizing) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: SynchronizingWidget(),
+                      );
+                    } else if (_portalBloc.portalState ==
+                        PortalState.syncError) {
+                      return const Padding(
+                          padding: EdgeInsets.only(bottom: 10, top: 10),
+                          child: SyncErrorWidget());
+                    } else {
+                      return const SizedBox(
+                        height: 26,
+                      );
+                    }
+                  }),
+            ),
+            StreamBuilder(
+                stream: _portalBloc.portalStream,
+                builder: (context, snapshot) {
+                  switch (_portalBloc.portalState) {
+                    case PortalState.initial:
+                      return const SliverToBoxAdapter(
                         child: Center(
                           child: CircularProgressIndicator.adaptive(),
                         ),
-                      ),
-                    );
-                  case TurmasCalendarioState.ready:
-                    if (_turmasCalendarioBloc.list.isEmpty) {
+                      );
+                    case PortalState.loading:
                       return const SliverToBoxAdapter(
-                          child: SizedBox(
-                        height: 200,
                         child: Center(
-                          child: Text('Parece que você não tem aula hoje'),
+                          child: CircularProgressIndicator.adaptive(),
                         ),
-                      ));
-                    }
+                      );
+                    case PortalState.ready:
+                      if (_portalBloc.portal != null) {
+                        return PortalAtividadesWidget(
+                            atividades: _portalBloc.portal!.atividades
+                                .where((element) => element.daysLeft > 0)
+                                .toList());
+                      } else {
+                        return const PortalAtividadesWidget(
+                          atividades: [],
+                        );
+                      }
 
-                    return SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                      TurmaCalendario turma = _turmasCalendarioBloc.list[index];
-                      return Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TurmaPage(
-                                        turma.nomeTurma, turma.idTurma)));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IntrinsicHeight(
-                              child: Row(children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
-                                    width: 50,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                            turma.horariosDefinidos.first
-                                                .horarioInicial,
-                                            style: GoogleFonts.darkerGrotesque(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w900)),
-                                        const Icon(
-                                          Icons.arrow_drop_down_rounded,
-                                          size: 30,
-                                        ),
-                                        Text(
-                                            turma.horariosDefinidos.first
-                                                .horarioFinal,
-                                            style: GoogleFonts.darkerGrotesque(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w900)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const VerticalDivider(),
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(turma.nomeTurma,
-                                          style: GoogleFonts.darkerGrotesque(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w800)),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.pin_drop,
-                                            size: 13,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Flexible(
-                                            child: Text(turma.local,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.fade,
-                                                style:
-                                                    GoogleFonts.darkerGrotesque(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.person_pin,
-                                            size: 13,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Flexible(
-                                            child: Text(turma.docente,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style:
-                                                    GoogleFonts.darkerGrotesque(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ]),
+                    case PortalState.error:
+                      return SliverToBoxAdapter(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            IconButton(
+                              onPressed: () {
+                                _turmasCalendarioBloc.load();
+                              },
+                              icon: const Icon(Icons.refresh),
                             ),
-                          ),
+                            const Text('Tentar novamente')
+                          ],
                         ),
                       );
-                    }, childCount: _turmasCalendarioBloc.list.length));
-                  case TurmasCalendarioState.error:
-                    ToastUtil.showShortToast('${snapshot.error}');
-                    return SliverToBoxAdapter(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                            onPressed: () {
-                              _turmasCalendarioBloc.load();
-                            },
-                            icon: const Icon(Icons.refresh),
-                          ),
-                          const Text('Tentar novamente')
-                        ],
-                      ),
-                    );
-                }
-              }),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 20,
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.only(left: 24, right: 24, top: 20),
-          sliver: SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text('MINHAS TAREFAS',
-                        style: GoogleFonts.darkerGrotesque(
-                            fontSize: 18, fontWeight: FontWeight.w900)),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    StreamBuilder(
-                        stream: _portalBloc.portalStream,
-                        builder: (context, snapshot) {
-                          return Visibility(
-                            visible:
-                                _portalBloc.portalState == PortalState.ready &&
-                                    _portalBloc.portal != null,
-                            child: Text(
-                                '(${_portalBloc.portal?.atividades.length})',
-                                style: GoogleFonts.darkerGrotesque(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.grey)),
-                          );
-                        }),
-                  ],
-                ),
-                // Text('Ver todas',
-                //     style: GoogleFonts.darkerGrotesque(
-                //         color: Theme.of(context).brightness == Brightness.light
-                //             ? const Color(0xFF0D294D)
-                //             : null,
-                //         fontSize: 18,
-                //         fontWeight: FontWeight.w900)),
-              ],
-            ),
-          ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 26,
-          ),
-        ),
-        StreamBuilder(
-            stream: _portalBloc.portalStream,
-            builder: (context, snapshot) {
-              switch (_portalBloc.portalState) {
-                case PortalState.initial:
-                  return const SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
-                  );
-                case PortalState.loading:
-                  return const SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
-                  );
-                case PortalState.ready:
-                  if (_portalBloc.portal != null) {
-                    if (_portalBloc.portal!.atividades.isEmpty) {
-                      return const SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 200,
-                          child: Center(
-                            child: Text(
-                                'Parece que você não tem atividades pendentes.'),
-                          ),
-                        ),
-                      );
-                    }
-
-                    return SliverPadding(
-                      padding: const EdgeInsets.only(
-                          left: 24, right: 24, bottom: 20),
-                      sliver: SliverGrid(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            return TarefaWidget(
-                                atividade:
-                                    _portalBloc.portal!.atividades[index]);
-                          },
-                          childCount: _portalBloc.portal!.atividades.length,
-                        ),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 0.92,
-                        ),
-                      ),
-                    );
-                    // return ListView.separated(
-                    //   padding: const EdgeInsets.only(left: 21, right: 0),
-                    //   scrollDirection: Axis.horizontal,
-                    //   itemBuilder: (BuildContext context, int index) {
-                    //     return Padding(
-                    //       padding: const EdgeInsets.only(right: 14),
-                    //       child: TarefaWidget(
-                    //           atividade:
-                    //               _portalBloc.portal!.atividades[index]),
-                    //     );
-                    //   },
-                    //   itemCount: _portalBloc.portal!.atividades.length,
-                    //   separatorBuilder: (BuildContext context, int index) {
-                    //     return const SizedBox(
-                    //       width: 3.5,
-                    //     );
-                    //   },
-                    // );
+                    case PortalState.synchronizing:
+                      if (_portalBloc.portal != null) {
+                        return PortalAtividadesWidget(
+                            atividades: _portalBloc.portal!.atividades
+                                .where((element) => element.daysLeft > 0)
+                                .toList());
+                      } else {
+                        return const PortalAtividadesWidget(
+                          atividades: [],
+                        );
+                      }
+                    case PortalState.syncError:
+                      if (_portalBloc.portal != null) {
+                        return PortalAtividadesWidget(
+                            atividades: _portalBloc.portal!.atividades);
+                      } else {
+                        return const PortalAtividadesWidget(
+                          atividades: [],
+                        );
+                      }
                   }
-                  break;
-
-                case PortalState.error:
-                  return SliverToBoxAdapter(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                          onPressed: () {
-                            _turmasCalendarioBloc.load();
-                          },
-                          icon: const Icon(Icons.refresh),
-                        ),
-                        const Text('Tentar novamente')
-                      ],
-                    ),
-                  );
-              }
-              return SliverToBoxAdapter(child: Container());
-            })
-      ]),
+                })
+          ]),
+        ),
+      ),
     );
   }
 }

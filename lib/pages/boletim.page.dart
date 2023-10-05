@@ -6,7 +6,6 @@ import 'package:e_discente/pages/widgets/item_nota.widget.dart';
 import 'package:e_discente/stores/boletim.store.dart';
 
 import 'widgets/balao_nota.widget.dart';
-import 'widgets/user_appbar.widget.dart';
 
 class BoletimPage extends StatefulWidget {
   const BoletimPage({Key? key, required this.boletimStore}) : super(key: key);
@@ -41,18 +40,20 @@ class _BoletimPageState extends State<BoletimPage>
                 child: CircularProgressIndicator.adaptive(),
               );
             case FutureStatus.rejected:
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      _boletimStore.loadBoletim();
-                    },
-                    icon: const Icon(Icons.refresh),
-                  ),
-                  const Text('Tentar novamente')
-                ],
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        _boletimStore.loadBoletim();
+                      },
+                      icon: const Icon(Icons.refresh),
+                    ),
+                    const Text('Tentar novamente')
+                  ],
+                ),
               );
             case FutureStatus.fulfilled:
 

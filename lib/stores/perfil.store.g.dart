@@ -28,12 +28,12 @@ mixin _$PerfilStore on _PerfilStore, Store {
 
   @override
   Future<dynamic> getPerfil() {
-    final _$actionInfo = _$_PerfilStoreActionController.startAction(
+    final $actionInfo = _$_PerfilStoreActionController.startAction(
         name: '_PerfilStore.getPerfil');
     try {
       return super.getPerfil();
     } finally {
-      _$_PerfilStoreActionController.endAction(_$actionInfo);
+      _$_PerfilStoreActionController.endAction($actionInfo);
     }
   }
 

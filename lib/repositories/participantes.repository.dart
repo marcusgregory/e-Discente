@@ -11,8 +11,8 @@ class ParticipantesRepository {
       await Future.delayed(const Duration(milliseconds: 1200));
       var url = '${Settings.apiURL}/sigaa/turma/$idTurma/participantes';
       http.Response response = await http.get(Uri.parse(url), headers: {
-        'jwt': Settings.usuario!.token!
-      }).timeout(const Duration(seconds: 50));
+        'jwt': Settings.usuario!.token
+      }).timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         return ParticipantesModel.fromJson(json['data']);

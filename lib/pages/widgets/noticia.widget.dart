@@ -1,8 +1,9 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_discente/pages/noticias_turma.page.dart';
+import 'package:e_discente/pages/webview_news.page.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:e_discente/models/noticias.model.dart';
 import 'package:e_discente/presentation/custom_icons_icons.dart';
@@ -10,8 +11,10 @@ import 'package:e_discente/util/toast.util.dart';
 import 'package:e_discente/util/date.util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../detalhes_screen.page.dart';
+import '../../settings.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+
+import '../detalhes_screen.page.dart';
 
 class Noticia extends StatelessWidget {
   final NoticiaModel noticia;
@@ -28,16 +31,28 @@ class Noticia extends StatelessWidget {
       elevation: 2.0,
       child: InkWell(
           onTap: () {
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => Detalhe(
+            //             noticia.imagem,
+            //             noticia.titulo,
+            //             DateUtil.getTimeElapsedByDate(noticia.data!),
+            //             noticia.conteudo,
+            //             noticia.url,
+            //             noticia.id)));
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Detalhe(
-                        noticia.imagem,
-                        noticia.titulo,
-                        DateUtil.getTimeElapsedByDate(noticia.data!),
-                        noticia.conteudo,
-                        noticia.url,
-                        noticia.id)));
+                    builder: (context) => (!kIsWeb)
+                        ? WebViewNews(newsUrl: noticia.url ?? '')
+                        : Detalhe(
+                            noticia.imagem,
+                            noticia.titulo,
+                            DateUtil.getTimeElapsedByDate(noticia.data!),
+                            noticia.conteudo,
+                            noticia.url,
+                            noticia.id)));
           },
           child: _getListTile(context)),
     );
@@ -55,7 +70,11 @@ class Noticia extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _loadImage(),
+            Skeleton.replace(
+              width: 185, // width of replacement
+              height: 185, // height of replacement
+              child: _loadImage(),
+            ),
             _getColumText(
                 noticia.titulo, noticia.data, noticia.resumo, context),
           ],
@@ -79,7 +98,7 @@ class Noticia extends StatelessWidget {
               'Unilab  •  ${DateUtil.getTimeElapsedByDate(noticia.data!)}',
               style: TextStyle(
                   fontSize: 11,
-                  color: Theme.of(context).textTheme.bodyText1!.color),
+                  color: Theme.of(context).textTheme.bodyLarge!.color),
             ),
             Expanded(
               child: Align(
@@ -91,12 +110,12 @@ class Noticia extends StatelessWidget {
                     child: Theme.of(context).platform == TargetPlatform.iOS
                         ? Icon(
                             Icons.more_horiz,
-                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
                             size: 20,
                           )
                         : Icon(
                             Icons.more_vert,
-                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
                             size: 20,
                           ),
                     onPressed: () {
@@ -130,7 +149,7 @@ class Noticia extends StatelessWidget {
         style: TextStyle(
             fontSize: 17.9,
             fontWeight: FontWeight.w400,
-            color: Theme.of(context).textTheme.bodyText1!.color),
+            color: Theme.of(context).textTheme.bodyLarge!.color),
       ),
     );
   }
@@ -142,7 +161,7 @@ class Noticia extends StatelessWidget {
         description,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color),
       ),
     );
   }
@@ -162,123 +181,106 @@ class Noticia extends StatelessWidget {
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         context: context,
         builder: (BuildContext bc) {
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: SizedBox(
-                    height: 50,
-                    child: InkWell(
-                      onTap: () => Share.share(
-                          'Veja esta notícia:\n${noticia.titulo}\n${noticia.url}'),
-                      child: Row(
-                        children: <Widget>[
-                          const SizedBox(
-                            width: 17,
-                          ),
-                          Icon(Icons.share, size: 20, color: Colors.grey[600]),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          const Text(
-                            'Compartilhar',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
+          return Wrap(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 5),
+                child: SizedBox(
+                  height: 50,
+                  child: InkWell(
+                    onTap: () => Share.share(
+                        'Veja esta notícia:\n${noticia.titulo}\n${noticia.url}'),
+                    child: Row(
+                      children: <Widget>[
+                        const SizedBox(
+                          width: 17,
+                        ),
+                        Icon(Icons.share, size: 20, color: Colors.grey[600]),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        const Text(
+                          'Compartilhar',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: InkWell(
+                  onTap: () async {
+                    openUrl(
+                        'https://wa.me/?text=Enviada pelo e-Discente: \n*${noticia.titulo}*\n${noticia.resumo}\n${noticia.url}');
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      const SizedBox(
+                        width: 17,
                       ),
-                    ),
+                      Icon(CustomIcons.whatsapp,
+                          size: 20, color: Colors.grey[600]),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      const Text(
+                        'Enviar no WhatsApp',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 50,
-                  child: InkWell(
-                    onTap: () async {
-                      if (Platform.isIOS) {
-                        String url =
-                            'https://wa.me/?text=Veja esta notícia:\n*${noticia.titulo}*\n${noticia.url}';
-                        url = Uri.encodeFull(url);
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        } else {
-                          ToastUtil.showShortToast(
-                              "Não foi possível abrir o WhatsApp\nEstá instalado no seu IOS?");
-                        }
-                      } else {
-                        String url =
-                            'https://wa.me/?text=Veja esta notícia:\n*${noticia.titulo}*\n${noticia.url}';
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        }
-                      }
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        const SizedBox(
-                          width: 17,
-                        ),
-                        Icon(CustomIcons.whatsapp,
-                            size: 20, color: Colors.grey[600]),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        const Text(
-                          'Enviar via WhatsApp',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ),
+              ),
+              SizedBox(
+                height: 50,
+                child: InkWell(
+                  onTap: () async {
+                    String url = noticia.url!;
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      ToastUtil.showShortToast(
+                          'Não foi possível abrir a url: $url');
+                    }
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      const SizedBox(
+                        width: 17,
+                      ),
+                      Icon(Icons.open_in_browser,
+                          size: 20, color: Colors.grey[600]),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      const Text(
+                        'Abrir no Navegador',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 50,
-                  child: InkWell(
-                    onTap: () async {
-                      String url = noticia.url!;
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        ToastUtil.showShortToast(
-                            'Não foi possível abrir a url: $url');
-                      }
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        const SizedBox(
-                          width: 17,
-                        ),
-                        Icon(Icons.open_in_browser,
-                            size: 20, color: Colors.grey[600]),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        const Text(
-                          'Abrir no Navegador',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: Divider(),
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: TextButton(
+                  style: const ButtonStyle(),
+                  child: const Text(
+                    "Fechar",
                   ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Divider(),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: TextButton(
-                    style: const ButtonStyle(),
-                    child: const Text(
-                      "Fechar",
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           );
         });
   }
@@ -290,8 +292,7 @@ class Noticia extends StatelessWidget {
           height: 185,
           width: 185,
           imageUrl: kIsWeb
-              ? 'https://api.allorigins.win/raw?url=' +
-                  Uri.encodeComponent(noticia.imagem!)
+              ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(noticia.imagem!)}'
               : noticia.imagem!,
           imageBuilder: (context, imageProvider) => Container(
                 width: 185,

@@ -18,27 +18,33 @@ class PortalBloc {
 
   Stream<PortalState> get portalStream => _streamController.stream;
 
-  load() async {
-    var _prefs = await SharedPreferences.getInstance();
+  Future<void> load() async {
+    var prefs = await SharedPreferences.getInstance();
     try {
       if (!_streamController.isClosed) {
-        portal = Portal.fromJson(jsonDecode(_prefs.getString('tasks') ?? ''));
+        portal = Portal.fromJson(jsonDecode(prefs.getString('tasks') ?? ''));
         _loadOffline = true;
-        portalState = PortalState.ready;
+        portalState = PortalState.synchronizing;
         _streamController.sink.add(portalState);
         print('Carregando dados do portal no servidor...');
-        var portalLoaded = (await PortalRepository().getAtualizacoesPortal());
-        print('Carregado dados do portal!');
-        await _prefs.setString('tasks', jsonEncode(portalLoaded));
-        portal = portalLoaded;
-        portalState = PortalState.ready;
-        _streamController.sink.add(portalState);
+        PortalRepository().getAtualizacoesPortal().then((portalLoaded) async {
+          print('Carregado dados do portal!');
+          await prefs.setString('tasks', jsonEncode(portalLoaded));
+          portal = portalLoaded;
+          portalState = PortalState.ready;
+          _streamController.sink.add(portalState);
+        }).onError((error, stackTrace) {
+          portalState = PortalState.syncError;
+          _streamController.sink.add(portalState);
+        });
       }
     } catch (e) {
+      print("Ocorreu um erro ao carregar o portal!");
       if (!_loadOffline) {
         portalState = PortalState.error;
         _streamController.sink.add(portalState);
         _streamController.addError(e);
+
         _loadOffline = false;
       }
     }
@@ -49,4 +55,4 @@ class PortalBloc {
   }
 }
 
-enum PortalState { initial, loading, ready, error }
+enum PortalState { initial, loading, synchronizing, syncError, ready, error }

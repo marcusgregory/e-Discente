@@ -4,7 +4,7 @@ import 'package:e_discente/models/usuario.model.dart';
 import 'package:e_discente/settings.dart';
 
 class UsuarioBloc {
-  UsuarioModel? usuario = UsuarioModel();
+  UsuarioModel? usuario;
   UsuarioBloc() {
     usuario = null;
   }

@@ -1,3 +1,4 @@
+import 'package:e_discente/blocs/noticias_turma.bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:e_discente/models/participantes.model.dart';
 import 'package:e_discente/pages/aulas.page.dart';
@@ -6,11 +7,13 @@ import 'package:e_discente/pages/participantes.page.dart';
 import 'package:e_discente/repositories/participantes.repository.dart';
 import 'package:e_discente/stores/aulas.store.dart';
 
+import 'noticias_turma.page.dart';
+
 class TurmaPage extends StatefulWidget {
   final String? _titulo;
   final String? _idTurma;
 
-  const TurmaPage(this._titulo, this._idTurma);
+  const TurmaPage(this._titulo, this._idTurma, {super.key});
 
   @override
   _TurmaPageState createState() => _TurmaPageState();
@@ -44,7 +47,7 @@ class _TurmaPageState extends State<TurmaPage>
     return Material(
       child: Scaffold(
         body: DefaultTabController(
-          length: 3,
+          length: 4,
           child: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool boxIsScrolled) {
               return <Widget>[
@@ -68,6 +71,9 @@ class _TurmaPageState extends State<TurmaPage>
                         isScrollable: true,
                         tabs: [
                           Tab(
+                            text: 'NOTÍCIAS',
+                          ),
+                          Tab(
                             text: 'CONTEÚDOS',
                           ),
                           Tab(
@@ -85,6 +91,10 @@ class _TurmaPageState extends State<TurmaPage>
             },
             body: TabBarView(
               children: [
+                NoticiasTurmaPage(
+                  idTurma: widget._idTurma ?? '',
+                  controller: NoticiasTurmaBloc(widget._idTurma ?? ''),
+                ),
                 AulasPage(_aulasStore, widget._idTurma),
                 ParticipantesPage(_participantesFuture, widget._idTurma),
                 NotasTurmaPage(widget._idTurma)

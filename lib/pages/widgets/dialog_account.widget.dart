@@ -79,10 +79,8 @@ class DialogAccount extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100.0),
                         child: CachedNetworkImage(
                           imageUrl: kIsWeb
-                              ? 'https://api.allorigins.win/raw?url=' +
-                                  Uri.encodeComponent(
-                                      Settings.usuario!.urlImagemPerfil ?? '')
-                              : Settings.usuario!.urlImagemPerfil ?? '',
+                              ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(Settings.usuario?.urlImagemPerfil ?? '')}'
+                              : Settings.usuario?.urlImagemPerfil ?? '',
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -319,7 +317,7 @@ void showThemeChangeDialog(BuildContext context) {
   showDialog(
       context: context,
       builder: (context) {
-        String? _selectedRadio = AdaptiveTheme.of(context).mode.name;
+        String? selectedRadio = AdaptiveTheme.of(context).mode.name;
         return AlertDialog(
           title: const Text('Escolha um tema'),
           content: StatefulBuilder(
@@ -331,9 +329,9 @@ void showThemeChangeDialog(BuildContext context) {
                   title: const Text('Automático (sistema)'),
                   leading: Radio<String>(
                     value: 'System',
-                    groupValue: _selectedRadio,
+                    groupValue: selectedRadio,
                     onChanged: (value) {
-                      setState(() => _selectedRadio = value);
+                      setState(() => selectedRadio = value);
                     },
                   ),
                 ),
@@ -341,9 +339,9 @@ void showThemeChangeDialog(BuildContext context) {
                   title: const Text('Claro'),
                   leading: Radio<String>(
                     value: 'Light',
-                    groupValue: _selectedRadio,
+                    groupValue: selectedRadio,
                     onChanged: (value) {
-                      setState(() => _selectedRadio = value);
+                      setState(() => selectedRadio = value);
                     },
                   ),
                 ),
@@ -351,9 +349,9 @@ void showThemeChangeDialog(BuildContext context) {
                   title: const Text('Escuro'),
                   leading: Radio<String>(
                     value: 'Dark',
-                    groupValue: _selectedRadio,
+                    groupValue: selectedRadio,
                     onChanged: (value) {
-                      setState(() => _selectedRadio = value);
+                      setState(() => selectedRadio = value);
                     },
                   ),
                 ),
@@ -370,7 +368,7 @@ void showThemeChangeDialog(BuildContext context) {
             TextButton(
               child: const Text("OK"),
               onPressed: () {
-                setThemeConfigByName(context, _selectedRadio ?? '');
+                setThemeConfigByName(context, selectedRadio ?? '');
                 Navigator.of(context).pop();
               },
             ),

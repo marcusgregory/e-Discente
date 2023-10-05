@@ -1,4 +1,3 @@
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:e_discente/models/autenticacao.model.dart';

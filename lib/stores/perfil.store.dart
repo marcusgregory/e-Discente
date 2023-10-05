@@ -19,7 +19,7 @@ abstract class _PerfilStore with Store {
     return perfilDiscente = ObservableFuture(_perfil.getPerfil());
   }
 
-  void loadPerfil() {
+  Future<void> loadPerfil() async {
     firstRun = false;
     getPerfil();
   }

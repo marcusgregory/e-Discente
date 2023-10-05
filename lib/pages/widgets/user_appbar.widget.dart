@@ -22,9 +22,8 @@ PreferredSizeWidget userAppBar(
             backgroundColor: Colors.transparent,
             child: CachedNetworkImage(
               imageUrl: kIsWeb
-                  ? 'https://api.allorigins.win/raw?url=' +
-                      Uri.encodeComponent(Settings.usuario!.urlImagemPerfil!)
-                  : Settings.usuario!.urlImagemPerfil!,
+                  ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(Settings.usuario!.urlImagemPerfil)}'
+                  : Settings.usuario!.urlImagemPerfil,
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,

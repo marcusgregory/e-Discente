@@ -7,6 +7,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../settings.dart';
+
 class Detalhe extends StatefulWidget {
   final String? _img;
   final String? _title;
@@ -16,7 +18,8 @@ class Detalhe extends StatefulWidget {
   final int? _id;
 
   const Detalhe(this._img, this._title, this._date, this._description,
-      this._url, this._id);
+      this._url, this._id,
+      {super.key});
 
   @override
   _DetalheState createState() => _DetalheState();
@@ -81,10 +84,11 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
 
   Widget _getImageNetwork(url) {
     return Hero(
+      tag: widget._id!,
       child: CachedNetworkImage(
           height: 200,
           imageUrl: kIsWeb
-              ? 'https://api.allorigins.win/raw?url=' + Uri.encodeComponent(url)
+              ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(url)}'
               : url,
           imageBuilder: (context, imageProvider) => Container(
                 height: 200,
@@ -95,7 +99,6 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
               ),
           placeholder: (context, url) =>
               SizedBox(height: 200, child: Image.memory(kTransparentImage))),
-      tag: widget._id!,
     );
   }
 
