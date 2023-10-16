@@ -39,7 +39,7 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                     ParticipantesModel participantesModel = snapshot.data!;
                     return CustomScrollView(
                       key: PageStorageKey<String>(
-                          'participantes:' + widget._idTurma!),
+                          'participantes:${widget._idTurma!}'),
                       slivers: <Widget>[
                         SliverOverlapInjector(
                             handle:

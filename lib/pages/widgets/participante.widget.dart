@@ -5,8 +5,10 @@ import 'package:e_discente/models/discente.model.dart';
 import 'package:e_discente/models/docente.model.dart';
 import 'package:e_discente/models/participante.model.dart';
 import 'package:e_discente/pages/widgets/photo_view.widget.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../settings.dart';
+import '../../util/toast.util.dart';
 
 class ParticipanteWidget extends StatelessWidget {
   final ParticipanteModel participante;
@@ -20,6 +22,11 @@ class ParticipanteWidget extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
+          trailing: IconButton(
+              onPressed: () {
+                openUrl('mailto:${docente.email!}');
+              },
+              icon: const Icon(Icons.email_rounded)),
           leading: imagemPerfil(
               kIsWeb
                   ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(docente.urlFoto!)}'
@@ -29,15 +36,29 @@ class ParticipanteWidget extends StatelessWidget {
             docente.nome!,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(
-            docente.departamento!,
-            style: const TextStyle(fontSize: 13.5),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                docente.departamento!,
+                style: const TextStyle(fontSize: 13.5),
+              ),
+              Text(
+                docente.email!,
+                style: const TextStyle(fontSize: 13.5),
+              ),
+            ],
           ),
         ),
       );
     } else {
       DiscenteModel discente = participante as DiscenteModel;
       return ListTile(
+        trailing: IconButton(
+            onPressed: () {
+              openUrl('mailto:${discente.email!}');
+            },
+            icon: const Icon(Icons.email_outlined)),
         leading: imagemPerfil(
             kIsWeb
                 ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(discente.urlFoto!)}'
@@ -50,9 +71,18 @@ class ParticipanteWidget extends StatelessWidget {
             fontSize: 14.8,
           ),
         ),
-        subtitle: Text(
-          discente.email!,
-          style: const TextStyle(fontSize: 13.5),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "@${discente.usuario!}",
+              style: const TextStyle(fontSize: 13.5),
+            ),
+            Text(
+              discente.email!,
+              style: const TextStyle(fontSize: 13.5),
+            ),
+          ],
         ),
       );
     }
@@ -116,6 +146,14 @@ class ParticipanteWidget extends StatelessWidget {
           ),
         ],
       );
+    }
+  }
+
+  Future<void> openUrl(String urlFile) async {
+    String url = Uri.encodeFull(urlFile);
+    if (await launchUrlString(url, mode: LaunchMode.externalApplication)) {
+    } else {
+      ToastUtil.showShortToast("Não foi possível abrir a url");
     }
   }
 }

@@ -527,7 +527,9 @@ class HomePage extends StatelessWidget {
                     case PortalState.syncError:
                       if (_portalBloc.portal != null) {
                         return PortalAtividadesWidget(
-                            atividades: _portalBloc.portal!.atividades);
+                            atividades: _portalBloc.portal!.atividades
+                                .where((element) => element.daysLeft > 0)
+                                .toList());
                       } else {
                         return const PortalAtividadesWidget(
                           atividades: [],

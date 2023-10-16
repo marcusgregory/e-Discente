@@ -54,7 +54,7 @@ class Atividade implements Comparable {
     if (daysLeft > 3) {
       priority = TaskPriority.low;
     }
-    if (daysLeft <= 3 && daysLeft > 1) {
+    if (daysLeft <= 4 && daysLeft > 1) {
       priority = TaskPriority.medium;
     }
     if (daysLeft <= 1) {
@@ -114,9 +114,6 @@ class Atividade implements Comparable {
 
   @override
   int compareTo(other) {
-    if (daysLeft < 0) {
-      return -1;
-    }
     return daysLeft.compareTo(other.daysLeft);
   }
 }

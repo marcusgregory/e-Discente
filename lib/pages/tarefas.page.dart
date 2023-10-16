@@ -20,17 +20,19 @@ class TarefasPage extends StatelessWidget {
       body: StreamBuilder(
           stream: portalBloc.portalStream,
           builder: (context, snapshot) {
+            var list = portalBloc.portal?.atividades ?? [];
+            list.sort();
             switch (portalBloc.portalState) {
               case PortalState.initial:
                 return const CircularProgressIndicator.adaptive();
               case PortalState.loading:
                 return const CircularProgressIndicator.adaptive();
               case PortalState.synchronizing:
-                return listAtividades(portalBloc.portal?.atividades ?? []);
+                return listAtividades(list);
               case PortalState.syncError:
-                return listAtividades(portalBloc.portal?.atividades ?? []);
+                return listAtividades(list);
               case PortalState.ready:
-                return listAtividades(portalBloc.portal?.atividades ?? []);
+                return listAtividades(list);
               case PortalState.error:
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,

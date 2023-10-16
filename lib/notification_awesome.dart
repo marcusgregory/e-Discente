@@ -25,8 +25,8 @@ class NotificationAwesome {
               defaultPrivacy: NotificationPrivacy.Public,
               groupAlertBehavior: GroupAlertBehavior.Children,
               playSound: true,
-              defaultColor: Colors.white,
-              ledColor: const Color(0xFF00396A)),
+              defaultColor: const Color(0xFF7CABE8),
+              ledColor: const Color(0xFF7CABE8)),
           NotificationChannel(
               channelKey: 'chat_channel',
               channelName: 'Conversas',
@@ -38,8 +38,8 @@ class NotificationAwesome {
               defaultPrivacy: NotificationPrivacy.Public,
               groupAlertBehavior: GroupAlertBehavior.Children,
               playSound: true,
-              defaultColor: Colors.white,
-              ledColor: const Color(0xFF00396A)),
+              defaultColor: const Color(0xFF7CABE8),
+              ledColor: const Color(0xFF7CABE8)),
           NotificationChannel(
               channelKey: 'news_channel',
               channelName: 'Notícias',
@@ -49,8 +49,8 @@ class NotificationAwesome {
               enableVibration: true,
               playSound: true,
               importance: NotificationImportance.Max,
-              defaultColor: const Color(0xFF00396A),
-              ledColor: const Color(0xFF00396A)),
+              defaultColor: const Color(0xFF7CABE8),
+              ledColor: const Color(0xFF7CABE8)),
           NotificationChannel(
               channelKey: 'tasks_channel',
               channelName: 'Atividades',
@@ -60,8 +60,8 @@ class NotificationAwesome {
               defaultPrivacy: NotificationPrivacy.Public,
               importance: NotificationImportance.Max,
               playSound: true,
-              defaultColor: const Color(0xFF00396A),
-              ledColor: const Color(0xFF00396A)),
+              defaultColor: const Color(0xFF7CABE8),
+              ledColor: const Color(0xFF7CABE8)),
           NotificationChannel(
               channelKey: 'portal_updates_channel',
               channelName: 'Atualizações das Turmas',
@@ -71,8 +71,8 @@ class NotificationAwesome {
               defaultPrivacy: NotificationPrivacy.Public,
               importance: NotificationImportance.Max,
               playSound: true,
-              defaultColor: const Color(0xFF00396A),
-              ledColor: const Color(0xFF00396A))
+              defaultColor: const Color(0xFF7CABE8),
+              ledColor: const Color(0xFF7CABE8))
         ]);
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
@@ -98,8 +98,8 @@ class NotificationAwesome {
           groupKey: message.gid,
           defaultPrivacy: NotificationPrivacy.Private,
           playSound: true,
-          defaultColor: const Color(0xFF00396A),
-          ledColor: const Color(0xFF00396A)),
+          defaultColor: const Color(0xFF7CABE8),
+          ledColor: const Color(0xFF7CABE8)),
     );
     String nomeGrupo = groupName;
 
@@ -137,8 +137,8 @@ class NotificationAwesome {
           defaultPrivacy: NotificationPrivacy.Public,
           groupAlertBehavior: GroupAlertBehavior.Children,
           playSound: true,
-          defaultColor: const Color(0xFF00396A),
-          ledColor: const Color(0xFF00396A)),
+          defaultColor: const Color(0xFF7CABE8),
+          ledColor: const Color(0xFF7CABE8)),
     );
 
     await AwesomeNotifications().createNotification(

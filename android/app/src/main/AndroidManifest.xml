@@ -13,10 +13,10 @@
         android:icon="@mipmap/ic_launcher">
                       <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_notification" />
+            android:resource="@drawable/ic_notification_white" />
             <meta-data
           android:name="com.google.firebase.messaging.default_notification_color"
-          android:resource="@android:color/white" />
+          android:resource="@color/background" />
 
         <activity
             android:name=".MainActivity"

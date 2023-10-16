@@ -71,6 +71,7 @@ class TurmasDiaSemana extends StatelessWidget {
             }
             return isOk;
           }).toList();
+          list.sort();
           switch (turmasCalendarioBloc.turmasState) {
             case TurmasCalendarioState.loading:
               return const CircularProgressIndicator.adaptive();
