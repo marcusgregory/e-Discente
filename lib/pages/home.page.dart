@@ -489,7 +489,7 @@ class HomePage extends StatelessWidget {
                       if (_portalBloc.portal != null) {
                         return PortalAtividadesWidget(
                             atividades: _portalBloc.portal!.atividades
-                                .where((element) => element.daysLeft > 0)
+                                .where((element) => element.daysLeft >= 0)
                                 .toList());
                       } else {
                         return const PortalAtividadesWidget(
@@ -517,7 +517,7 @@ class HomePage extends StatelessWidget {
                       if (_portalBloc.portal != null) {
                         return PortalAtividadesWidget(
                             atividades: _portalBloc.portal!.atividades
-                                .where((element) => element.daysLeft > 0)
+                                .where((element) => element.daysLeft >= 0)
                                 .toList());
                       } else {
                         return const PortalAtividadesWidget(
@@ -528,7 +528,7 @@ class HomePage extends StatelessWidget {
                       if (_portalBloc.portal != null) {
                         return PortalAtividadesWidget(
                             atividades: _portalBloc.portal!.atividades
-                                .where((element) => element.daysLeft > 0)
+                                .where((element) => element.daysLeft >= 0)
                                 .toList());
                       } else {
                         return const PortalAtividadesWidget(

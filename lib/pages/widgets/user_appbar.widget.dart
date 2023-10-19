@@ -41,20 +41,25 @@ PreferredSizeWidget userAppBar(
           ),
         ),
         onPressed: () async {
-          // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          //   return DialogAccount();
-          // }));
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  // ignore: prefer_const_constructors
-                  child: DialogAccount());
-            },
-          );
+          if (kIsWeb) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    // ignore: prefer_const_constructors
+                    child: DialogAccount());
+              },
+            );
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (_) {
+                  return const DialogAccount();
+                }));
+          }
         },
       ),
     ],
