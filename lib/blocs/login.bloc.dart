@@ -59,6 +59,12 @@ class LoginBloc {
           RegisterFcmTokenRepository().register(Settings.fcmToken!);
         }
       }
+    } else {
+      Settings.fcmToken = await FirebaseMessaging.instance.getToken(
+              vapidKey:
+                  'BGEfEWSlW911r314_XEFQ8CjZ0d3AUK4xHq4-Q3fwjwz3icOyFxAJsn_58chvVO9h3Cf9VOGJM4e8Q3Z58pu3eE') ??
+          '';
+      RegisterFcmTokenRepository().register(Settings.fcmToken!);
     }
   }
 

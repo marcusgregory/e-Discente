@@ -1,5 +1,5 @@
-import 'package:animations/animations.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:e_discente/util/extensions/screen_util.extension.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -46,8 +46,11 @@ class _InicioPageState extends State<InicioPage> {
     controller.setPageIndex(value);
   }
 
-  Widget _bottomNavigationBar(int currentIndex, Function(int) onTap) =>
-      BottomNavigationBar(
+  Widget _navigation(
+      BuildContext context, int currentIndex, Function(int) onTap) {
+    return Visibility(
+      visible: context.isSmartphone,
+      child: BottomNavigationBar(
         onTap: onTap,
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
@@ -85,7 +88,9 @@ class _InicioPageState extends State<InicioPage> {
               label: 'Perfil',
               backgroundColor: Colors.red)
         ],
-      );
+      ),
+    );
+  }
 
   Widget _bottomNavigationBarAndroid(int currentIndex, Function(int) onTap) =>
       NavigationBarTheme(
@@ -191,37 +196,66 @@ class _InicioPageState extends State<InicioPage> {
           child: StreamBuilder(
               stream: controller.stream,
               builder: (context, snapshot) {
-                return PageView(
+                return Row(
                   children: [
-                    PageTransitionSwitcher(
-                      transitionBuilder: (
-                        Widget child,
-                        Animation<double> animation,
-                        Animation<double> secondaryAnimation,
-                      ) {
-                        return FadeThroughTransition(
-                          animation: animation,
-                          secondaryAnimation: secondaryAnimation,
-                          child: child,
-                        );
-                      },
-                      child: _children[controller.pageIndex],
-                    )
+                    if (!context.isSmartphone)
+                      LayoutBuilder(builder: (context, constraints) {
+                        return SingleChildScrollView(
+                            child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                ),
+                                child: IntrinsicHeight(
+                                  child: NavigationRail(
+                                    leading: const Text('Menu'),
+                                    labelType: NavigationRailLabelType.all,
+                                    destinations: const [
+                                      NavigationRailDestination(
+                                          icon: Icon(Icons.home_outlined),
+                                          selectedIcon: Icon(Icons.home),
+                                          label: Text('Início')),
+                                      NavigationRailDestination(
+                                          icon: Icon(Icons.newspaper_outlined),
+                                          selectedIcon: Icon(Icons.newspaper),
+                                          label: Text('Notícias')),
+                                      NavigationRailDestination(
+                                          icon: Icon(Icons.school_outlined),
+                                          selectedIcon: Icon(Icons.school),
+                                          label: Text('Turmas')),
+                                      NavigationRailDestination(
+                                          icon: MyBadge(
+                                              child: Icon(Icons.chat_outlined)),
+                                          selectedIcon:
+                                              MyBadge(child: Icon(Icons.chat)),
+                                          label: Text('Conversas')),
+                                      NavigationRailDestination(
+                                          icon: Icon(
+                                              Icons.account_circle_outlined),
+                                          selectedIcon:
+                                              Icon(Icons.account_circle),
+                                          label: Text('Perfil')),
+                                    ],
+                                    selectedIndex: controller.pageIndex,
+                                    onDestinationSelected: _onItemTapped,
+                                  ),
+                                )));
+                      }),
+                    if (!context.isSmartphone)
+                      const VerticalDivider(thickness: 1, width: 2),
+                    Expanded(child: _children[controller.pageIndex]),
                   ],
                 );
               }),
         ),
-        bottomNavigationBar: SafeArea(
-          child: StreamBuilder(
-            stream: controller.stream,
-            builder: (context, widget) {
-              // return Theme.of(context).platform == TargetPlatform.iOS
-              //     ? _bottomNavigationBar(controller.pageIndex, _onItemTapped)
-              //     : _bottomNavigationBarAndroid(
-              //         controller.pageIndex, _onItemTapped);
-              return _bottomNavigationBar(controller.pageIndex, _onItemTapped);
-            },
-          ),
+        bottomNavigationBar: StreamBuilder(
+          stream: controller.stream,
+          builder: (context, widget) {
+            // return Theme.of(context).platform == TargetPlatform.iOS
+            //     ? _bottomNavigationBar(controller.pageIndex, _onItemTapped)
+            //     : _bottomNavigationBarAndroid(
+            //         controller.pageIndex, _onItemTapped);
+            return _navigation(context, controller.pageIndex, _onItemTapped);
+          },
         ));
   }
 }

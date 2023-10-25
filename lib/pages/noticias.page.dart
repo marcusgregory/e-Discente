@@ -157,8 +157,8 @@ class _NoticiasPageState extends State<NoticiasPage>
     return GridView.builder(
       key: const PageStorageKey('noticias-grid'),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          mainAxisExtent: 400,
-          maxCrossAxisExtent: 400,
+          mainAxisExtent: 430,
+          maxCrossAxisExtent: 430,
           crossAxisSpacing: 0,
           mainAxisSpacing: 0),
       scrollDirection: Axis.vertical,

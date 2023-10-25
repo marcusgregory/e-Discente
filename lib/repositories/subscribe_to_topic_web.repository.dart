@@ -5,8 +5,7 @@ import '../settings.dart';
 
 class SubscribeToTopicWebRepository {
   Future<void> subscribe(String fcmToken, String topic) async {
-    print('Se increvendo no tópico...');
-    print(fcmToken);
+    print('Se increvendo no tópico "$topic" com token "$fcmToken');
     var url = '${Settings.apiURL}/subscribe';
     http.Response response = await http.post(Uri.parse(url), body: {
       'topic': topic,

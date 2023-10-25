@@ -68,7 +68,7 @@ class Noticia extends StatelessWidget {
         Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Skeleton.replace(
               width: 185, // width of replacement
