@@ -1,4 +1,6 @@
 import 'package:badges/badges.dart' as badges;
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_discente/settings.dart';
 import 'package:e_discente/util/extensions/screen_util.extension.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,9 +84,37 @@ class _InicioPageState extends State<InicioPage> {
               label: 'Conversas',
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
-              icon: Theme.of(context).platform == TargetPlatform.iOS
-                  ? const Icon(CupertinoIcons.person_alt_circle_fill)
-                  : const Icon(Icons.account_circle),
+              icon: Stack(
+                children: [
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? const Icon(CupertinoIcons.person_alt_circle_fill)
+                      : const Icon(Icons.account_circle),
+                  CircleAvatar(
+                    radius: 12,
+                    backgroundColor: Colors.transparent,
+                    child: !kIsWeb
+                        ? CachedNetworkImage(
+                            imageUrl: kIsWeb
+                                ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(Settings.usuario!.urlImagemPerfil)}'
+                                : Settings.usuario!.urlImagemPerfil,
+                            imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                            placeholder: (context, url) => Container(
+                                  color: Colors.transparent,
+                                ),
+                            errorWidget: (context, url, error) => Container(
+                                  color: Colors.transparent,
+                                ))
+                        : null,
+                  ),
+                ],
+              ),
               label: 'Perfil',
               backgroundColor: Colors.red)
         ],
