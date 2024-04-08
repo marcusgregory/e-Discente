@@ -68,10 +68,12 @@ class LoginBloc {
     }
   }
 
+// faça uma função de deslogar e chame ela no logout do menu  e no login do usuario
+
   Future<void> deslogar() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('usuario');
     await prefs.clear();
-    await prefs.setString('usuario', '');
     Settings.usuario = null;
     await prefs.clear();
 
