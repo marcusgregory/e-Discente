@@ -1,13 +1,14 @@
-import 'package:uni_discente/models/participante.model.dart';
+
+import 'package:e_discente/models/participante.model.dart';
 
 class DiscenteModel extends ParticipanteModel {
-  String curso;
-  String matricula;
+  String? curso;
+  String? matricula;
   DiscenteModel(
-      {String urlFoto,
-      String nome,
-      String usuario,
-      String email,
+      {String? urlFoto,
+      String? nome,
+      String? usuario,
+      String? email,
       this.curso,
       this.matricula})
       : super(urlFoto, nome, usuario, email);

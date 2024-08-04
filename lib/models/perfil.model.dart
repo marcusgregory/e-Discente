@@ -1,14 +1,14 @@
 class PerfilModel {
-  String nome;
-  String curso;
-  String numMatricula;
-  String urlImagemPerfil;
-  String nivel;
-  String situacao;
-  String semestreEntrada;
-  String iDE;
-  String integralizacao;
-  String cookie;
+  String? nome;
+  String? curso;
+  String? numMatricula;
+  String? urlImagemPerfil;
+  String? nivel;
+  String? situacao;
+  String? semestreEntrada;
+  String? iDE;
+  String? integralizacao;
+  String? cookie;
 
   PerfilModel(
       {this.nome,
@@ -36,17 +36,17 @@ class PerfilModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['nome'] = this.nome;
-    data['curso'] = this.curso;
-    data['numMatricula'] = this.numMatricula;
-    data['urlImagemPerfil'] = this.urlImagemPerfil;
-    data['nivel'] = this.nivel;
-    data['situacao'] = this.situacao;
-    data['semestreEntrada'] = this.semestreEntrada;
-    data['IDE'] = this.iDE;
-    data['integralizacao'] = this.integralizacao;
-    data['cookie'] = this.cookie;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['nome'] = nome;
+    data['curso'] = curso;
+    data['numMatricula'] = numMatricula;
+    data['urlImagemPerfil'] = urlImagemPerfil;
+    data['nivel'] = nivel;
+    data['situacao'] = situacao;
+    data['semestreEntrada'] = semestreEntrada;
+    data['IDE'] = iDE;
+    data['integralizacao'] = integralizacao;
+    data['cookie'] = cookie;
     return data;
   }
 }

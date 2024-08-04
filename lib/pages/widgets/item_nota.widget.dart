@@ -6,7 +6,7 @@ class ItemNota extends StatelessWidget {
   final String titulo;
   final String nota;
   final bool left;
-  ItemNota(this.titulo, this.nota, {this.left = true});
+  const ItemNota(this.titulo, this.nota, {super.key, this.left = true});
   @override
   Widget build(BuildContext context) {
     return Container(

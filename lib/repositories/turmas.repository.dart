@@ -3,21 +3,26 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/models/turma.model.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/models/turma.model.dart';
+import 'package:e_discente/settings.dart';
 
 class TurmasRepository {
   Future<List<TurmaModel>> getTurmas() async {
     try {
       var url = '${Settings.apiURL}/sigaa/turmas';
-      http.Response response = await http.get(url, headers: {
-        'jwt': Settings.usuario.token
-      }).timeout(Duration(seconds: 50));
+      http.Response response = await http.get(Uri.parse(url), headers: {
+        'jwt': Settings.usuario!.token
+      }).timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable turmas = json['data'];
-        return turmas.map((model) => TurmaModel.fromJson(model)).toList();
+        var turmasResponse =
+            turmas.map((model) => TurmaModel.fromJson(model)).toList();
+        for (var element in turmasResponse) {
+          element.local = element.local?.replaceAll('', '-');
+        }
+        return turmasResponse;
       } else if (response.statusCode == 400) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         return Future.error(json['message']);

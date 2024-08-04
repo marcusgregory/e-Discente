@@ -2,16 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:uni_discente/models/noticias.model.dart';
+import 'package:e_discente/models/noticias.model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/settings.dart';
 
 class NoticiasRepository {
   Future<List<NoticiaModel>> getAll() async {
     try {
       var url = '${Settings.apiURL}/unilab/noticias';
       http.Response response =
-          await http.get(url).timeout(Duration(seconds: 30));
+          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         Iterable noticias = json['data'];

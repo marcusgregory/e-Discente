@@ -1,22 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:uni_discente/util/toast.util.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import '../settings.dart';
 
 class Detalhe extends StatefulWidget {
-  final String _img;
-  final String _title;
+  final String? _img;
+  final String? _title;
   final String _date;
-  final String _description;
-  final String _url;
-  final int _id;
+  final String? _description;
+  final String? _url;
+  final int? _id;
 
-  Detalhe(this._img, this._title, this._date, this._description, this._url,
-      this._id);
+  const Detalhe(this._img, this._title, this._date, this._description,
+      this._url, this._id,
+      {super.key});
 
   @override
   _DetalheState createState() => _DetalheState();
@@ -27,46 +30,65 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: new AppBar(
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () {
-              Share.share(
-                  'Veja esta notícia:\n*${widget._title}*\n${widget._url}');
-            },
-          )
-        ],
-      ),
-      body: new Container(
-        margin: new EdgeInsets.all(5.0),
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              elevation: 2.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0)),
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _getImageNetwork(widget._img),
-                  _getBody(widget._title, widget._date, widget._description),
-                ],
+        appBar: AppBar(
+          systemOverlayStyle:
+              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+          actions: <Widget>[
+            IconButton(
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? const Icon(CupertinoIcons.share)
+                  : const Icon(Icons.share),
+              onPressed: () {
+                Share.share(
+                    'Veja esta notícia:\n*${widget._title}*\n${widget._url}');
+              },
+            )
+          ],
+        ),
+        body: LayoutBuilder(builder: (context, constraints) {
+          return Scrollbar(
+            child: Container(
+              padding: EdgeInsets.only(
+                  left: constraints.maxWidth <= 600
+                      ? 5.0
+                      : MediaQuery.of(context).size.width * 0.20,
+                  right: constraints.maxWidth <= 600
+                      ? 5.0
+                      : MediaQuery.of(context).size.width * 0.20),
+              margin: const EdgeInsets.all(5.0),
+              child: SingleChildScrollView(
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  elevation: 2.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0)),
+                  child: Container(
+                    constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _getImageNetwork(widget._img),
+                        _getBody(
+                            widget._title!, widget._date, widget._description),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        }));
   }
 
   Widget _getImageNetwork(url) {
     return Hero(
+      tag: widget._id!,
       child: CachedNetworkImage(
           height: 200,
           imageUrl: kIsWeb
-              ? 'https://api.allorigins.win/raw?url=' + Uri.encodeComponent(url)
+              ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(url)}'
               : url,
           imageBuilder: (context, imageProvider) => Container(
                 height: 200,
@@ -76,15 +98,14 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
                 ),
               ),
           placeholder: (context, url) =>
-              Container(height: 200, child: Image.memory(kTransparentImage))),
-      tag: widget._id,
+              SizedBox(height: 200, child: Image.memory(kTransparentImage))),
     );
   }
 
-  Widget _getBody(String tittle, String date, String description) {
-    return new Container(
-      margin: new EdgeInsets.all(15.0),
-      child: new Column(
+  Widget _getBody(String tittle, String date, String? description) {
+    return Container(
+      margin: const EdgeInsets.all(15.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _getTittle(tittle),
@@ -96,34 +117,26 @@ class _DetalheState extends State<Detalhe> with AutomaticKeepAliveClientMixin {
   }
 
   _getTittle(String tittle) {
-    return new Text(
+    return Text(
       tittle,
-      style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
     );
   }
 
   _getDate(String date) {
-    return new Container(
-        margin: new EdgeInsets.only(top: 5.0),
-        child: new Text(
+    return Container(
+        margin: const EdgeInsets.only(top: 5.0),
+        child: Text(
           date,
-          style: new TextStyle(fontSize: 10.0, color: Colors.grey),
+          style: const TextStyle(fontSize: 10.0, color: Colors.grey),
         ));
   }
 
-  _getDescription(String description) {
-    return new Container(
-      margin: new EdgeInsets.only(top: 20.0),
-      child: new Html(
-        data: this.widget._description,
-        defaultTextStyle: TextStyle(fontSize: 16.5),
-        onLinkTap: (url) async {
-          if (await canLaunch(url)) {
-            await launch(url);
-          } else {
-            ToastUtil.showShortToast('Não foi possível abrir a url: $url');
-          }
-        },
+  _getDescription(String? description) {
+    return Container(
+      margin: const EdgeInsets.only(top: 20.0),
+      child: Html(
+        data: widget._description,
       ),
     );
   }

@@ -1,16 +1,19 @@
+import 'package:e_discente/blocs/noticias_turma.bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_discente/models/participantes.model.dart';
-import 'package:uni_discente/pages/aulas.page.dart';
-import 'package:uni_discente/pages/notas_turma.page.dart';
-import 'package:uni_discente/pages/participantes.page.dart';
-import 'package:uni_discente/repositories/participantes.repository.dart';
-import 'package:uni_discente/stores/aulas.store.dart';
+import 'package:e_discente/models/participantes.model.dart';
+import 'package:e_discente/pages/aulas.page.dart';
+import 'package:e_discente/pages/notas_turma.page.dart';
+import 'package:e_discente/pages/participantes.page.dart';
+import 'package:e_discente/repositories/participantes.repository.dart';
+import 'package:e_discente/stores/aulas.store.dart';
+
+import 'noticias_turma.page.dart';
 
 class TurmaPage extends StatefulWidget {
-  final String _titulo;
-  final String _idTurma;
+  final String? _titulo;
+  final String? _idTurma;
 
-  const TurmaPage(this._titulo, this._idTurma);
+  const TurmaPage(this._titulo, this._idTurma, {super.key});
 
   @override
   _TurmaPageState createState() => _TurmaPageState();
@@ -19,9 +22,9 @@ class TurmaPage extends StatefulWidget {
 class _TurmaPageState extends State<TurmaPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   //TabController _tabController;
-  ScrollController _scrollViewController;
-  Aulas _aulasStore = Aulas();
-  Future<ParticipantesModel> _participantesFuture;
+  late ScrollController _scrollViewController;
+  final Aulas _aulasStore = Aulas();
+  Future<ParticipantesModel>? _participantesFuture;
 
   @override
   void initState() {
@@ -44,7 +47,7 @@ class _TurmaPageState extends State<TurmaPage>
     return Material(
       child: Scaffold(
         body: DefaultTabController(
-          length: 3,
+          length: 4,
           child: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool boxIsScrolled) {
               return <Widget>[
@@ -55,18 +58,21 @@ class _TurmaPageState extends State<TurmaPage>
                     top: false,
                     sliver: SliverAppBar(
                       title: Text(
-                        widget._titulo,
+                        widget._titulo!,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                       pinned: true,
                       floating: true,
                       snap: true,
                       primary: true,
                       forceElevated: boxIsScrolled,
-                      bottom: TabBar(
+                      bottom: const TabBar(
                         isScrollable: true,
                         tabs: [
+                          Tab(
+                            text: 'NOTÍCIAS',
+                          ),
                           Tab(
                             text: 'CONTEÚDOS',
                           ),
@@ -85,8 +91,12 @@ class _TurmaPageState extends State<TurmaPage>
             },
             body: TabBarView(
               children: [
-                AulasPage(this._aulasStore, widget._idTurma),
-                ParticipantesPage(this._participantesFuture, widget._idTurma),
+                NoticiasTurmaPage(
+                  idTurma: widget._idTurma ?? '',
+                  controller: NoticiasTurmaBloc(widget._idTurma ?? ''),
+                ),
+                AulasPage(_aulasStore, widget._idTurma),
+                ParticipantesPage(_participantesFuture, widget._idTurma),
                 NotasTurmaPage(widget._idTurma)
               ],
             ),

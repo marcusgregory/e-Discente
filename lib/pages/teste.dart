@@ -1,14 +1,16 @@
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 class NewsScreen extends StatefulWidget {
+  const NewsScreen({super.key});
+
   @override
   State<StatefulWidget> createState() => _NewsScreenState();
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  
   final List<String> listItems = [];
 
   final List<String> _tabs = <String>[
@@ -38,7 +40,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   // widgets that do not overlap the next sliver.
                   handle:
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  
+
                   sliver: SliverSafeArea(
                     top: false,
                     sliver: SliverAppBar(
@@ -50,7 +52,9 @@ class _NewsScreenState extends State<NewsScreen> {
                       forceElevated: innerBoxIsScrolled,
                       bottom: TabBar(
                         // These are the widgets to put in each tab in the tab bar.
-                        tabs: _tabs.map((String name) => Tab(text: name)).toList(),
+                        tabs: _tabs
+                            .map((String name) => Tab(text: name))
+                            .toList(),
                       ),
                     ),
                   ),
@@ -101,10 +105,10 @@ class _NewsScreenState extends State<NewsScreen> {
                                   // This builder is called for each child.
                                   // In this example, we just number each list item.
                                   return Container(
-                                      color: Color((Random().nextDouble() *
-                                                      0xFFFFFF)
-                                                  .toInt() <<
-                                              0)
+                                      color: Color(
+                                              (Random().nextDouble() * 0xFFFFFF)
+                                                      .toInt() <<
+                                                  0)
                                           .withOpacity(1.0));
                                 },
                                 // The childCount of the SliverChildBuilderDelegate

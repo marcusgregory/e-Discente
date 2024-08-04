@@ -1,54 +1,51 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_discente/models/noticias.model.dart';
-import 'package:uni_discente/repositories/noticias.repository.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:e_discente/models/noticias.model.dart';
+import 'package:e_discente/repositories/noticias.repository.dart';
+
+import '../firebase_messaging.dart';
 
 class NoticiasBloc {
-  // NoticiasBloc._();
+  NoticiasBloc() {
+    load();
+  }
+  List<NoticiaModel> noticiasList = [];
+  var noticiaState = NoticiaState.loading;
 
-  // static NoticiasBloc _instance;
+  final StreamController<NoticiaState> _streamController =
+      StreamController.broadcast();
 
-  // static NoticiasBloc get instance {
-  //   return _instance ??= NoticiasBloc._();
-  // }
-
-  StreamController<List<NoticiaModel>> _streamController = StreamController();
-
-  Stream<List<NoticiaModel>> get noticiaStream => _streamController.stream;
+  Stream<NoticiaState> get noticiaStream => _streamController.stream;
 
   load({bool isRefreshIndicator = false}) async {
+    await subscribeToTopic('news');
     if (!_streamController.isClosed) {
-      bool result = false;
-      if (kIsWeb) {
-        result = true;
-      } else {
-        result = await DataConnectionChecker().hasConnection;
-      }
-
-      if (result == true) {
+      if (true == true) {
         try {
           if (!isRefreshIndicator) {
-            _streamController.sink.add(null);
+            noticiaState = NoticiaState.loading;
+            _streamController.sink.add(noticiaState);
           }
-          List<NoticiaModel> list = await NoticiasRepository().getAll();
+          noticiasList = await NoticiasRepository().getAll();
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('noticias', jsonEncode(list));
-          _streamController.sink.add(list);
+          await prefs.setString('noticias', jsonEncode(noticiasList));
+          noticiaState = NoticiaState.ready;
+          _streamController.sink.add(noticiaState);
         } catch (e) {
           _streamController.addError(e);
+          noticiaState = NoticiaState.error;
+          _streamController.sink.add(noticiaState);
         }
       } else {
         try {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          String noticiasPref = prefs.getString('noticias');
-          if (noticiasPref != null) {
+          String noticiasPref = prefs.getString('noticias') ?? '';
+          if (noticiasPref != '') {
             Iterable noticias = jsonDecode(noticiasPref);
-            List<NoticiaModel> noticiasList =
+            noticiasList =
                 noticias.map((model) => NoticiaModel.fromJson(model)).toList();
-            _streamController.sink.add(noticiasList);
+            _streamController.sink.add(NoticiaState.ready);
           } else {
             _streamController
                 .addError('Não foi possível obter as noticias offline');
@@ -65,3 +62,5 @@ class NoticiasBloc {
     _streamController.sink.close();
   }
 }
+
+enum NoticiaState { loading, ready, error }

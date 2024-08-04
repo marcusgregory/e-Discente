@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:uni_discente/models/aulas.model.dart';
-import 'package:uni_discente/models/documento.model.dart';
-import 'package:uni_discente/stores/aulas.store.dart';
+import 'package:e_discente/models/aulas.model.dart';
+import 'package:e_discente/models/documento.model.dart';
+import 'package:e_discente/stores/aulas.store.dart';
 
 import 'conteudo.page.dart';
 
 class AulasPage extends StatefulWidget {
   final Aulas _aulasStore;
-  final String _idTurma;
-  AulasPage(this._aulasStore, this._idTurma);
+  final String? _idTurma;
+  const AulasPage(this._aulasStore, this._idTurma, {super.key});
   @override
   _AulasPageState createState() => _AulasPageState();
 }
@@ -18,26 +18,20 @@ class AulasPage extends StatefulWidget {
 class _AulasPageState extends State<AulasPage>
     with AutomaticKeepAliveClientMixin {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     return SafeArea(
       bottom: false,
       top: false,
       child: Container(
-          margin: EdgeInsets.only(bottom: 10),
+          margin: const EdgeInsets.only(bottom: 10),
           child: Observer(builder: (_) {
-            final future = widget._aulasStore.aulas;
+            final future = widget._aulasStore.aulas!;
             switch (future.status) {
               case FutureStatus.pending:
-                return Center(
-                  child: CircularProgressIndicator(),
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
                 );
-                break;
               case FutureStatus.rejected:
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -47,16 +41,16 @@ class _AulasPageState extends State<AulasPage>
                       onPressed: () {
                         widget._aulasStore.loadAulas(widget._idTurma);
                       },
-                      icon: Icon(Icons.refresh),
+                      icon: const Icon(Icons.refresh),
                     ),
-                    Text('Tentar novamente')
+                    const Text('Tentar novamente')
                   ],
                 );
                 break;
               case FutureStatus.fulfilled:
                 List<AulaModel> aulas = future.result;
                 return CustomScrollView(
-                  key: PageStorageKey('aulas:' + widget._idTurma),
+                  key: PageStorageKey('aulas:${widget._idTurma!}'),
                   slivers: <Widget>[
                     SliverOverlapInjector(
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
@@ -66,12 +60,11 @@ class _AulasPageState extends State<AulasPage>
                       delegate: SliverChildBuilderDelegate((context, index) {
                         AulaModel aula = aulas[index];
                         return myListTile((index + 1).toString(), aula.titulo,
-                            aula.conteudo, aula.documentos);
+                            aula.conteudo!, aula.documentos);
                       }, childCount: aulas.length),
                     )
                   ],
                 );
-                break;
             }
             return Container(
               child: Center(
@@ -83,9 +76,9 @@ class _AulasPageState extends State<AulasPage>
                       onPressed: () {
                         widget._aulasStore.loadAulas(widget._idTurma);
                       },
-                      icon: Icon(Icons.refresh),
+                      icon: const Icon(Icons.refresh),
                     ),
-                    Text('Tentar novamente')
+                    const Text('Tentar novamente')
                   ],
                 ),
               ),
@@ -97,26 +90,26 @@ class _AulasPageState extends State<AulasPage>
   @override
   bool get wantKeepAlive => false;
 
-  Widget myListTile(String numero, String titulo, String conteudo,
-      List<DocumentoModel> documentos) {
+  Widget myListTile(String numero, String? titulo, String conteudo,
+      List<DocumentoModel>? documentos) {
     return Card(
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.only(
             left: 15.0, right: 15.0, bottom: 5.0, top: 5.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
         elevation: 2.0,
-        child: conteudo.trim().isNotEmpty || documentos.isNotEmpty
+        child: conteudo.trim().isNotEmpty || documentos!.isNotEmpty
             ? ListTile(
                 key: PageStorageKey(numero),
                 leading: balao(numero),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
-                  color: Theme.of(context).textTheme.bodyText1.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                   size: 15,
                 ),
                 title: Text(
-                  titulo,
-                  style: TextStyle(
+                  titulo!,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -130,10 +123,10 @@ class _AulasPageState extends State<AulasPage>
               )
             : ListTile(
                 leading: balao(numero),
-                subtitle: Text('Não há conteúdo'),
+                subtitle: const Text('Não há conteúdo'),
                 title: Text(
-                  titulo,
-                  style: TextStyle(
+                  titulo!,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -152,8 +145,9 @@ class _AulasPageState extends State<AulasPage>
             shape: BoxShape.circle,
           ),
         ),
-        Text(numero + "°",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+        Text("$numero°",
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }

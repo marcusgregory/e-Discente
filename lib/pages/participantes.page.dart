@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:uni_discente/models/participantes.model.dart';
-import 'package:uni_discente/pages/widgets/participante.widget.dart';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+
+import 'package:e_discente/models/participantes.model.dart';
+import 'package:e_discente/pages/widgets/participante.widget.dart';
+
 class ParticipantesPage extends StatefulWidget {
-  final Future<ParticipantesModel> _participantesFuture;
-  final String _idTurma;
-  const ParticipantesPage(this._participantesFuture, this._idTurma);
+  final Future<ParticipantesModel>? _participantesFuture;
+  final String? _idTurma;
+  const ParticipantesPage(this._participantesFuture, this._idTurma,
+      {super.key});
   @override
   _ParticipantesPageState createState() => _ParticipantesPageState();
 }
@@ -14,14 +17,10 @@ class ParticipantesPage extends StatefulWidget {
 class _ParticipantesPageState extends State<ParticipantesPage>
     with AutomaticKeepAliveClientMixin {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
+        padding: const EdgeInsets.only(top: 5),
         child: FutureBuilder(
             future: widget._participantesFuture,
             builder: (BuildContext context,
@@ -29,20 +28,18 @@ class _ParticipantesPageState extends State<ParticipantesPage>
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                   return Container();
-                  break;
                 case ConnectionState.waiting:
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
                   );
-                  break;
                 case ConnectionState.active:
                   break;
                 case ConnectionState.done:
                   if (snapshot.hasData) {
-                    ParticipantesModel participantesModel = snapshot.data;
+                    ParticipantesModel participantesModel = snapshot.data!;
                     return CustomScrollView(
                       key: PageStorageKey<String>(
-                          'participantes:' + widget._idTurma),
+                          'participantes:${widget._idTurma!}'),
                       slivers: <Widget>[
                         SliverOverlapInjector(
                             handle:
@@ -51,78 +48,68 @@ class _ParticipantesPageState extends State<ParticipantesPage>
                         SliverPersistentHeader(
                             delegate: _SliverAppBarDelegate(
                                 minHeight: 42,
-                                maxHeight: 42,
+                                maxHeight: 82,
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: Theme.of(context).canvasColor),
-                                  child: Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Text(
-                                            'Docentes',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Divider(
-                                            color: Colors.grey[350],
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        'Docentes',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Divider(),
+                                      )
+                                    ],
                                   ),
                                 ))),
                         SliverList(
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {
                           return ParticipanteWidget(
-                              participantesModel.docentes[index]);
-                        }, childCount: participantesModel.docentes.length)),
+                              participantesModel.docentes![index]);
+                        }, childCount: participantesModel.docentes!.length)),
                         SliverPersistentHeader(
                             pinned: true,
                             delegate: _SliverAppBarDelegate(
                                 minHeight: 42,
-                                maxHeight: 42,
+                                maxHeight: 82,
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: Theme.of(context).canvasColor),
-                                  child: Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Text(
-                                            'Discentes',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Divider(
-                                            color: Colors.grey[350],
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        'Discentes',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Divider(),
+                                      )
+                                    ],
                                   ),
                                 ))),
                         SliverList(
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {
                           return ParticipanteWidget(
-                              participantesModel.discentes[index]);
-                        }, childCount: participantesModel.discentes.length))
+                              participantesModel.discentes![index]);
+                        }, childCount: participantesModel.discentes!.length))
                       ],
                     );
                   }
@@ -138,9 +125,9 @@ class _ParticipantesPageState extends State<ParticipantesPage>
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
-    @required this.minHeight,
-    @required this.maxHeight,
-    @required this.child,
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
   });
   final double minHeight;
   final double maxHeight;
@@ -152,7 +139,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new SizedBox.expand(child: child);
+    return SizedBox.expand(child: child);
   }
 
   @override

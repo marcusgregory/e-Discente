@@ -1,12 +1,10 @@
+import 'package:e_discente/pages/request_notification_permission_web.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:uni_discente/blocs/usuario.bloc.dart';
-import 'package:uni_discente/models/usuario.model.dart';
-
-import 'inicio.page.dart';
-import 'login.page.dart';
 
 class SplashPage extends StatefulWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
   @override
   _SplashPageState createState() => _SplashPageState();
 }
@@ -14,14 +12,14 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    _loadUser();
+    _delay();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00396A),
+      backgroundColor: const Color(0xFF0D294D),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -31,11 +29,14 @@ class _SplashPageState extends State<SplashPage> {
               tag: 'icon_book',
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                radius: 60.0,
-                child: Image.asset('assets/book.png'),
+                radius: 45.0,
+                child: Image.asset('assets/icon_init.png'),
               ),
             ),
-            Text(
+            const SizedBox(
+              height: 13,
+            ),
+            const Text(
               'e-Discente',
               style: TextStyle(
                   color: Colors.white,
@@ -48,17 +49,15 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  void _loadUser() async {
-    UsuarioModel usuario = await UsuarioBloc().loadUsuario();
-    await Future.delayed(Duration(milliseconds: 1000));
-    if (usuario != null) {
+  void _delay() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (kIsWeb) {
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => InicioPage()),
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => const RequestNotificationPermissionWeb()));
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+      await RequestNotificationPermissionWeb.loadUser(context);
     }
   }
 }

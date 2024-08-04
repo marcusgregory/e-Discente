@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:uni_discente/models/notas_turma.model.dart';
-import 'package:uni_discente/pages/widgets/balao_resultado.widget.dart';
-import 'package:uni_discente/pages/widgets/item_nota.widget.dart';
-import 'package:uni_discente/repositories/notas_turma.repository.dart';
+import 'package:e_discente/models/notas_turma.model.dart';
+import 'package:e_discente/pages/widgets/balao_resultado.widget.dart';
+import 'package:e_discente/pages/widgets/item_nota.widget.dart';
+import 'package:e_discente/repositories/notas_turma.repository.dart';
 
 class NotasTurmaPage extends StatefulWidget {
-  final String idTurma;
-  const NotasTurmaPage(this.idTurma);
+  final String? idTurma;
+  const NotasTurmaPage(this.idTurma, {super.key});
 
   @override
   _NotasTurmaPageState createState() => _NotasTurmaPageState();
 }
 
-class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAliveClientMixin {
-  Future<NotasTurmaModel> notasFuture;
+class _NotasTurmaPageState extends State<NotasTurmaPage>
+    with AutomaticKeepAliveClientMixin {
+  Future<NotasTurmaModel?>? notasFuture;
 
   @override
   void initState() {
     notasFuture = NotasTurmaRepository().getNotaTurma(widget.idTurma);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -27,27 +29,24 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
         child: FutureBuilder(
             future: notasFuture,
             builder: (BuildContext context,
-                AsyncSnapshot<NotasTurmaModel> snapshot) {
+                AsyncSnapshot<NotasTurmaModel?> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-               
                   return Container();
-                  break;
                 case ConnectionState.waiting:
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
                   );
-                  break;
                 case ConnectionState.active:
                   break;
                 case ConnectionState.done:
                   if (snapshot.hasData) {
-                    NotasTurmaModel notas = snapshot.data;
+                    NotasTurmaModel notas = snapshot.data!;
                     return CustomScrollView(
                       slivers: <Widget>[
                         SliverList(
                             delegate: SliverChildListDelegate([
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           Card(
@@ -62,42 +61,39 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                             elevation: 2.0,
                             child: Column(
                               children: <Widget>[
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
                                   'Notas',
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20),
-                                  child: Divider(
-                                    color: Colors.black26,
-                                  ),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20),
+                                  child: Divider(),
                                 ),
                                 ListView.builder(
                                     addAutomaticKeepAlives: true,
                                     shrinkWrap: true,
-                                    physics: ClampingScrollPhysics(),
-                                    itemCount: notas.notas.length,
+                                    physics: const ClampingScrollPhysics(),
+                                    itemCount: notas.notas!.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: ItemNota(
-                                          notas.notas[index].descricao,
-                                          notas.notas[index].valor,
+                                          notas.notas![index].descricao!,
+                                          notas.notas![index].valor!,
                                           left: false,
                                         ),
                                       );
                                     }),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 )
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Card(
@@ -112,60 +108,55 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                             elevation: 2.0,
                             child: Column(
                               children: <Widget>[
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
                                   'Resultados',
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20),
-                                  child: Divider(
-                                    color: Colors.black26,
-                                  ),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, right: 20),
+                                  child: Divider(),
                                 ),
                                 ListView(
                                   shrinkWrap: true,
                                   addAutomaticKeepAlives: true,
-                                  physics: ClampingScrollPhysics(),
+                                  physics: const ClampingScrollPhysics(),
                                   children: <Widget>[
                                     ItemNota(
                                       'Recuperação',
-                                      notas.recuperacao.isNotEmpty
-                                          ? notas.recuperacao
+                                      notas.recuperacao!.isNotEmpty
+                                          ? notas.recuperacao!
                                           : '--',
                                       left: false,
                                     ),
                                     ItemNota(
                                       "Resultado Final",
-                                      notas.resultado.isNotEmpty
-                                          ? notas.resultado
+                                      notas.resultado!.isNotEmpty
+                                          ? notas.resultado!
                                           : '--',
                                       left: false,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      child: Divider(
-                                        color: Colors.black26,
-                                      ),
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 20, right: 20),
+                                      child: Divider(),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           left: 20, right: 20),
                                       child: ListTile(
-                                        subtitle: BalaoSituacao(notas.situacao),
-                                        title: Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 5),
+                                        subtitle:
+                                            BalaoSituacao(notas.situacao!),
+                                        title: const Padding(
+                                          padding: EdgeInsets.only(bottom: 5),
                                           child:
                                               Center(child: Text('Situação')),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 10,
                                     ),
                                   ],
@@ -176,12 +167,11 @@ class _NotasTurmaPageState extends State<NotasTurmaPage> with AutomaticKeepAlive
                         ]))
                       ],
                     );
-                  }else{
-                    return Center(
+                  } else {
+                    return const Center(
                       child: Text('Ainda sem notas disponíveis.'),
                     );
                   }
-                  break;
               }
               return Container();
             }));

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class BalaoSituacao extends StatelessWidget {
   final String situacao;
-  const BalaoSituacao(this.situacao);
+  const BalaoSituacao(this.situacao, {super.key});
   @override
   Widget build(BuildContext context) {
-   return Stack(
+    return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Container(
@@ -21,7 +21,8 @@ class BalaoSituacao extends StatelessWidget {
           ),
         ),
         Text(situacao,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }

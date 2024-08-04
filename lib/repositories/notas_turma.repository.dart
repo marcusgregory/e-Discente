@@ -2,20 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/models/notas_turma.model.dart';
+import 'package:e_discente/models/notas_turma.model.dart';
 import '../settings.dart';
 
 class NotasTurmaRepository {
-  Future<NotasTurmaModel> getNotaTurma(String idTurma) async {
+  Future<NotasTurmaModel?> getNotaTurma(String? idTurma) async {
     try {
       var url = '${Settings.apiURL}/sigaa/turma/$idTurma/notas';
-      http.Response response = await http.get(url, headers: {
-        'jwt': Settings.usuario.token
-      }).timeout(Duration(seconds: 30));
+      http.Response response = await http.get(Uri.parse(url), headers: {
+        'jwt': Settings.usuario!.token
+      }).timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
         var notas = NotasTurmaModel.fromJson(json['data']);
-        if (notas.notas.isNotEmpty) {
+        if (notas.notas!.isNotEmpty) {
           return notas;
         } else {
           return null;

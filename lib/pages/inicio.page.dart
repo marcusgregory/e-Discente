@@ -1,135 +1,217 @@
-import 'dart:async';
-import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:e_discente/settings.dart';
+import 'package:e_discente/util/extensions/screen_util.extension.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:uni_discente/blocs/usuario.bloc.dart';
-import 'package:uni_discente/pages/boletim.page.dart';
-import 'package:uni_discente/pages/login.page.dart';
-import 'package:uni_discente/pages/noticias.page.dart';
-import 'package:uni_discente/pages/perfil.page.dart';
-import 'package:uni_discente/pages/turmas.page.dart';
-import '../settings.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:get_it/get_it.dart';
+
+import 'package:e_discente/blocs/noticias.bloc.dart';
+import 'package:e_discente/blocs/turmas.bloc.dart';
+import 'package:e_discente/chat/pages/chats.page.dart';
+import 'package:e_discente/chat/stores/socket_io.store.dart';
+import 'package:e_discente/pages/home.page.dart';
+import 'package:e_discente/pages/noticias.page.dart';
+import 'package:e_discente/pages/perfil.page.dart';
+import 'package:e_discente/pages/turmas.page.dart';
+import 'package:e_discente/stores/perfil.store.dart';
+
+import '../chat/stores/chats.store.dart';
+import '../repositories/register_fcm_token.repository.dart';
+import '../stores/boletim.store.dart';
+import 'inicio_controller.dart';
 
 class InicioPage extends StatefulWidget {
+  const InicioPage({super.key});
+
   @override
   _InicioPageState createState() => _InicioPageState();
 }
 
 class _InicioPageState extends State<InicioPage> {
-  final List<Widget> _children = [
-    NoticiasPage(),
-    TurmasPage(),
-    BoletimPage(),
-    PerfilScreen(),
-  ];
+  late NoticiasBloc noticiasBloc;
+  late TurmasBloc turmasBloc;
+  late Boletim boletimStore;
+  late PerfilStore perfilStore;
+
+  final List<Widget> _children = [];
 
   int onlineFlag = 0;
 
-  PageController pageController = PageController();
-  StreamSubscription<DataConnectionStatus> listenConnection;
+  var controller = InicioPageController();
+  //StreamSubscription<DataConnectionStatus> listenConnection;
   final GlobalKey<ScaffoldState> scaffoldStateKey = GlobalKey<ScaffoldState>();
-
-  void _onItemTapped(int index) {
-    pageController.jumpToPage(index);
+  var bucket = PageStorageBucket();
+  _onItemTapped(int value) {
+    controller.setPageIndex(value);
   }
 
-  Widget _bottomNavigationBar(int currentIndex, Function onTap) =>
-      BottomNavigationBar(
+  Widget _navigation(
+      BuildContext context, int currentIndex, Function(int) onTap) {
+    return Visibility(
+      visible: context.isSmartphone,
+      child: BottomNavigationBar(
         onTap: onTap,
         currentIndex: currentIndex,
-        selectedItemColor: Theme.of(context).accentColor,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.web),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? const Icon(CupertinoIcons.home)
+                  : const Icon(Icons.home),
+              label: 'Inicio',
+              backgroundColor: Colors.green),
+          BottomNavigationBarItem(
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? const Icon(CupertinoIcons.news_solid)
+                  : const Icon(Icons.web),
               label: 'Notícias',
               backgroundColor: Colors.green),
           BottomNavigationBarItem(
-              icon: Icon(Icons.school),
+              icon: Theme.of(context).platform == TargetPlatform.iOS
+                  ? const Icon(CupertinoIcons.square_stack_3d_down_right_fill)
+                  : const Icon(Icons.school),
               label: 'Turmas',
               backgroundColor: Colors.blue),
           BottomNavigationBarItem(
-              icon: Icon(Icons.timeline),
-              label: 'Boletim',
+              icon: MyBadge(
+                child: (Theme.of(context).platform == TargetPlatform.iOS
+                    ? const Icon(CupertinoIcons.chat_bubble_2_fill)
+                    : const Icon(Icons.chat)),
+              ),
+              label: 'Conversas',
               backgroundColor: Colors.orange),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
+              icon: Stack(
+                children: [
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? const Icon(CupertinoIcons.person_alt_circle_fill)
+                      : const Icon(Icons.account_circle),
+                  CircleAvatar(
+                    radius: 12,
+                    backgroundColor: Colors.transparent,
+                    child: !kIsWeb
+                        ? CachedNetworkImage(
+                            imageUrl: kIsWeb
+                                ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(Settings.usuario!.urlImagemPerfil)}'
+                                : Settings.usuario!.urlImagemPerfil,
+                            imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                            placeholder: (context, url) => Container(
+                                  color: Colors.transparent,
+                                ),
+                            errorWidget: (context, url, error) => Container(
+                                  color: Colors.transparent,
+                                ))
+                        : null,
+                  ),
+                ],
+              ),
               label: 'Perfil',
               backgroundColor: Colors.red)
         ],
+      ),
+    );
+  }
+
+  Widget _bottomNavigationBarAndroid(int currentIndex, Function(int) onTap) =>
+      NavigationBarTheme(
+        data: NavigationBarThemeData(
+            labelTextStyle: MaterialStateProperty.all(
+          const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        )),
+        child: NavigationBar(
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          onDestinationSelected: onTap,
+          selectedIndex: currentIndex,
+          destinations: const [
+            NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home),
+                label: 'Início'),
+            NavigationDestination(
+                icon: Icon(Icons.newspaper),
+                selectedIcon: Icon(Icons.newspaper_outlined),
+                label: 'Notícias'),
+            NavigationDestination(
+                icon: Icon(Icons.school_outlined),
+                selectedIcon: Icon(Icons.school),
+                label: 'Turmas'),
+            NavigationDestination(
+                icon: MyBadge(child: Icon(Icons.chat_outlined)),
+                selectedIcon: MyBadge(child: Icon(Icons.chat)),
+                label: 'Conversas'),
+            NavigationDestination(
+                icon: Icon(Icons.account_circle_outlined),
+                selectedIcon: Icon(Icons.account_circle),
+                label: 'Perfil'),
+          ],
+        ),
       );
 
   @override
   void initState() {
-    if (kIsWeb) {
-    } else {
-      listenConnection =
-          DataConnectionChecker().onStatusChange.listen((status) {
-        scaffoldStateKey.currentState
-            .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-        switch (status) {
-          case DataConnectionStatus.connected:
-            scaffoldStateKey.currentState
-                .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-            if (onlineFlag > 0) {
-              scaffoldStateKey.currentState.showSnackBar(
-                SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                            color: Colors.green, shape: BoxShape.circle),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text('Agora está online.'),
-                    ],
-                  ),
-                ),
-                // SnackBar
-              );
-            }
-            break;
-          case DataConnectionStatus.disconnected:
-            onlineFlag++;
-            scaffoldStateKey.currentState.showSnackBar(
-              SnackBar(
-                duration: Duration(seconds: 30),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text('e-Discente está offline.'),
-                  ],
-                ),
-              ), // SnackBar
-            );
-            break;
-        }
-      });
-    }
+    registerSingletons();
+    registerFirebaseToken();
+    noticiasBloc = NoticiasBloc();
+    turmasBloc = TurmasBloc();
+    perfilStore = PerfilStore();
+    _children.addAll([
+      HomePage(),
+      NoticiasPage(
+        noticiasBloc: noticiasBloc,
+      ),
+      TurmasPage(turmasBloc: turmasBloc),
+      const ChatsPage(),
+      PerfilScreen(
+        perfilStore: perfilStore,
+      ),
+    ]);
 
     super.initState();
   }
 
+  void registerSingletons() {
+    if (GetIt.I.isRegistered<SocketIOStore>(instance: SocketIOStore())) {
+      GetIt.I.unregister<SocketIOStore>(
+        disposingFunction: (p0) => p0.dispose(),
+      );
+    }
+    GetIt.I.registerSingleton<SocketIOStore>(SocketIOStore());
+    GetIt.I<SocketIOStore>().initSocket();
+
+    if (GetIt.I.isRegistered<ChatsStore>(instance: ChatsStore())) {
+      GetIt.I.unregister<ChatsStore>(
+        disposingFunction: (p0) => p0.dispose(),
+      );
+    }
+
+    GetIt.I.registerLazySingleton(() => ChatsStore());
+  }
+
+  void unregisterSingletons() {
+    GetIt.I.unregister<ChatsStore>(
+      disposingFunction: (p0) => p0.dispose(),
+    );
+    GetIt.I.unregister<SocketIOStore>(
+      disposingFunction: (p0) => p0.dispose(),
+    );
+  }
+
   @override
   void dispose() {
-    listenConnection.cancel();
+    noticiasBloc.dispose();
+    turmasBloc.dispose();
+    controller.dispose();
+    unregisterSingletons();
     super.dispose();
   }
 
@@ -137,78 +219,124 @@ class _InicioPageState extends State<InicioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldStateKey,
-        appBar: AppBar(
-          title: AnimatedBuilder(
-            animation: pageController,
-            builder: (context, widget) {
-              int indexPage =
-                  pageController.page != null ? pageController.page.round() : 0;
-              return GestureDetector(
-                child: Text(
-                    ['Notícias', 'Turmas', 'Boletim', 'Perfil'][indexPage]),
-                onDoubleTap: () {},
-              );
-            },
-          ),
-          elevation: 1.0,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.brightness_6_rounded),
-              onPressed: () {
-                AdaptiveTheme.of(context).toggleThemeMode();
-              },
-            ),
-            IconButton(
-              icon: Hero(
-                tag: 'icon_book',
-                child: CircleAvatar(
-                  radius: 13,
-                  backgroundColor: Colors.transparent,
-                  child: CachedNetworkImage(
-                    imageUrl: kIsWeb
-                        ? 'https://api.allorigins.win/raw?url=' +
-                            Uri.encodeComponent(
-                                Settings.usuario.urlImagemPerfil)
-                        : Settings.usuario.urlImagemPerfil,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
-                    ),
-                    placeholder: (context, url) => Icon(
-                      Icons.account_circle,
-                      color: Colors.grey[200],
-                    ),
-                    errorWidget: (context, url, error) =>
-                        Icon(Icons.account_circle, color: Colors.grey[200]),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                print("Tocou na foto de Perfil");
-                await UsuarioBloc().deslogar();
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => LoginPage()));
-              },
-            ),
-          ],
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.background
+            : Theme.of(context).colorScheme.primary,
+        body: SafeArea(
+          child: StreamBuilder(
+              stream: controller.stream,
+              builder: (context, snapshot) {
+                return Row(
+                  children: [
+                    if (!context.isSmartphone)
+                      LayoutBuilder(builder: (context, constraints) {
+                        return SingleChildScrollView(
+                            child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                ),
+                                child: IntrinsicHeight(
+                                  child: NavigationRail(
+                                    leading: const Text('Menu'),
+                                    labelType: NavigationRailLabelType.all,
+                                    destinations: const [
+                                      NavigationRailDestination(
+                                          icon: Icon(Icons.home_outlined),
+                                          selectedIcon: Icon(Icons.home),
+                                          label: Text('Início')),
+                                      NavigationRailDestination(
+                                          icon: Icon(Icons.newspaper_outlined),
+                                          selectedIcon: Icon(Icons.newspaper),
+                                          label: Text('Notícias')),
+                                      NavigationRailDestination(
+                                          icon: Icon(Icons.school_outlined),
+                                          selectedIcon: Icon(Icons.school),
+                                          label: Text('Turmas')),
+                                      NavigationRailDestination(
+                                          icon: MyBadge(
+                                              child: Icon(Icons.chat_outlined)),
+                                          selectedIcon:
+                                              MyBadge(child: Icon(Icons.chat)),
+                                          label: Text('Conversas')),
+                                      NavigationRailDestination(
+                                          icon: Icon(
+                                              Icons.account_circle_outlined),
+                                          selectedIcon:
+                                              Icon(Icons.account_circle),
+                                          label: Text('Perfil')),
+                                    ],
+                                    selectedIndex: controller.pageIndex,
+                                    onDestinationSelected: _onItemTapped,
+                                  ),
+                                )));
+                      }),
+                    if (!context.isSmartphone)
+                      const VerticalDivider(thickness: 1, width: 2),
+                    Expanded(child: _children[controller.pageIndex]),
+                  ],
+                );
+              }),
         ),
-        body: PageView(
-          controller: pageController,
-          children: _children,
-          physics: NeverScrollableScrollPhysics(),
-        ),
-        bottomNavigationBar: AnimatedBuilder(
-          animation: pageController,
+        bottomNavigationBar: StreamBuilder(
+          stream: controller.stream,
           builder: (context, widget) {
-            return _bottomNavigationBar(
-                pageController.page != null ? pageController.page.round() : 0,
-                _onItemTapped);
+            // return Theme.of(context).platform == TargetPlatform.iOS
+            //     ? _bottomNavigationBar(controller.pageIndex, _onItemTapped)
+            //     : _bottomNavigationBarAndroid(
+            //         controller.pageIndex, _onItemTapped);
+            return _navigation(context, controller.pageIndex, _onItemTapped);
           },
         ));
+  }
+}
+
+Future<void> registerFirebaseToken() async {
+  late String fcmToken;
+  if (kIsWeb) {
+    fcmToken = await FirebaseMessaging.instance.getToken(
+            vapidKey:
+                'BGEfEWSlW911r314_XEFQ8CjZ0d3AUK4xHq4-Q3fwjwz3icOyFxAJsn_58chvVO9h3Cf9VOGJM4e8Q3Z58pu3eE') ??
+        '';
+  } else {
+    fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+  }
+
+  if (fcmToken.isNotEmpty) {
+    RegisterFcmTokenRepository().register(fcmToken);
+  }
+}
+
+class MyBadge extends StatelessWidget {
+  final Widget child;
+
+  const MyBadge({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return badges.Badge(
+        badgeStyle: badges.BadgeStyle(
+          shape: badges.BadgeShape.square,
+          borderRadius: BorderRadius.circular(5),
+          padding: const EdgeInsets.all(2),
+          badgeGradient: const badges.BadgeGradient.linear(
+            colors: [
+              Colors.purple,
+              Colors.blue,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        position: badges.BadgePosition.topEnd(top: -12, end: -20),
+        badgeContent: const Text(
+          'PREVIEW',
+          style: TextStyle(
+              color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+        ),
+        showBadge: true,
+        child: child);
   }
 }

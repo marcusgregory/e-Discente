@@ -2,16 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:uni_discente/models/perfil.model.dart';
-import 'package:uni_discente/settings.dart';
+import 'package:e_discente/models/perfil.model.dart';
+import 'package:e_discente/settings.dart';
 
 class PerfilRepository {
   Future<PerfilModel> getPerfil() async {
     try {
       var url = '${Settings.apiURL}/sigaa/discente';
-      http.Response response = await http.get(url, headers: {
-        'jwt': Settings.usuario.token
-      }).timeout(Duration(seconds: 50));
+      http.Response response = await http.get(Uri.parse(url), headers: {
+        'jwt': Settings.usuario!.token
+      }).timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));

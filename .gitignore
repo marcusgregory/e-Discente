@@ -31,11 +31,13 @@
 /build/
 
 # Web related
-lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-.fvm/fvm_config.json
-.fvm/flutter_sdk
 .vscode/launch.json
 .vscode/settings.json
+web/icons/Icon-maskable-192.png
+web/icons/Icon-maskable-512.png
+
+# FVM Version Cache
+.fvm/

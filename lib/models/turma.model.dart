@@ -1,10 +1,10 @@
-class TurmaModel {
-  String codigo;
-  String nomeTurma;
-  String docente;
-  String local;
-  String horario;
-  String idTurma;
+class TurmaModel implements Comparable<TurmaModel> {
+  String? codigo;
+  String? nomeTurma;
+  String? docente;
+  String? local;
+  String? horario;
+  String? idTurma;
 
   TurmaModel(
       {this.codigo,
@@ -14,7 +14,7 @@ class TurmaModel {
       this.horario,
       this.idTurma});
 
- TurmaModel.fromJson(Map<String, dynamic> json) {
+  TurmaModel.fromJson(Map<String, dynamic> json) {
     codigo = json['codigo'];
     nomeTurma = json['nomeTurma'];
     docente = json['docente'];
@@ -23,13 +23,18 @@ class TurmaModel {
     idTurma = json['idTurma'];
   }
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['codigo'] = this.codigo;
-    data['nomeTurma'] = this.nomeTurma;
-    data['docente'] = this.docente;
-    data['local'] = this.local;
-    data['horario'] = this.horario;
-    data['idTurma'] = this.idTurma;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['codigo'] = codigo;
+    data['nomeTurma'] = nomeTurma;
+    data['docente'] = docente;
+    data['local'] = local;
+    data['horario'] = horario;
+    data['idTurma'] = idTurma;
     return data;
+  }
+
+  @override
+  int compareTo(TurmaModel other) {
+    return horario?.compareTo(other.horario ?? '') ?? 0;
   }
 }

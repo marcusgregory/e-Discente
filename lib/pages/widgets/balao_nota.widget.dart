@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class BalaoNota extends StatelessWidget {
   final String nota;
-  const BalaoNota(this.nota);
+  const BalaoNota(this.nota, {super.key});
   @override
   Widget build(BuildContext context) {
-   return Stack(
+    return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Container(
@@ -21,7 +21,8 @@ class BalaoNota extends StatelessWidget {
           ),
         ),
         Text(nota,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold))
       ],
     );
   }

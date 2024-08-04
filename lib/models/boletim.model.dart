@@ -1,15 +1,15 @@
 class BoletimModel {
-  String codigo;
-  String disciplina;
-  String nota1;
-  String nota2;
-  String nota3;
-  String nota4;
-  String nota5;
-  String recuperacao;
-  String resultado;
-  String faltas;
-  String situacao;
+  String? codigo;
+  String? disciplina;
+  String? nota1;
+  String? nota2;
+  String? nota3;
+  String? nota4;
+  String? nota5;
+  String? recuperacao;
+  String? resultado;
+  String? faltas;
+  String? situacao;
 
   BoletimModel(
       {this.codigo,
@@ -37,18 +37,18 @@ class BoletimModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["codigo"] = this.codigo;
-    data["disciplina"] = this.disciplina;
-    data["nota1"] = this.nota1;
-    data["nota2"] = this.nota2;
-    data["nota3"] = this.nota3;
-    data["nota4"] = this.nota4;
-    data["nota5"] = this.nota5;
-    data["recuperacao"] = this.recuperacao;
-    data["resultado"] = this.resultado;
-    data["faltas"] = this.faltas;
-    data["situacao"] = this.situacao;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["codigo"] = codigo;
+    data["disciplina"] = disciplina;
+    data["nota1"] = nota1;
+    data["nota2"] = nota2;
+    data["nota3"] = nota3;
+    data["nota4"] = nota4;
+    data["nota5"] = nota5;
+    data["recuperacao"] = recuperacao;
+    data["resultado"] = resultado;
+    data["faltas"] = faltas;
+    data["situacao"] = situacao;
     return data;
   }
 }

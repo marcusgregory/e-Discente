@@ -5,6 +5,7 @@
     "display": "standalone",
     "background_color": "#00396A",
     "theme_color": "#00396A",
+    "description": "e-Discente",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

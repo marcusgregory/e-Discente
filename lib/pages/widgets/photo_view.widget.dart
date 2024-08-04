@@ -1,24 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
+
+import '../../settings.dart';
 
 class PhotoViewWidget extends StatelessWidget {
   final String url;
-  const PhotoViewWidget(this.url);
+  final String tag;
+  const PhotoViewWidget(this.url, {super.key, this.tag = ''});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Foto de Perfil'),
+        systemOverlayStyle:
+            const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+        title: const Text('Foto de Perfil'),
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.black,
       body: Container(
         child: Center(
           child: Hero(
+            tag: tag == '' ? url : tag,
             child: CachedNetworkImage(
-              imageUrl: kIsWeb ? 'https://api.allorigins.win/raw?url='+ Uri.encodeComponent(this.url) : this.url,
+              imageUrl: kIsWeb
+                  ? '${Settings.apiURL}/get-image?url=${Uri.encodeComponent(url)}'
+                  : url,
               imageBuilder: (context, imageProvider) {
                 return Container(
                   decoration: BoxDecoration(
@@ -27,7 +35,6 @@ class PhotoViewWidget extends StatelessWidget {
                 );
               },
             ),
-            tag: url,
           ),
         ),
       ),

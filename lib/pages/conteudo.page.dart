@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:uni_discente/repositories/download.service.dart';
-import 'package:uni_discente/models/documento.model.dart';
-import 'package:uni_discente/util/toast.util.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:e_discente/repositories/download.service.dart';
+import 'package:e_discente/models/documento.model.dart';
 
 class ConteudoPage extends StatelessWidget {
   const ConteudoPage(this._numero, this._titulo, this._conteudo,
-      this._documentos, this.idTurma);
+      this._documentos, this.idTurma, {super.key});
   final String _numero;
-  final String _titulo;
+  final String? _titulo;
   final String _conteudo;
-  final String idTurma;
-  final List<DocumentoModel> _documentos;
+  final String? idTurma;
+  final List<DocumentoModel>? _documentos;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          systemOverlayStyle:
+              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
           title: Text('$_numero° Conteúdo'),
         ),
         body: Container(
@@ -35,26 +36,23 @@ class ConteudoPage extends StatelessWidget {
                       elevation: 2.0,
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 20, right: 20),
                             child: Center(
                               child: Text(
-                                _titulo,
-                                style: TextStyle(
+                                _titulo!,
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ),
                           ),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 16),
-                              child: Container(
-                                color: Colors.grey[300],
-                                height: 1,
-                              )),
+                          const Padding(
+                              padding:
+                                  EdgeInsets.only(left: 20, right: 20, top: 16),
+                              child: Divider()),
                           _conteudo.isNotEmpty
                               ? Column(
                                   children: [
@@ -62,25 +60,15 @@ class ConteudoPage extends StatelessWidget {
                                       padding: const EdgeInsets.all(12.0),
                                       child: Html(
                                         data: _conteudo,
-                                        defaultTextStyle:
-                                            TextStyle(fontSize: 14),
-                                        onLinkTap: (url) async {
-                                          if (await canLaunch(url)) {
-                                            await launch(url);
-                                          } else {
-                                            ToastUtil.showShortToast(
-                                                'Não foi possível abrir a url: $url');
-                                          }
-                                        },
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 15,
                                     ),
                                   ],
                                 )
-                              : Padding(
-                                  padding: const EdgeInsets.all(50.0),
+                              : const Padding(
+                                  padding: EdgeInsets.all(50.0),
                                   child: Center(
                                     child: Text('Sem conteúdo'),
                                   ),
@@ -103,24 +91,26 @@ class ConteudoPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         DownloadService(context)
-                            .downloadDocumento(idTurma, _documentos[index]);
+                            .downloadDocumento(idTurma, _documentos![index]);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 3, right: 3, bottom: 6, top: 6),
                         child: ListTile(
-                          leading: balaoArquivo('PDF'),
-                          title: Text(_documentos[index].nome,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          leading:
+                              balaoArquivo(_documentos![index].nome!, context),
+                          title: Text(_documentos![index].nome!,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ),
                   ),
                 );
-              }, childCount: _documentos.length)),
+              }, childCount: _documentos!.length)),
               SliverList(
                 delegate: SliverChildListDelegate([
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   )
                 ]),
@@ -130,7 +120,7 @@ class ConteudoPage extends StatelessWidget {
         )));
   }
 
-  Widget balaoArquivo(String tipo) {
+  Widget balaoArquivo(String tipo, BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -138,13 +128,16 @@ class ConteudoPage extends StatelessWidget {
           width: 45.0,
           height: 45.0,
           decoration: BoxDecoration(
-            color: Colors.teal[300],
+            color:
+                tipo.toLowerCase().contains('.pdf') ? Colors.red : Colors.grey,
             shape: BoxShape.circle,
           ),
         ),
         IconButton(
             icon: Icon(
-              Icons.assignment_rounded,
+              tipo.toLowerCase().contains('.pdf')
+                  ? Icons.picture_as_pdf
+                  : Icons.insert_drive_file,
               color: Colors.white,
             ),
             onPressed: null)
